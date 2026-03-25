@@ -32,7 +32,7 @@ void shots_draw();
 typedef struct SHIP
 {
     int x, y;
-    int cx, cy; //Áß¾Ó ÁÂÇ¥ Ãß°¡
+    int cx, cy;         //Áß¾Ó ÁÂÇ¥ Ãß°¡
     int shot_timer;
     int lives;
     int respawn_timer;
@@ -61,6 +61,7 @@ typedef enum ALIEN_TYPE
 typedef struct ALIEN
 {
     int x, y;
+    int cx, cy;      //Áß¾Ó ÁÂÇ¥ Ãß°¡
     ALIEN_TYPE type;
     int shot_timer;
     int blink;

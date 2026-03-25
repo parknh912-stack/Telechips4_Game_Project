@@ -4,8 +4,8 @@
 /* --- Sprites --- */
 
 
-const int ALIEN_W[] = { 14, 13, 45 };
-const int ALIEN_H[] = { 9, 10, 27 };
+const int ALIEN_W[] = { 50, 13, 45 };
+const int ALIEN_H[] = { 42, 10, 27 };
 
 SPRITES sprites;
 
@@ -21,10 +21,10 @@ void sprites_init()
     sprites._sheet = al_load_bitmap("sheet.png");
     must_init(sprites._sheet, "spritesheet");
 
-        sprites.ship = sprite_grab(444, 91, 91, 91);    //"ufoBlue.png" x="444" y="91" width="91" height="91"/>
+    sprites.ship = sprite_grab(444, 91, 91, 91);    //"ufoBlue.png" x="444" y="91" width="91" height="91"/>
 
-    sprites.ship_shot[0] = sprite_grab(842, 206, 13, 57); //"laserBlue14.png" x="842" y="206" width="13" height="57"/>
-    sprites.ship_shot[1] = sprite_grab(843, 62, 13, 54); //"laserBlue16.png" x="843" y="62" width="13" height="54"/>
+    sprites.ship_shot[0] = sprite_grab(434, 325, 48, 46); //"laserBlue09.png" x="434" y="325" width="48" height="46"
+    sprites.ship_shot[1] = sprite_grab(698, 795, 38, 37); //"laserBlue11.png" x="698" y="795" width="38" height="37"
 
     sprites.life = sprite_grab(777, 443, 32, 26); //"playerLife3_red.png" x = "777" y = "443" width = "32" height = "26" / >
 

@@ -18,13 +18,13 @@ void shots_init()
         shots[i].used = false;
 }
 
-bool shots_add(bool ship, bool straight, int x, int y)
+bool shots_add(bool is_ship, bool straight, int x, int y)
 {
     al_play_sample(
         sample_shot,
         0.3,
         0,
-        ship ? 1.0 : between_f(1.5, 1.6),
+        is_ship ? 1.0 : between_f(1.5, 1.6),
         ALLEGRO_PLAYMODE_ONCE,
         NULL
     );
@@ -34,26 +34,30 @@ bool shots_add(bool ship, bool straight, int x, int y)
         if (shots[i].used)
             continue;
 
-        shots[i].ship = ship;
+        shots[i].ship = is_ship;
 
-        if (ship)
+        if (is_ship)
         {
             shots[i].x = x - (SHIP_SHOT_W / 2);
             shots[i].y = y;
         }
+
         else // alien
         {
             shots[i].x = x - (ALIEN_SHOT_W / 2);
             shots[i].y = y - (ALIEN_SHOT_H / 2);
 
+            /* 플레이어를 향해 쏘도록 수정*/
             if (straight)
             {
-                shots[i].dx = 0;
-                shots[i].dy = 2;
+                float angle = atan2(ship.cy - y, ship.cx - x);
+                float alien_shot_speed = 2.5f;
+                shots[i].dx = cos(angle) * alien_shot_speed;
+                shots[i].dy = sin(angle) * alien_shot_speed;;
             }
-            else
+            else 
             {
-
+                //추후에 랜덤 방향이 아닌, 여러 모양의 탄막으로 만들 예정
                 shots[i].dx = between(-2, 2);
                 shots[i].dy = between(-2, 2);
             }
@@ -98,8 +102,8 @@ void shots_update()
             if ((shots[i].x < -ALIEN_SHOT_W)
                 || (shots[i].x > BUFFER_W)
                 || (shots[i].y < -ALIEN_SHOT_H)
-                || (shots[i].y > BUFFER_H)
-                ) {
+                || (shots[i].y > BUFFER_H) ) 
+            {
                 shots[i].used = false;
                 continue;
             }
@@ -109,7 +113,7 @@ void shots_update()
     }
 }
 
-bool shots_collide(bool ship, int x, int y, int w, int h)
+bool shots_collide(bool ship, int cx, int cy, int w, int h)
 {
     for (int i = 0; i < SHOTS_N; i++)
     {
@@ -125,19 +129,27 @@ bool shots_collide(bool ship, int x, int y, int w, int h)
         {
             sw = ALIEN_SHOT_W;
             sh = ALIEN_SHOT_H;
+
+            if (collide_circle(cx, cy, 15, shots[i].x, shots[i].y, 5))
+            {
+                fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
+                shots[i].used = false;
+                return true;
+            }
+
         }
         else
         {
             sw = SHIP_SHOT_W;
             sh = SHIP_SHOT_H;
+            if (collide(cx, cy, cx + w, cy + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
+            {
+                fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
+                shots[i].used = false;
+                return true;
+            }
         }
-
-        if (collide(x, y, x + w, y + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
-        {
-            fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
-            shots[i].used = false;
-            return true;
-        }
+       
     }
 
     return false;
@@ -151,9 +163,20 @@ void shots_draw()
             continue;
 
         int frame_display = (shots[i].frame / 2) % 2;
+        
+        /*수정; 총알 크기 수정*/
+        ALLEGRO_BITMAP* current_shot = sprites.ship_shot[frame_display];
+        int sw = al_get_bitmap_width(current_shot);
+        int sh = al_get_bitmap_height(current_shot);
 
         if (shots[i].ship)
-            al_draw_bitmap(sprites.ship_shot[frame_display], shots[i].x, shots[i].y, 0);
+			al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
+				0, 0, sw, sh,
+				shots[i].x - (SHIP_SHOT_W / 2),
+				shots[i].y - (SHIP_SHOT_H / 2),
+                SHIP_SHOT_W, SHIP_SHOT_H,
+				0);
+
         else // alien
         {
             ALLEGRO_COLOR tint =
@@ -173,7 +196,7 @@ SHIP ship;
 
 void ship_init()
 {
-    ship.x = (BUFFER_W / 2) - (SHIP_W / 2); //왼쪽 위를 가르킴
+    ship.x = (BUFFER_W / 2) - (SHIP_W / 2);
     ship.y = (BUFFER_H / 2) - (SHIP_H / 2);
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
@@ -213,18 +236,20 @@ void ship_update()
     if (ship.y > SHIP_MAX_Y)
         ship.y = SHIP_MAX_Y;
 
+    ship.cx = ship.x + (SHIP_W / 2);
+    ship.cy = ship.y + (SHIP_H / 2);
+
     if (ship.invincible_timer)
         ship.invincible_timer--;
     else
     {
-        if (shots_collide(true, ship.x, ship.y, SHIP_W, SHIP_H))
+        //if (shots_collide(true, ship.x, ship.y, SHIP_W, SHIP_H))
+		if (shots_collide(true, ship.cx, ship.cy, SHIP_W, SHIP_H))
         {
-            int x = ship.x + (SHIP_W / 2);
-            int y = ship.y + (SHIP_H / 2);
-            fx_add(false, x, y);
-            fx_add(false, x + 4, y + 2);
-            fx_add(false, x - 2, y - 4);
-            fx_add(false, x + 1, y - 5);
+            fx_add(false, ship.cx, ship.cy);
+            fx_add(false, ship.cx + 4, ship.cy + 2);
+            fx_add(false, ship.cx - 2, ship.cy - 4);
+            fx_add(false, ship.cx + 1, ship.cy - 5);
 
             ship.lives--;
             ship.respawn_timer = 90;
@@ -236,8 +261,7 @@ void ship_update()
         ship.shot_timer--;
     else if (key[ALLEGRO_KEY_X])
     {
-        int x = ship.x + (SHIP_W / 2);
-        if (shots_add(true, false, x, ship.y))
+        if (shots_add(true, false, ship.cx, ship.cy))
             ship.shot_timer = 5;
     }
 }
@@ -316,24 +340,27 @@ void aliens_update()
             }
             continue;
         }
-        
+
+        aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2);
+        aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2);
+
         switch (aliens[i].type)
         {
         case ALIEN_TYPE_BUG:
             if (frames % 2) {
-                if (aliens[i].x > ship.x)           //추격 기능 추가 , 차후에 이속에 따라 이동하는거 넣어야함
+                if (aliens[i].cx > ship.cx)           //추격 기능 추가 , 차후에 이속에 따라 이동하는거 넣어야함
                 {
                     aliens[i].x--;
                 }
-                if (aliens[i].x < ship.x)
+                if (aliens[i].cx < ship.cx)
                 {
                     aliens[i].x++;
                 }
-                if (aliens[i].y > ship.y)
+                if (aliens[i].cy > ship.cy)
                 {
                     aliens[i].y--;
                 }
-                if (aliens[i].y < ship.y)
+                if (aliens[i].cy < ship.cy)
                 {
                     aliens[i].y++;
                 }
@@ -344,49 +371,46 @@ void aliens_update()
 
         case ALIEN_TYPE_ARROW:
         {
-            if (aliens[i].x > ship.x)
+            if (aliens[i].cx > ship.cx)
             {
                 aliens[i].x--;
             }
-            if (aliens[i].x < ship.x)
+            if (aliens[i].cx < ship.cx)
             {
                 aliens[i].x++;
             }
-            if (aliens[i].y > ship.y)
+            if (aliens[i].cy > ship.cy)
             {
                 aliens[i].y--;
             }
-            if (aliens[i].y < ship.y)
+            if (aliens[i].cy < ship.cy)
             {
-
                 aliens[i].y++;
             }
         }
-            //aliens[i].y++;
-            break;
+        //aliens[i].y++;
+        break;
 
         case ALIEN_TYPE_THICCBOI:
             if (!(frames % 4)) {
-                if (aliens[i].x > ship.x)
+                if (aliens[i].cx > ship.cx)
                 {
                     aliens[i].x--;
                 }
-                if (aliens[i].x < ship.x)
+                if (aliens[i].cx < ship.cx)
                 {
-
                     aliens[i].x++;
                 }
-                if (aliens[i].y > ship.y)
+                if (aliens[i].cy > ship.cy)
                 {
                     aliens[i].y--;
                 }
-                if (aliens[i].y < ship.y)
+                if (aliens[i].cy < ship.cy)
                 {
-
                     aliens[i].y++;
                 }
             }
-                //aliens[i].y++;
+            //aliens[i].y++;
             break;
         }
 
@@ -405,12 +429,11 @@ void aliens_update()
             aliens[i].blink = 4;
         }
 
-        int cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2);
-        int cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2);
+
 
         if (aliens[i].life <= 0)
         {
-            fx_add(false, cx, cy);
+            fx_add(false, aliens[i].cx, aliens[i].cy);
 
             switch (aliens[i].type)
             {
@@ -424,9 +447,9 @@ void aliens_update()
 
             case ALIEN_TYPE_THICCBOI:
                 score += 800;
-                fx_add(false, cx - 10, cy - 4);
-                fx_add(false, cx + 4, cy + 10);
-                fx_add(false, cx + 8, cy + 8);
+                fx_add(false, aliens[i].cx - 10, aliens[i].cy - 4);
+                fx_add(false, aliens[i].cx + 4, aliens[i].cy + 10);
+                fx_add(false, aliens[i].cx + 8, aliens[i].cy + 8);
                 break;
             }
 
@@ -444,14 +467,14 @@ void aliens_update()
                 aliens[i].shot_timer = 150;*/
                 break;
             case ALIEN_TYPE_ARROW:
-                shots_add(false, true, cx, aliens[i].y);
+                shots_add(false, true, aliens[i].cx, aliens[i].cy);
                 aliens[i].shot_timer = 80;
                 break;
             case ALIEN_TYPE_THICCBOI:
-                shots_add(false, true, cx - 5, cy);
-                shots_add(false, true, cx + 5, cy);
-                shots_add(false, true, cx - 5, cy + 8);
-                shots_add(false, true, cx + 5, cy + 8);
+                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy);
+                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy);
+                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy + 8);
+                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy + 8);
                 aliens[i].shot_timer = 200;
                 break;
             }
@@ -472,7 +495,7 @@ void aliens_draw()
             0, 0,
             101, 84,
             aliens[i].x, aliens[i].y,
-            ALIEN_W[aliens[i].type], ALIEN_W[aliens[i].type],
+            ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
             0);
         //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
     }

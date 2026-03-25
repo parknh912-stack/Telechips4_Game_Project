@@ -10,7 +10,8 @@
 #include "Keyboard.h"
 #include "Sprites.h"
 #include "Display.h"
-//include stddd
+
+
 #include "Audio.h"
 #include "Fx.h"
 
@@ -49,6 +50,17 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
     return true;
 }
 
+/* --- 원형 충돌 --- */
+bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
+    long dx = cx2 - cx1;
+    long dy = cy2 - cy1;
+
+    long radium_Sum = r1 + r2;
+    long radium_Square = (radium_Sum * radium_Sum);
+    long distance = (dx * dx) + (dy * dy);
+
+    return (distance <= radium_Square);     //반지름의 제곱이 더 크면 충돌
+}
 
 /* --- Main --- */
 

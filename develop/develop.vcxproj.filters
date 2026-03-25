@@ -86,4 +86,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="sheet.xml">
+      <Filter>리소스 파일</Filter>
+    </Xml>
+  </ItemGroup>
 </Project>
