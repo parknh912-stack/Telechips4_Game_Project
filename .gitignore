@@ -1,0 +1,30 @@
+# [Visual Studio 기본 제외]
+.vs/
+*.user
+*.suo
+*.VC.db
+*.opendb
+
+# [빌드 결과물 및 임시 파일]
+Debug/
+Release/
+x64/
+ipch/
+*.obj
+*.exe
+*.ilk
+*.pdb
+*.exp
+*.lib
+*.dll
+
+# [NuGet 패키지 관련 - 핵심!]
+# 패키지 본체(용량 큰 것들)는 제외합니다.
+packages/*
+# 하지만 어떤 패키지가 필요한지 적힌 설정 파일은 반드시 포함해야 합니다.
+!packages/repositories.config
+
+# [로그 및 기타]
+*.log
+*.tmp
+*.cache
