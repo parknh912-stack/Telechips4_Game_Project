@@ -250,14 +250,14 @@ void ship_draw()
         return;
     if (((ship.invincible_timer / 2) % 3) == 1)
         return;
-    al_draw_scaled_bitmap(sprites.ship,
-        0, 0,
-        91, 91,
-		ship.x, ship.y,
-        SHIP_W, SHIP_H,
-        0);
+  //  al_draw_scaled_bitmap(sprites.ship,
+  //      0, 0,
+  //      91, 91,
+		//ship.x, ship.y,
+  //      SHIP_W, SHIP_H,
+  //      0);
         
-    //al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
+    al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
 }
 
 
@@ -273,12 +273,14 @@ void aliens_init()
 
 void aliens_update()
 {
+    int aliens_spawn_location = between(0, 4);
     int new_quota = //2초마다 랜덤 생성
         (frames % 120)
         ? 0
         : between(2, 4) //종류도 랜덤
         ;
     int new_x = between(10, BUFFER_W - 50);
+    int new_y = between(10, BUFFER_H - 50);
 
     for (int i = 0; i < ALIENS_N; i++)
     {
@@ -287,13 +289,48 @@ void aliens_update()
             // if this alien is unused, should it spawn?
             if (new_quota > 0)
             {
-                new_x += between(40, 80);
-                if (new_x > (BUFFER_W - 60))
-                    new_x -= (BUFFER_W - 60);
+                if (aliens_spawn_location == 0)
+                {
+                    // 50 ~ 349
+                    new_x += between(40, 80);
+                    // 만약 260을 넘는다면 new_x = 1 ~ 88, 260 이하라면 50 ~ 259 
+                    if (new_x > (BUFFER_W - 60))
+                        new_x -= (BUFFER_W - 60);
 
-                aliens[i].x = new_x;
+                    aliens[i].x = new_x;
+                    aliens[i].y = between(-40, -30);
+                }
 
-                aliens[i].y = between(-40, -30);
+                // 하 위치에서 스폰        //현재 아래에서 안나옴
+                if (aliens_spawn_location == 1)
+                {
+                    new_x += between(40, 80);
+                    if (new_x > (BUFFER_W - 60))
+                        new_x -= (BUFFER_W - 60);
+
+                    aliens[i].x = new_x;
+                    aliens[i].y = between(270, 290);
+                }
+                // 좌 위치에서 스폰
+                if (aliens_spawn_location == 2)
+                {
+                    new_y += between(40, 80);
+                    if (new_y > (BUFFER_H - 40))
+                        new_y -= BUFFER_H - 40;
+                    aliens[i].x = between(-40, -30);
+                    aliens[i].y = new_y;
+                }
+                // 우 위치에서 스폰
+                if (aliens_spawn_location == 3)
+                {
+                    new_y += between(40, 80);
+                    if (new_y > (BUFFER_H - 40))
+                        new_y -= BUFFER_H - 40;
+                    aliens[i].x = between(360, 390);
+                    aliens[i].y = new_y;
+                }
+
+                //aliens[i].y = between(-40, -30);
                 aliens[i].type = between(0, ALIEN_TYPE_N);
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
@@ -468,12 +505,12 @@ void aliens_draw()
         if (aliens[i].blink > 2)
             continue;
 
-        al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
-            0, 0,
-            101, 84,
-            aliens[i].x, aliens[i].y,
-            ALIEN_W[aliens[i].type], ALIEN_W[aliens[i].type],
-            0);
-        //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
+        //al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
+        //    0, 0,
+        //    101, 84,
+        //    aliens[i].x, aliens[i].y,
+        //    ALIEN_W[aliens[i].type], ALIEN_W[aliens[i].type],
+        //    0);
+        al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
     }
 }

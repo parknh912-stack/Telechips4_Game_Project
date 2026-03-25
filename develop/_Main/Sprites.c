@@ -18,17 +18,17 @@ ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h)
 
 void sprites_init()
 {
-    sprites._sheet = al_load_bitmap("sheet.png");
+    sprites._sheet = al_load_bitmap("spritesheet.png");
     must_init(sprites._sheet, "spritesheet");
 
-        sprites.ship = sprite_grab(444, 91, 91, 91);    //"ufoBlue.png" x="444" y="91" width="91" height="91"/>
+    sprites.ship = sprite_grab(0, 0, SHIP_W, SHIP_H);
 
-    sprites.ship_shot[0] = sprite_grab(842, 206, 13, 57); //"laserBlue14.png" x="842" y="206" width="13" height="57"/>
-    sprites.ship_shot[1] = sprite_grab(843, 62, 13, 54); //"laserBlue16.png" x="843" y="62" width="13" height="54"/>
+    sprites.ship_shot[0] = sprite_grab(13, 0, SHIP_SHOT_W, SHIP_SHOT_H);
+    sprites.ship_shot[1] = sprite_grab(16, 0, SHIP_SHOT_W, SHIP_SHOT_H);
 
-    sprites.life = sprite_grab(777, 443, 32, 26); //"playerLife3_red.png" x = "777" y = "443" width = "32" height = "26" / >
+    sprites.life = sprite_grab(0, 14, LIFE_W, LIFE_H);
 
-    sprites.alien[0] = sprite_grab(224, 748, 101, 84); //"meteorGrey_big1.png" x = "224" y = "748" width = "101" height = "84" / >
+    sprites.alien[0] = sprite_grab(19, 0, ALIEN_BUG_W, ALIEN_BUG_H);
     sprites.alien[1] = sprite_grab(19, 10, ALIEN_ARROW_W, ALIEN_ARROW_H);
     sprites.alien[2] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
 

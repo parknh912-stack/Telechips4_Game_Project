@@ -3,10 +3,8 @@
 #include <stdio.h>
 /* --- Sprites --- */
 
-#define SHIP_W 48   //크기 조정
-#define SHIP_H 48
-
-#define SHIP_HITBOX 
+#define SHIP_W 12
+#define SHIP_H 13
 
 #define SHIP_SHOT_W 2
 #define SHIP_SHOT_H 9
