@@ -289,6 +289,7 @@ void aliens_update()
             // if this alien is unused, should it spawn?
             if (new_quota > 0)
             {
+                // 상 위치에서 스폰
                 if (aliens_spawn_location == 0)
                 {
                     // 50 ~ 349
@@ -301,7 +302,7 @@ void aliens_update()
                     aliens[i].y = between(-40, -30);
                 }
 
-                // 하 위치에서 스폰        //현재 아래에서 안나옴
+                // 하 위치에서 스폰 
                 if (aliens_spawn_location == 1)
                 {
                     new_x += between(40, 80);
@@ -309,7 +310,7 @@ void aliens_update()
                         new_x -= (BUFFER_W - 60);
 
                     aliens[i].x = new_x;
-                    aliens[i].y = between(270, 290);
+                    aliens[i].y = 240;
                 }
                 // 좌 위치에서 스폰
                 if (aliens_spawn_location == 2)
