@@ -49,6 +49,37 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
     return true;
 }
 
+/* --- Gameplay --- */
+
+// pause_resume_game(): 게임 진행 상황을 일시 정지(pause) / 게임 재개(resume) 상태로 전환하는 함수
+void pause_resume_game(void* paused, void* frames)
+{
+    *(bool*)paused = !(*(bool*)paused);     // pause의 값을 반전 (toggle: pause - resume)
+    ++(*(long long*)frames);                // frame을 하나 증가    
+}
+
+// game_state_update(): fx, shot, star, ship, alien, hud 등의 가장 최근 상황을 업데이트 하고자할 때 사용하는 함수
+void game_state_update(void* paused)
+{
+    bool check = *(bool*)paused;
+
+    if (check == false)
+    {
+        fx_update();
+        shots_update();
+        stars_update();
+        ship_update();
+        aliens_update();
+        hud_update();
+    }
+}
+
+// level_up(): 특정 점수 구간에 도달했을 때 캐릭터의 레벨을 올려주는 함수 ==> 구현 중
+void level_up(void)
+{
+    ;
+}
+
 
 /* --- Main --- */
 
@@ -94,6 +125,9 @@ int main()
 
     bool done = false;
     bool redraw = true;
+    // ====================
+    bool paused = false;        // 게임 진행 상황 일시정지/재개 여부 확인하는 변수
+    // ====================
     ALLEGRO_EVENT event;
 
     al_start_timer(timer);
@@ -105,15 +139,16 @@ int main()
         switch (event.type)
         {
         case ALLEGRO_EVENT_TIMER:
-            fx_update();
-            shots_update();
-            stars_update();
-            ship_update();
-            aliens_update();
-            hud_update();
+            // ====================
+            game_state_update(&paused);
 
-            if (key[ALLEGRO_KEY_ESCAPE])
-                done = true;
+            if (key[ALLEGRO_KEY_ESCAPE] & KEY_SEEN)
+            {
+                pause_resume_game(&paused, &frames);
+            }
+
+            // ====================
+
 
             redraw = true;
             frames++;
