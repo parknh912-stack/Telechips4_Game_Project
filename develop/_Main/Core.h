@@ -23,13 +23,13 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 /* --- Gameplay --- */
 // 작성자: 김병헌
 typedef enum STATE {
-    STATE_MENU,          // 0: 메인 메뉴
-    STATE_PLAYING,       // 1: 게임 진행 중
-    STATE_PAUSE,         // 2: 일시정지
-    STATE_INPUT_NAME,    // 3: 신기록 이름 입력
-    STATE_GAMEOVER,      // 4: 게임 오버
-    STATE_RANK,           // 5: 랭킹 확인
-    STATE_LEVEL_UP        // 6. 레벨 업햇을때 뜨는 창
+    STATE_MENU,             // 0: 메인 메뉴
+    STATE_PLAYING,          // 1: 게임 진행 중
+    STATE_PAUSE,            // 2: 일시정지
+    STATE_INPUT_NAME,       // 3: 신기록 이름 입력
+    STATE_GAMEOVER,         // 4: 게임 오버
+    STATE_RANK,             // 5: 랭킹 확인
+    STATE_LEVEL_UP          // 6. 레벨 업햇을때 뜨는 창
 } STATE;
 
 // 작성자: 신제현
