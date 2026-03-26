@@ -365,9 +365,9 @@ void ship_draw()
     //al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
 }
 
-bool ship_collide(bool ship, int x, int y, int w, int h) {
-
-}
+//bool ship_collide(bool ship, int x, int y, int w, int h) {
+//
+//}
 
 /* --- Enemy --- */
 
@@ -415,7 +415,7 @@ void aliens_update()
                         break;
                     case 1: //го
                         new_x = between(10, BUFFER_W - 10);
-                        new_y = between(BUFFER_H, BUFFER_H + 20);
+                        new_y = between(BUFFER_H + 30, BUFFER_H + 60);
                         break;
                     case 2: //аб
                         new_x = between(-40, -30);
@@ -497,7 +497,7 @@ void aliens_update()
             aliens_move(i, aliens[i].speed);
         }
 
-        if (aliens[i].y >= BUFFER_H)
+        if (aliens[i].y >= BUFFER_H + 100)
         {
             aliens[i].used = false;
             continue;
@@ -511,8 +511,6 @@ void aliens_update()
             aliens[i].life -= ship.damage;
             aliens[i].blink = 4;
         }
-
-
 
         if (aliens[i].life <= 0)
         {
