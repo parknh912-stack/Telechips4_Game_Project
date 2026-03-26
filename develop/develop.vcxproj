@@ -143,6 +143,7 @@
     <Image Include="..\..\..\..\Desktop\cursor_g.png" />
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
+    <Image Include="uipack_rpg_sheet.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c" />

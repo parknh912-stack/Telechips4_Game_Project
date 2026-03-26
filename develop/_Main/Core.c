@@ -136,6 +136,7 @@ int main()
     ship_init();
     aliens_init();
     stars_init();
+    // pause_menu_init();
 
     frames = 0;
     score = 0;
@@ -200,6 +201,7 @@ int main()
         }
     }
 
+    pause_menu_deinit();
     sprites_deinit();
     hud_deinit();
     audio_deinit();

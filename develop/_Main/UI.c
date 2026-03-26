@@ -49,7 +49,6 @@ void stars_draw()
 
 ALLEGRO_FONT* font;
 long score_display;
-long level_display;
 
 void hud_init()
 {
@@ -57,7 +56,6 @@ void hud_init()
     must_init(font, "font");
 
     score_display = 0;
-    level_display = 0;
 }
 
 void hud_deinit()
@@ -89,15 +87,6 @@ void hud_draw()
         score_display
     );
 
-    al_draw_textf(
-        font,
-        al_map_rgb_f(1, 1, 1),
-        1, 2,
-        0,
-        "Level: %02ld",
-        level_display
-    );
-
     int spacing = LIFE_W + 1;
     for (int i = 0; i < ship.lives; i++)
         al_draw_bitmap(sprites.life, 1 + (i * spacing), 10, 0);
@@ -114,8 +103,48 @@ void hud_draw()
 
 }
 
-/* --- Ui --- */
+/* --- pause menu --- */
+
+PAUSE_MENU pause_menu;
 
 // =====================
+void pause_menu_init(void)
+{
+    pause_menu._sheet = al_load_bitmap("./uipack_rpg_sheet.png");
+    must_init(pause_menu._sheet, "pause menu sheet");
+
+    pause_menu.bg = al_create_sub_bitmap(pause_menu._sheet, 0, 0, 0, 0);
+    pause_menu.panel = al_create_sub_bitmap(pause_menu._sheet, 0, 0, 0, 0);
+    pause_menu.cursor = al_create_sub_bitmap(pause_menu._sheet, 0, 0, 0, 0);
+
+    pause_menu.button[0] = al_create_sub_bitmap(pause_menu._sheet, 0, 100, 100, 0);
+    pause_menu.button[1]= al_create_sub_bitmap(pause_menu._sheet, 0, 0, 0, 0);
+
+    pause_menu.choices[0] = "게임 재개";
+    pause_menu.choices[1] = "게임 나가기";
+    pause_menu.choice_count = 2;
+
+    pause_menu.selected = 0;
+    pause_menu.activated = false;
+
+    pause_menu.x = BUFFER_W / 2;
+    pause_menu.y = BUFFER_H / 2;
+
+    score_display = 0;
+}
+
+void pause_menu_deinit(void)
+{
+    al_destroy_bitmap(pause_menu.bg);
+    al_destroy_bitmap(pause_menu.panel);
+    al_destroy_bitmap(pause_menu.cursor);
+
+    for (int i = 0; i < pause_menu.choice_count; ++i)
+    {
+        al_destroy_bitmap(pause_menu.button[i]);
+    }
+
+    al_destroy_bitmap(pause_menu._sheet);
+}
 
 // =====================
