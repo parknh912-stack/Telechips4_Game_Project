@@ -61,6 +61,8 @@ typedef enum ALIEN_TYPE
 typedef struct ALIEN
 {
     int x, y;
+    int ax2, ay2;
+    int bx2, by2;
     ALIEN_TYPE type;
     int shot_timer;
     int blink;

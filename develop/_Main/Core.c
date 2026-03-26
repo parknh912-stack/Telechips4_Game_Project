@@ -39,12 +39,14 @@ float between_f(float lo, float hi)
     return lo + ((float)rand() / (float)RAND_MAX) * (hi - lo);
 }
 
+// a는 1번개체, b는 2번개체, 1은 왼쪽/위쪽 끝, 2는 오른쪽/아래쪽 끝
 bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2)
 {
-    if (ax1 > bx2) return false;
-    if (ax2 < bx1) return false;
-    if (ay1 > by2) return false;
-    if (ay2 < by1) return false;
+    // 아래 false들은 절대 충돌이 불가능한것들
+    if (ax1 > bx2) return false;    // a의 왼쪽면이 b의 오른쪽면보다 오른쪽에 있다
+    if (ax2 < bx1) return false;     // a의 오른쪽면이 b의 왼쪽면보다 왼쪽에 있다    
+    if (ay1 > by2) return false;    // a의 위쪽면이 b의 아래쪽면보다 아래에 있다   
+    if (ay2 < by1) return false;    // a의 아래쪽면이 b의 위쪽면보다 위에 있다
 
     return true;
 }
