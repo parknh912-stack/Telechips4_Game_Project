@@ -25,7 +25,7 @@ void stars_update()
         if (stars[i].y >= BUFFER_H)
         {
             stars[i].y = 0;
-            stars[i].speed = between_f(0.1, 1);
+            stars[i].speed = between_f(0.1,1);
         }
     }
 }
