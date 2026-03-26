@@ -147,7 +147,7 @@
     <ClCompile Include="_Main\Keyboard.c" />
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c" />
     <ClCompile Include="_Main\Sprites.c" />
-    <ClCompile Include="_Main\UI\UI.c" />
+    <ClCompile Include="_Main\UI.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Audio.h" />
@@ -157,7 +157,7 @@
     <ClInclude Include="_Main\Keyboard.h" />
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h" />
     <ClInclude Include="_Main\Sprites.h" />
-    <ClInclude Include="_Main\UI\UI.h" />
+    <ClInclude Include="_Main\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

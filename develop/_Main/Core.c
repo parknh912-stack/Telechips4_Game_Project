@@ -52,10 +52,13 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 /* --- Gameplay --- */
 
 // pause_resume_game(): 게임 진행 상황을 일시 정지(pause) / 게임 재개(resume) 상태로 전환하는 함수
-void pause_resume_game(void* paused, void* frames)
+void pause_resume_game(void* paused, void* frames, STATE state)
 {
-    *(bool*)paused = !(*(bool*)paused);     // pause의 값을 반전 (toggle: pause - resume)
-    ++(*(long long*)frames);                // frame을 하나 증가    
+    if (state == STATE_PAUSE)
+    {
+        *(bool*)paused = !(*(bool*)paused);     // pause의 값을 반전 (toggle: pause - resume)
+        ++(*(long long*)frames);                // frame을 하나 증가
+    }
 }
 
 // game_state_update(): fx, shot, star, ship, alien, hud 등의 가장 최근 상황을 업데이트 하고자할 때 사용하는 함수
@@ -144,14 +147,13 @@ int main()
 
             if (key[ALLEGRO_KEY_ESCAPE] & KEY_SEEN)
             {
-                pause_resume_game(&paused, &frames);
+                pause_resume_game(&paused, &frames, STATE_PAUSE);
             }
 
             // ====================
 
 
             redraw = true;
-            frames++;
             break;
 
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
