@@ -21,6 +21,8 @@
 long frames;
 long score;
 
+STATE game_state = STATE_MENU; // 게임이 처음 실행될 때의 초기 상태를 메인 메뉴로 설정합니다.
+
 void must_init(bool test, const char* description)
 {
     if (test) return;
