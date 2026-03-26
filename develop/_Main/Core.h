@@ -35,13 +35,15 @@ typedef enum STATE {
     STATE_GAMEOVER,         // 4: 게임 오버
     STATE_RANK,             // 5: 랭킹 확인
     STATE_LEVEL_UP,          // 6. 레벨 업햇을때 뜨는 창
-    STATE_NEWGAME
+    STATE_NEWGAME           //7. 새로운 게임
 } STATE;
 
-typedef struct _RANK
-{
-    char
-}RANK;
+
+//랭킹 관련 함수입니다.
+void rank_init();
+void rank_add();
+void rank_save();
+void rank_load();
 
 // 작성자: 신제현
 extern STATE current_state;

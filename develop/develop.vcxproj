@@ -142,6 +142,7 @@
     <Image Include="ui_sheet.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Rank.c" />
     <ClCompile Include="_Main\Audio.c" />
     <ClCompile Include="_Main\Core.c" />
     <ClCompile Include="_Main\Display.c" />
@@ -152,6 +153,7 @@
     <ClCompile Include="_Main\UI\UI.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Rank.h" />
     <ClInclude Include="_Main\Audio.h" />
     <ClInclude Include="_Main\Core.h" />
     <ClInclude Include="_Main\Display.h" />

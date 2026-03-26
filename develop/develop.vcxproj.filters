@@ -62,6 +62,9 @@
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Rank.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Sprites.h">
@@ -86,6 +89,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Rank.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
