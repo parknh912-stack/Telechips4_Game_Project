@@ -12,11 +12,12 @@ typedef struct SHOT
     bool used;
 } SHOT;
 
-#define SHOTS_N 256
+#define SHOTS_N 512
 
 extern SHOT shots[SHOTS_N];
 void shots_init();
 bool shots_add(bool is_ship, bool straight, float x, float y);
+bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy);
 void shots_update();
 bool shots_collide(bool ship, float cx, float cy, float w, float h);
 void shots_draw();
@@ -102,6 +103,6 @@ void aliens_init();
 void aliens_update();   //»ý¼º
 void aliens_draw();
 void aliens_move(int i, float speed);
-
+void aliens_collide();
 
 #endif // 

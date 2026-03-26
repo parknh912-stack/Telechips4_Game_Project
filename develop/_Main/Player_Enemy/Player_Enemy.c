@@ -20,6 +20,7 @@ void shots_init()
 //작성자 : 박남현
 bool shots_add(bool is_ship, bool straight, float x, float y)
 {
+    //sound 설정
     al_play_sample(
         sample_shot,
         0.3,
@@ -29,70 +30,80 @@ bool shots_add(bool is_ship, bool straight, float x, float y)
         NULL
     );
 
-    for (int i = 0; i < SHOTS_N; i++)
+	// 공통 세팅
+	float speed = is_ship ? 4.0f : 3.0f;
+	int count = is_ship ? ship.shot_count : 1;
+
+	float spread_gap = 0.2f;
+	float target_x, target_y;
+	bool has_target = false;
+	bool has_shot_created_success = false;
+	//shot이 아군것인지 적군것인지 확인 후 target 좌표 설정
+	if (is_ship)
+	{
+		int target_idx = get_closet_enemy();    //가장 가까운 적을 조준하는 함수 및 기능
+		if (target_idx != -1)
+		{
+			target_x = aliens[target_idx].cx;
+			target_y = aliens[target_idx].cy;
+			has_target = true;
+		}
+		else
+			return false;
+	}
+	else //alien
+	{
+		if (straight)
+		{
+			target_x = ship.cx;
+			target_y = ship.cy;
+			has_target = true;
+		}
+	}
+
+	if (has_target)
+	{
+		float base_angle = atan2f(target_y - y, target_x - x);
+		float start_angle = base_angle - ((count - 1) / 2.0f) * spread_gap;
+
+		for (int i = 0; i < count; ++i)
+		{
+			float curr_angle = start_angle + i * spread_gap;
+			float dx = cos(curr_angle) * speed;
+			float dy = sin(curr_angle) * speed;
+			if (shots_create_instance(is_ship, x, y, dx, dy))
+				has_shot_created_success = true;
+		}
+	}
+	else if (!is_ship && !straight)
+	{
+		if (shots_create_instance(false, x, y, between_f(-2.0f, 2.0f), between_f(-2.0f, 2.0f)))
+			has_shot_created_success = true;
+	}
+	return has_shot_created_success;
+}
+
+bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy)
+{
+    if (dx == 0 && dy == 0)
+        return true;
+    for (int i = 0; i < SHOTS_N; ++i)
     {
-        if (shots[i].used)
-            continue;
-
+        if (shots[i].used) continue;
         shots[i].ship = is_ship;
-
-        if (is_ship)
-        {
-            shots[i].x = x - (SHIP_SHOT_W / 2);
-            shots[i].y = y;
-            shots[i].speed = 4.0f;
-
-            int target_idx = get_closet_enemy();    //가장 가까운 적을 조준하는 함수 및 기능
-            if (target_idx == -1)
-                return false;
-
-            float dx = aliens[target_idx].cx - ship.cx; //벡터 연산
-            float dy = aliens[target_idx].cy - ship.cy;
-            float distance = sqrtf(dx * dx + dy * dy);
-
-            float speed = 4.0f;
-
-            shots[i].dx = dx / distance * speed;
-            shots[i].dy = dy / distance * speed;
-        }
-
-        else // alien
-        {
-            shots[i].x = x - (ALIEN_SHOT_W / 2);
-            shots[i].y = y - (ALIEN_SHOT_H / 2);
-
-            // 작성자 : 박남현
-            /* 플레이어를 향해 쏘도록 수정*/
-            if (straight)
-            {
-                float angle = atan2f(ship.cy - y, ship.cx - x);
-                shots[i].speed = 3.0f;
-
-
-                shots[i].dx = cos(angle) * shots[i].speed;
-                shots[i].dy = sin(angle) * shots[i].speed;
-            }
-            else 
-            {
-                //추후에 랜덤 방향이 아닌, 여러 모양의 탄막으로 만들 예정
-                shots[i].dx = between(-2, 2);
-                shots[i].dy = between(-2, 2);
-            }
-
-            // if the shot has no speed, don't bother
-            if (!shots[i].dx && !shots[i].dy)
-                return true;
-
-            shots[i].frame = 0;
-        }
-
-        shots[i].frame = 0;
         shots[i].used = true;
+        shots[i].frame = 0;
 
+        shots[i].x = x - (is_ship ? (SHIP_SHOT_W / 2) : (ALIEN_SHOT_W / 2));
+        shots[i].y = y - (is_ship ? 0 : (ALIEN_SHOT_H / 2));
+        shots[i].dx = dx;
+        shots[i].dy = dy;
+        
         return true;
     }
     return false;
 }
+
 
 // 작성자 : 박남현
 /* --- 가장 가까운 적 식별 --- */
@@ -179,7 +190,7 @@ bool shots_collide(bool ship, float cx, float cy, float w, float h)
             /* 적 -> 아군인 경우는 원형 충돌 */
             if (collide_circle(cx, cy, SHIP_R, shots[i].x, shots[i].y, ALIEN_SHOT_R))
             {
-                fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
+                fx_add(true, shots[i].x + (sw / 2.0f), shots[i].y + (sh / 2.0f));
                 shots[i].used = false;
                 return true;
             }
@@ -192,7 +203,7 @@ bool shots_collide(bool ship, float cx, float cy, float w, float h)
             /* 아군 -> 적인 경우는 AABB 충돌 (차후 원형 충돌로 바꿀 예정) */
             if (collide(cx, cy, cx + w, cy + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
             {
-                fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
+                fx_add(true, shots[i].x + (sw / 2.0f), shots[i].y + (sh / 2.0f));
                 shots[i].used = false;
                 return true;
             }
@@ -262,7 +273,7 @@ void ship_init()
     ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
     ship.shot_timer = 60;       //shot_timer
     ship.damage = 10;           //데미지, int      (수정가능)
-    ship.shot_count = 1;        //투사체 수
+    ship.shot_count = 1;        //투사체 수 (홀수개만)
     ship.max_lifes = 100;       //최대 체력
     ship.curr_lifes = 100;      //현재 체력
 
@@ -312,7 +323,7 @@ void ship_update()
             fx_add(false, ship.cx + 1, ship.cy - 5);
 
             ship.curr_lifes--;
-            ship.invincible_timer = 3;
+            ship.invincible_timer = 10;
         }
 
         /* 적과 직접 충돌 시에도 */
@@ -323,30 +334,19 @@ void ship_update()
             //fx_add(false, ship.cx - 2, ship.cy - 4);
             //fx_add(false, ship.cx + 1, ship.cy - 5);
             ship.curr_lifes--;
-            ship.invincible_timer = 3;
+            ship.invincible_timer = 20;
         }
     }
-
-    //if (ship.shot_timer)
-    //    ship.shot_timer--;
-    //else if (key[ALLEGRO_KEY_X])
-    //{
-    //    if (shots_add(true, false, ship.cx, ship.cy))
-    //        ship.shot_timer = 120;
-    //}
 
     // 작성자 : 박남현
     // 일정 시간마다 자동 공격
     if (ship.shot_timer)
         ship.shot_timer--;
-    if (ship.shot_timer == 0) {
-        for (int i = 1; i < ship.shot_count; ++i) 
-        {
-            shots_add(true, false, ship.cx, ship.cy);
+    if (ship.shot_timer <= 0) {
 
-        }
-        ship.shot_timer = 60.0 / ship.fire_rate;
-    }
+		shots_add(true, false, ship.cx, ship.cy);
+		ship.shot_timer = 60.0 / ship.fire_rate;
+	}
 
 }
 
@@ -372,10 +372,9 @@ bool ship_collide(int cx, int cy, int w, int h)
 {
     for (int i = 0; i < ALIENS_N; ++i)
     {
+        if (!aliens[i].used) continue;
         if (collide_circle(cx, cy, SHIP_R, aliens[i].cx, aliens[i].cy, ALIEN_R[aliens[i].type]))
-        {
             return true;
-        }
     }
     return false;
 }
@@ -479,10 +478,6 @@ void aliens_update()
                     aliens[i].life = 30;
                     aliens[i].speed = 0.5f;
                     break;
-                case ALIEN_TYPE_BOSS:
-                    aliens[i].life = 100;
-                    aliens[i].speed = 0.5f;
-                    break;
                 }
 
                 new_quota--;
@@ -490,8 +485,8 @@ void aliens_update()
             continue;
         }
 
-        aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2);
-        aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2);
+        aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
+        aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
 
         // 작성자 : 천원석
         // 적-> 캐릭터 방향으로 움직임
@@ -590,6 +585,7 @@ void aliens_update()
             }
         }
     }
+    aliens_collide();
 }
 
 // 작성자 : 박남현
@@ -601,6 +597,7 @@ void aliens_move(int i, float speed)
     if (aliens[i].cy > ship.cy) aliens[i].y -= speed;
     if (aliens[i].cy < ship.cy) aliens[i].y += speed;
 }
+
 void aliens_draw()
 {
     for (int i = 0; i < ALIENS_N; i++)
@@ -617,5 +614,60 @@ void aliens_draw()
             ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
             0);
         //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
+    }
+}
+
+
+void aliens_collide()
+{
+    for (int i = 0; i < ALIENS_N; i++)
+    {
+        if (!aliens[i].used) continue;
+
+        for (int j = i + 1; j < ALIENS_N; j++)
+        {
+            if (!aliens[j].used) continue;
+
+            // 1. 직접 만드신 collide_circle 함수 활용
+            // 반지름(R)은 ALIEN_W[type] / 2.0f 정도로 잡으면 적당합니다.
+            float r_i = ALIEN_W[aliens[i].type] / 2.0f;
+            float r_j = ALIEN_W[aliens[j].type] / 2.0f;
+
+            if (collide_circle(aliens[i].cx, aliens[i].cy, r_i, aliens[j].cx, aliens[j].cy, r_j))
+            {
+                // 2. 밀어낼 방향(벡터) 계산
+                float dx = aliens[i].cx - aliens[j].cx;
+                float dy = aliens[i].cy - aliens[j].cy;
+                float dist = sqrtf(dx * dx + dy * dy);
+
+                // 두 적이 완전히 겹쳐서 거리가 0인 경우 예외 처리 (나누기 0 방지)
+                if (dist == 0) {
+                    aliens[i].x += 1; // 강제로 살짝 떨어뜨림
+                    continue;
+                }
+
+                // 3. 겹친 정도(Overlap) 계산
+                // 두 반지름의 합에서 현재 거리를 뺀 만큼이 겹친 거리입니다.
+                float overlap = (r_i + r_j) - dist;
+
+                // 4. 방향 벡터 정규화 및 밀어내기 (0.5씩 공평하게)
+                float nx = dx / dist;
+                float ny = dy / dist;
+
+                float move_x = nx * overlap * 0.5f;
+                float move_y = ny * overlap * 0.5f;
+
+                aliens[i].x += move_x;
+                aliens[i].y += move_y;
+                aliens[j].x -= move_x;
+                aliens[j].y -= move_y;
+
+                // 5. 이동 후 중앙 좌표(cx, cy) 즉시 갱신 (다음 루프의 정확도를 위해)
+                aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
+                aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
+                aliens[j].cx = aliens[j].x + (ALIEN_W[aliens[j].type] / 2.0f);
+                aliens[j].cy = aliens[j].y + (ALIEN_H[aliens[j].type] / 2.0f);
+            }
+        }
     }
 }
