@@ -1,9 +1,4 @@
-/*
-텔레칩스 임베디드 스쿨 4기
-게임프로젝트
-팀원 : 박남현, 천원석, 신제현, 김병헌
-프로젝트 명 : Space Survivor
-*/
+
 
 /* --- header & addon --- */
 #include "Core.h"
