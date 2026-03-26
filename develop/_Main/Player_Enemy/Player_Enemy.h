@@ -71,6 +71,7 @@ typedef struct ALIEN
 #define ALIENS_N 16
 extern ALIEN aliens[ALIENS_N];
 
+void aliens_collide();
 void aliens_init();
 void aliens_update();   //»ý¼º
 void aliens_draw();

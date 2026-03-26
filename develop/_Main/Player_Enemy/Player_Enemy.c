@@ -175,10 +175,10 @@ void ship_init()
 {
     ship.x = (BUFFER_W / 2) - (SHIP_W / 2); //왼쪽 위를 가르킴
     ship.y = (BUFFER_H / 2) - (SHIP_H / 2);
-    ship.cx = ship.x + (SHIP_W / 2);
+    ship.cx = ship.x + (SHIP_W / 2);        // 배의 가운데 x좌표
     ship.cy = ship.y + (SHIP_H / 2);
     ship.shot_timer = 0;
-    ship.lives = 100;
+    ship.lives = 10;
     ship.respawn_timer = 0;
     ship.invincible_timer = 3;
 }
@@ -269,6 +269,11 @@ void aliens_init()
 {
     for (int i = 0; i < ALIENS_N; i++)
         aliens[i].used = false;
+}
+
+void aliens_colide()
+{
+
 }
 
 void aliens_update()
