@@ -6,6 +6,7 @@
 #include "../Sprites.h"
 #include "../Audio.h"
 #include "../Fx.h"
+#include "../Rank.h"
 
 /* --- shot --- */
 
@@ -272,6 +273,15 @@ void ship_update()
 {
     if (ship.lives < 0)
     {
+        
+        if (rank_count < RANK_QUEUE_SIZE || score > ranking[rank_count - 1].score)
+        {
+            current_state = STATE_INPUT_NAME;
+
+            // 이름 입력 변수 초기화 (중요!)
+            //name_len = 0;
+            player_name[0] = '\0';
+        }
         current_state = STATE_GAMEOVER;
         return;
 

@@ -1,5 +1,3 @@
-
-
 /* --- header & addon --- */
 #include "Core.h"
 #include "Keyboard.h"
@@ -11,6 +9,7 @@
 
 #include "Player_Enemy/Player_Enemy.h"
 #include "UI/UI.h"
+#include "Rank.h"
 
 // 작성자: 신제현
 // 레벨 업에 필요한 점수의 양
@@ -48,6 +47,12 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
     if (ay2 < by1) return false;
     return true;
 }
+
+/* --- Rank --- */ //0327 김병헌
+RANK ranking[RANK_QUEUE_SIZE]; // Rank.h의 extern 변수 실제 선언
+int rank_count = 0;
+char player_name[MAX_NAME_LEN] = "";
+extern int name_len = 0;
 
 // 작성자 : 박남현
 /* --- 원형 충돌 --- */
@@ -165,13 +170,25 @@ void game_state_update(STATE* state, bool* done)
 
 
     case STATE_RANK:
-    case STATE_INPUT_NAME:
         menu_input_update(1);
         if (is_select_pressed) {
             *state = STATE_MENU;
             current_menu_selection = 0;
         }
         break;
+
+    case STATE_INPUT_NAME:
+        menu_input_update(1); // "Save" 버튼 하나
+        if (is_select_pressed) {
+            if (name_len > 0) { // 이름이 한 글자라도 있을 때만
+                rank_add(player_name, score); // 여기서 실제 배열에 삽입 및 정렬
+                rank_save();                  // 파일에 기록
+                *state = STATE_RANK;          // 랭킹판으로 이동해서 내 점수 확인
+                current_menu_selection = 0;
+            }
+        }
+        break;
+
     case STATE_LEVEL_UP:        // 재작성자: 신제현
         menu_input_update(6);
         if (is_select_pressed)
@@ -209,6 +226,7 @@ void game_state_update(STATE* state, bool* done)
     }
 }
 
+
 /* --- Main --- */
 int main()
 {
@@ -244,6 +262,7 @@ int main()
     ship_init();
     aliens_init();
     stars_init();
+    rank_init();
 
     frames = 0;
     score = 0;
@@ -275,6 +294,19 @@ int main()
             redraw = true;
             ++frames;
             break;
+
+        case ALLEGRO_EVENT_KEY_CHAR: // 실시간 문자 입력 처리 : 김병헌
+            if (current_state == STATE_INPUT_NAME) {
+                if (event.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && name_len > 0) {
+                    player_name[--name_len] = '\0';
+                }
+                else if (event.keyboard.unichar >= 32 && event.keyboard.unichar <= 126 && name_len < MAX_NAME_LEN - 1) {
+                    player_name[name_len++] = (char)event.keyboard.unichar;
+                    player_name[name_len] = '\0';
+                }
+            }
+            break;
+
 
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             done = true;
