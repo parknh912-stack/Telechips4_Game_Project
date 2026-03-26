@@ -1,9 +1,9 @@
-#include "Core.h"
-#include "UI/UI.h"
-#include "Display.h"
-#include "Keyboard.h"
-#include "Sprites.h"
-#include "Player_Enemy/Player_Enemy.h"
+#include "../Core.h"
+#include "../UI/UI.h"
+#include "../Display.h"
+#include "../Keyboard.h"
+#include "../Sprites.h"
+#include "../Player_Enemy/Player_Enemy.h"
 
 // --- stars ---
 STAR stars[STARS_N];
@@ -96,6 +96,8 @@ void hud_draw()
 }
 
 // --- UI ---
+
+// ÀÛ¼ºÀÚ: ±èº´Çå
 ALLEGRO_BITMAP* ui_sheet = NULL;
 int current_menu_selection = 0;
 

@@ -21,6 +21,7 @@ float between_f(float lo, float hi);
 bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2);
 
 /* --- Gameplay --- */
+// 작성자: 김병헌
 typedef enum STATE {
     STATE_MENU,          // 0: 메인 메뉴
     STATE_PLAYING,       // 1: 게임 진행 중
@@ -31,6 +32,7 @@ typedef enum STATE {
     STATE_LEVEL_UP        // 6. 레벨 업햇을때 뜨는 창
 } STATE;
 
+// 작성자: 신제현
 extern STATE current_state;
 
 void game_state_update(STATE* state, bool* done);

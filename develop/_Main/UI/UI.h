@@ -3,8 +3,8 @@
 
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
-#include "Display.h"
-#include "Core.h"
+#include "../Display.h"
+#include "../Core.h"
 
 // --- UI 이미지 좌표 (uipack_rpg_sheet.xml 기준) ---
 #define UI_PANEL_BLUE_X 190
@@ -47,6 +47,7 @@ void hud_draw();
 extern ALLEGRO_BITMAP* ui_sheet;
 extern int current_menu_selection;
 
+// 작성자: 신제현
 typedef struct MENU {
     float x;
     float y;
@@ -57,6 +58,7 @@ typedef struct MENU {
     int selected;
 } MENU;
 
+// 작성자: 김병헌
 void ui_init();
 void ui_deinit();
 void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh);

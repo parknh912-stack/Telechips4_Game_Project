@@ -40,6 +40,7 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 }
 
 /* --- Gameplay --- */
+// 작성자: 신제현
 void pause_resume_game(STATE* state)
 {
     switch (*state)
@@ -56,6 +57,7 @@ void pause_resume_game(STATE* state)
     }
 }
 
+// 작성자: 신제현
 void game_state_update(STATE* state, bool* done)
 {
     bool is_select_pressed = (key[ALLEGRO_KEY_ENTER] & KEY_SEEN) || (key[ALLEGRO_KEY_SPACE] & KEY_SEEN);
@@ -178,9 +180,11 @@ int main()
         case ALLEGRO_EVENT_TIMER:
             game_state_update(&current_state, &done);
 
+            // 작성자: 신제현
             if (key[ALLEGRO_KEY_ESCAPE] & KEY_SEEN)
             {
-                if (current_state == STATE_PLAYING || current_state == STATE_PAUSE) {
+                if (current_state == STATE_PLAYING || current_state == STATE_PAUSE) 
+                {
                     pause_resume_game(&current_state);
                 }
             }
@@ -199,6 +203,7 @@ int main()
 
         keyboard_update(&event);
 
+        // 작성자: 김병헌
         if (redraw && al_is_event_queue_empty(queue))
         {
             disp_pre_draw();
