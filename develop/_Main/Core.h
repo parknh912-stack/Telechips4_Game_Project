@@ -38,6 +38,11 @@ typedef enum STATE {
     STATE_NEWGAME
 } STATE;
 
+typedef struct _RANK
+{
+    char
+}RANK;
+
 // 작성자: 신제현
 extern STATE current_state;
 
