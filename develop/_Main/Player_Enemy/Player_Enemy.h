@@ -93,6 +93,7 @@ typedef struct ALIEN
 #define ALIEN_LIFE_THICCBOI ALIEN_LIFE[2]
 #define ALIEN_LIFE_BOSS     ALIEN_LIFE[3]
 
+
 extern ALIEN aliens[ALIENS_N];
 extern const int ALIEN_LIFE[];
 extern const float ALIEN_SPEED[];
