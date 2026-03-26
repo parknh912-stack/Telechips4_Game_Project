@@ -9,44 +9,51 @@
 //고민해보겠습니다.
 RANK ranking[RANK_QUEUE_SIZE];
 
-void rank_init() {
+void rank_init() 
+{
     rank_count = 0;
-    for (int i = 0; i < RANK_QUEUE_SIZE; i++) {
+    for (int i = 0; i < RANK_QUEUE_SIZE; i++) 
+    {
         strcpy(ranking[i].username, "---");
         ranking[i].score = 0;
     }
 }
 
-void rank_add(const char* name, long new_score) {
+void rank_add(const char* name, long new_score) 
+{
     // 1. 큐가 가득 찼고, 마지막 점수보다 낮으면 무시
-    if (rank_count >= RANK_QUEUE_SIZE && new_score <= ranking[RANK_QUEUE_SIZE - 1].score) {
+    if (rank_count >= RANK_QUEUE_SIZE && new_score <= ranking[RANK_QUEUE_SIZE - 1].score) 
+    {
         return;
     }
 
     int i;
     // 2. 적절한 삽입 위치 찾기
     // 뒤에서부터 확인하며 새 점수보다 낮은 데이터들을 한 칸씩 뒤로 밀어냄
-    for (i = rank_count; i > 0; i--) {
-        if (new_score > ranking[i - 1].score) {
-            if (i < RANK_QUEUE_SIZE) {
+    for (i = rank_count; i > 0; i--) 
+    {
+        if (new_score > ranking[i - 1].score) 
+        {
+            if (i < RANK_QUEUE_SIZE) 
+            {
                 ranking[i] = ranking[i - 1];
             }
         }
-        else {
+        else 
+        {
             break;
         }
     }
 
     // 3. 찾은 위치 i에 데이터 삽입
-    if (i < RANK_QUEUE_SIZE) {
+    if (i < RANK_QUEUE_SIZE) 
+    {
         strncpy(ranking[i].username, name, MAX_NAME_LEN - 1);
         ranking[i].username[MAX_NAME_LEN - 1] = '\0';
         ranking[i].score = new_score;
 
         // 4. 데이터 개수 갱신
-        if (rank_count < RANK_QUEUE_SIZE) {
-            rank_count++;
-        }
+        if (rank_count < RANK_QUEUE_SIZE)rank_count++;
     }
 }
 

@@ -113,7 +113,6 @@ void game_state_update(STATE* state, bool* done)
         ship_update();
         aliens_update();
         hud_update();
-        printf("%c %d %d %d\n", 'k', frames, score, level);
         // 작성자: 신제현
         // 레벨 증가하는 점수에 따라 해당 조건 검사
         if (score >= level * LV_UP)
@@ -156,7 +155,6 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
-        printf("%d %d %d %d", 3, frames, score, level);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
                 *state = STATE_NEWGAME;
