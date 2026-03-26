@@ -479,6 +479,10 @@ void aliens_update()
                     aliens[i].life = 30;
                     aliens[i].speed = 0.5f;
                     break;
+                case ALIEN_TYPE_BOSS:
+                    aliens[i].life = 100;
+                    aliens[i].speed = 0.5f;
+                    break;
                 }
 
                 new_quota--;
