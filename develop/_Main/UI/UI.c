@@ -81,6 +81,15 @@ void hud_draw()
         score_display
     );
 
+    al_draw_textf(
+        font,
+        al_map_rgb_f(1, 1, 1),
+        1, 50,
+        0,
+        "Level: %02d",
+        level
+    );
+
     int spacing = LIFE_W + 1;
     for (int i = 0; i < ship.lives; i++)
         al_draw_bitmap(sprites.life, 1 + (i * spacing), 10, 0);
@@ -186,4 +195,20 @@ void ui_draw_rank_menu() {
 void ui_draw_input_name_menu() {
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 150, {"Save"}, 1, current_menu_selection };
     draw_menu_ui(&m, "NEW HIGH SCORE!");
+}
+
+// 작성자: 신제현
+void ui_draw_level_up_menu()
+{
+    MENU m = {
+        BUFFER_W / 2,
+        BUFFER_H / 2,
+        200,
+        400,
+        { "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"},
+        6,
+        current_menu_selection
+    };
+
+    draw_menu_ui(&m, "LEVEL UP!!!");
 }

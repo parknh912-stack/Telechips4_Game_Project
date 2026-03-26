@@ -12,6 +12,10 @@
 #include "Player_Enemy/Player_Enemy.h"
 #include "UI/UI.h"
 
+// 작성자: 신제현
+// 레벨 업에 필요한 점수의 양
+#define LV_UP           (1000)
+
 /* --- General --- */
 
 long frames;
@@ -71,8 +75,6 @@ void pause_resume_game(STATE* state)
     case STATE_PAUSE:
         *state = STATE_PLAYING;
         break;
-    default:
-        break;
     }
 }
 
@@ -106,6 +108,16 @@ void game_state_update(STATE* state, bool* done)
         ship_update();
         aliens_update();
         hud_update();
+
+        // 작성자: 신제현
+        // 레벨 증가하는 점수에 따라 해당 조건 검사
+        if (score >= level * LV_UP)
+        {
+            *state = STATE_LEVEL_UP;
+            current_menu_selection = 0;
+            ++level;
+        }
+
         break;
 
     case STATE_PAUSE:
@@ -139,6 +151,40 @@ void game_state_update(STATE* state, bool* done)
         menu_input_update(1);
         if (is_select_pressed) {
             *state = STATE_MENU;
+            current_menu_selection = 0;
+        }
+        break;
+    case STATE_LEVEL_UP:        // 재작성자: 신제현
+        menu_input_update(6);
+        if (is_select_pressed)
+        {
+            *state = STATE_LEVEL_UP;
+            
+            switch (current_menu_selection)
+            {
+            case 0:
+                // 공격력 증가 적용
+             
+                break;
+            case 1:
+                // 투사체 발사 수 증가
+                break;
+            case 2:
+                // 공격 속도 증가
+                break;
+            case 3:
+                // 이동 속도 증가
+                break;
+            case 4:
+                // 체력 최대치 증가
+                ship.lives *= 1.1;
+                break;
+            case 5:
+                // 체력 지속 회복 
+                break;
+            }
+
+            *state = STATE_PLAYING;
             current_menu_selection = 0;
         }
         break;
@@ -255,6 +301,8 @@ int main()
                 break;
 
             case STATE_GAMEOVER:
+                level = 0;
+                score = 0;
                 ui_draw_gameover_menu();
                 break;
 
@@ -264,6 +312,16 @@ int main()
 
             case STATE_INPUT_NAME:
                 ui_draw_input_name_menu();
+                break;
+
+            case STATE_LEVEL_UP:
+                aliens_draw();
+                shots_draw();
+                fx_draw();
+                ship_draw();
+                hud_draw();
+                al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
+                ui_draw_level_up_menu();
                 break;
             }
 
