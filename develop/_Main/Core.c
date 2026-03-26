@@ -137,7 +137,7 @@ void game_state_update(STATE* state, bool* done)
         menu_input_update(2);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
-                *state = STATE_PLAYING;
+                *state = STATE_NEWGAME;
             }
             else if (current_menu_selection == 1) {
                 *state = STATE_MENU;
@@ -145,6 +145,21 @@ void game_state_update(STATE* state, bool* done)
             }
         }
         break;
+
+    case STATE_NEWGAME:
+        frames = 0;
+        score = 0;
+        level = 0;
+        hud_init();
+        keyboard_init();
+        fx_init();
+        ship_init();
+        aliens_init();
+        stars_init();
+        shots_init();
+        current_state = STATE_PLAYING;
+        break;
+
 
     case STATE_RANK:
     case STATE_INPUT_NAME:
