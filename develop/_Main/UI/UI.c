@@ -183,7 +183,7 @@ void ui_draw_pause_menu() {
 }
 
 void ui_draw_gameover_menu() {
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 200, {"Restart", "Main Menu"}, 2, current_menu_selection };
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Restart", "Ranking","Main Menu"}, 3, current_menu_selection };
     draw_menu_ui(&m, "GAME OVER");
 }
 

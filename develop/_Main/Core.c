@@ -134,12 +134,15 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
-        menu_input_update(2);
+        menu_input_update(3);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
                 *state = STATE_NEWGAME;
             }
             else if (current_menu_selection == 1) {
+                *state = STATE_RANK;
+            }
+            else if (current_menu_selection == 2) {
                 *state = STATE_MENU;
                 current_menu_selection = 0;
             }
