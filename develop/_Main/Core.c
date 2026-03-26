@@ -16,10 +16,10 @@
 #define LV_UP           (1000)
 
 /* --- General --- */
-
-long frames;
-long score;
+long frames = 0;
+long score = 0;
 int level = 1;
+
 STATE current_state = STATE_MENU;
 
 void must_init(bool test, const char* description)
@@ -113,7 +113,7 @@ void game_state_update(STATE* state, bool* done)
         ship_update();
         aliens_update();
         hud_update();
-
+        printf("%c %d %d %d\n", 'k', frames, score, level);
         // 작성자: 신제현
         // 레벨 증가하는 점수에 따라 해당 조건 검사
         if (score >= level * LV_UP)
@@ -121,6 +121,23 @@ void game_state_update(STATE* state, bool* done)
             *state = STATE_LEVEL_UP;
             current_menu_selection = 0;
             ++level;
+        }
+        //0327 김병헌
+        if (ship.lives < 0)
+        {
+            // 랭킹 진입 가능 여부 체크
+            if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
+            {
+                *state = STATE_INPUT_NAME; // 랭킹권이면 이름 입력으로
+                name_len = 0;
+                player_name[0] = '\0';
+            }
+            else
+            {
+                *state = STATE_GAMEOVER;   // 아니면 그냥 게임오버로
+            }
+            current_menu_selection = 0;
+            return; // 상태가 바뀌었으므로 즉시 빠져나감
         }
 
         break;
@@ -139,7 +156,7 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
-        menu_input_update(3);
+        printf("%d %d %d %d", 3, frames, score, level);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
                 *state = STATE_NEWGAME;
@@ -157,15 +174,17 @@ void game_state_update(STATE* state, bool* done)
     case STATE_NEWGAME:
         frames = 0;
         score = 0;
-        level = 0;
+        level = 1;
+        score_display = 0;
+        ship_init();
         hud_init();
         keyboard_init();
         fx_init();
-        ship_init();
         aliens_init();
         stars_init();
         shots_init();
         current_state = STATE_PLAYING;
+        return;
         break;
 
 
@@ -178,12 +197,12 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_INPUT_NAME:
-        menu_input_update(1); // "Save" 버튼 하나
+        menu_input_update(1); // "Save" 버튼
         if (is_select_pressed) {
             if (name_len > 0) { // 이름이 한 글자라도 있을 때만
-                rank_add(player_name, score); // 여기서 실제 배열에 삽입 및 정렬
+                rank_add(player_name, score); // 우선순위 큐
                 rank_save();                  // 파일에 기록
-                *state = STATE_RANK;          // 랭킹판으로 이동해서 내 점수 확인
+                *state = STATE_RANK;          // 랭킹판으로 이동해서 점수 확인
                 current_menu_selection = 0;
             }
         }

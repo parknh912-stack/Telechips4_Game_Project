@@ -262,8 +262,8 @@ void ship_init()
     ship.shot_timer = 60;
     ship.damage = 20;
     ship.shot_count = 1;
-    ship.max_lives = 100;
-    ship.lives = 100;
+    ship.max_lives = 1;
+    ship.lives = 1;
 
     ship.respawn_timer = 0;
     ship.invincible_timer = 3;
@@ -271,21 +271,15 @@ void ship_init()
 
 void ship_update()
 {
+    //김병헌 : ship_init()을 추가했습니다. 이유는 현재 저희 겜 점수랑 레벨이 현재 껨 끝난 다음에 초기화가 안되서요.
     if (ship.lives < 0)
     {
-        
-        if (rank_count < RANK_QUEUE_SIZE || score > ranking[rank_count - 1].score)
-        {
-            current_state = STATE_INPUT_NAME;
-
-            // 이름 입력 변수 초기화 (중요!)
-            //name_len = 0;
-            player_name[0] = '\0';
-        }
-        current_state = STATE_GAMEOVER;
+        current_state = STATE_NEWGAME;
+        ship_init();
         return;
-
     }
+
+   
 
     if (ship.respawn_timer)
     {

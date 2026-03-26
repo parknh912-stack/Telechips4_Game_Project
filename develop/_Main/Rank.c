@@ -2,7 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "Rank.h"
-
+//아니 병헌님 힙정렬 쓰신다매요?? -> 애초에 힙이 아닙니다.
+//저희가 노트북 켜고 게임 100판 돌릴까요?? 솔직히 아닐거 같습니다.
+//지피티햄이 "작은 고정 크기 랭킹" 정렬에는 삽입이 와따라네요. 그래서 그냥 삽입정렬을 썻습니다.
+//강사님께서 만약 "너네 그러지 말고 오락실 기계용 게임을 만들어라" <- 라고 하시면 저희가 배웠던 힙정렬을 써야 할것 같긴 한데...
+//고민해보겠습니다.
 RANK ranking[RANK_QUEUE_SIZE];
 
 void rank_init() {
@@ -20,11 +24,10 @@ void rank_add(const char* name, long new_score) {
     }
 
     int i;
-    // 2. 적절한 삽입 위치 찾기 (우선순위 큐의 핵심)
-    // 뒤에서부터 확인하며 새 점수보다 낮은 데이터들을 한 칸씩 뒤로 밀어냅니다.
+    // 2. 적절한 삽입 위치 찾기
+    // 뒤에서부터 확인하며 새 점수보다 낮은 데이터들을 한 칸씩 뒤로 밀어냄
     for (i = rank_count; i > 0; i--) {
         if (new_score > ranking[i - 1].score) {
-            // 큐 사이즈를 넘지 않도록 안전하게 한 칸씩 밀기
             if (i < RANK_QUEUE_SIZE) {
                 ranking[i] = ranking[i - 1];
             }
