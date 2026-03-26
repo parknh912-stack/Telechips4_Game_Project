@@ -2,12 +2,12 @@
 #define _PLAYER_ENEMY_H_
 
 /* --- shot --- */
-
+// 작성자 : 박남현
 typedef struct SHOT
 {
     float x, y, dx, dy;
+    float speed;        //shot의 이동 속도
     int frame;
-    float speed;
     bool ship;
     bool used;
 } SHOT;
@@ -16,21 +16,21 @@ typedef struct SHOT
 
 extern SHOT shots[SHOTS_N];
 void shots_init();
-bool shots_add(bool ship, bool straight, int x, int y);
+bool shots_add(bool is_ship, bool straight, float x, float y);
 void shots_update();
-bool shots_collide(bool ship, int x, int y, int w, int h);
+bool shots_collide(bool ship, float cx, float cy, float w, float h);
 void shots_draw();
 
-int get_closet_enemy();
-
-
+// 작성자 : 박남현
+int get_closet_enemy();     //최단거리 적 idx 반환하는 함수
 
 /* --- Player --- */
 
-#define SHIP_SPEED 3
+//#define SHIP_SPEED 3 삭제
 #define SHIP_MAX_X (BUFFER_W - SHIP_W)
 #define SHIP_MAX_Y (BUFFER_H - SHIP_H)
 
+// 작성자 : 박남현
 typedef struct SHIP
 {
     /* 좌표 */
@@ -57,9 +57,6 @@ void ship_update();
 void ship_draw();
 
 
-
-
-
 /* --- Enemy --- */
 
 typedef enum ALIEN_TYPE
@@ -71,6 +68,7 @@ typedef enum ALIEN_TYPE
     ALIEN_TYPE_N
 } ALIEN_TYPE;
 
+// 작성자 : 박남현
 typedef struct ALIEN
 {
     /* 좌표 */
@@ -88,12 +86,12 @@ typedef struct ALIEN
     bool used;
 } ALIEN;
 
-#define ALIENS_N 5  //나오는 적 숫자
+#define ALIENS_N 16  //나오는 적 숫자
 
-#define ALIEN_LIFE_BUG  ALIEN_LIFE[0]
-#define ALIEN_LIFE_BUG  ALIEN_LIFE[0]
-#define ALIEN_LIFE_BUG  ALIEN_LIFE[0]
-#define ALIEN_LIFE_BUG  ALIEN_LIFE[0]
+#define ALIEN_LIFE_BUG      ALIEN_LIFE[0]
+#define ALIEN_LIFE_ARROW    ALIEN_LIFE[1]
+#define ALIEN_LIFE_THICCBOI ALIEN_LIFE[2]
+#define ALIEN_LIFE_BOSS     ALIEN_LIFE[3]
 
 extern ALIEN aliens[ALIENS_N];
 extern const int ALIEN_LIFE[];

@@ -49,6 +49,7 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
     return true;
 }
 
+// 작성자 : 박남현
 /* --- 원형 충돌 --- */
 bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
     long dx = cx2 - cx1;
