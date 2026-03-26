@@ -5,15 +5,18 @@
 
 #define SHIP_W 32
 #define SHIP_H 32
+#define SHIP_R 20
 
 #define SHIP_SHOT_W 9
 #define SHIP_SHOT_H 9
+#define SHIP_SHOT_R 5
 
 #define LIFE_W 6
 #define LIFE_H 6
 
 extern const int ALIEN_W[];
 extern const int ALIEN_H[];
+extern const int ALIEN_R[];
 
 #define ALIEN_BUG_W      ALIEN_W[0]
 #define ALIEN_BUG_H      ALIEN_H[0]
@@ -26,6 +29,7 @@ extern const int ALIEN_H[];
 
 #define ALIEN_SHOT_W 9
 #define ALIEN_SHOT_H 9
+#define ALIEN_SHOT_R 5
 
 #define EXPLOSION_FRAMES 4
 #define SPARKS_FRAMES    3

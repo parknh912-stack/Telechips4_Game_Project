@@ -67,6 +67,8 @@ bool shots_add(bool is_ship, bool straight, float x, float y)
             {
                 float angle = atan2f(ship.cy - y, ship.cx - x);
                 shots[i].speed = 3.0f;
+
+
                 shots[i].dx = cos(angle) * shots[i].speed;
                 shots[i].dy = sin(angle) * shots[i].speed;
             }
@@ -175,7 +177,7 @@ bool shots_collide(bool ship, float cx, float cy, float w, float h)
             sh = ALIEN_SHOT_H;
             // 작성자 : 박남현
             /* 적 -> 아군인 경우는 원형 충돌 */
-            if (collide_circle(cx, cy, 20, shots[i].x, shots[i].y, 5))
+            if (collide_circle(cx, cy, SHIP_R, shots[i].x, shots[i].y, ALIEN_SHOT_R))
             {
                 fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
                 shots[i].used = false;
@@ -256,30 +258,23 @@ void ship_init()
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
 
-    ship.speed = 3.0f;
-    ship.fire_rate = 1.0f;
-    ship.shot_timer = 60;
-    ship.damage = 20;
-    ship.shot_count = 1;
-    ship.max_lives = 100;
-    ship.lives = 100;
+    ship.speed = 3.0f;          //이동속도, 수정가능
+    ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
+    ship.shot_timer = 60;       //shot_timer
+    ship.damage = 10;           //데미지, int      (수정가능)
+    ship.shot_count = 1;        //투사체 수
+    ship.max_lifes = 100;       //최대 체력
+    ship.curr_lifes = 100;      //현재 체력
 
-    ship.respawn_timer = 0;
-    ship.invincible_timer = 3;
+
+    ship.invincible_timer = 3;  //무적시간
 }
 
 void ship_update()
 {
-    if (ship.lives < 0)
+    if (ship.curr_lifes < 0)
     {
         current_state = STATE_GAMEOVER;
-        return;
-
-    }
-
-    if (ship.respawn_timer)
-    {
-        ship.respawn_timer--;
         return;
     }
 
@@ -309,7 +304,6 @@ void ship_update()
         ship.invincible_timer--;
     else
     {
-        //if (shots_collide(true, ship.x, ship.y, SHIP_W, SHIP_H))
         if (shots_collide(true, ship.cx, ship.cy, SHIP_W, SHIP_H))
         {
             fx_add(false, ship.cx, ship.cy);
@@ -317,13 +311,20 @@ void ship_update()
             fx_add(false, ship.cx - 2, ship.cy - 4);
             fx_add(false, ship.cx + 1, ship.cy - 5);
 
-            ship.lives--;
-            ship.respawn_timer = 3;
-            ship.invincible_timer = 0;
+            ship.curr_lifes--;
+            ship.invincible_timer = 3;
         }
 
         /* 적과 직접 충돌 시에도 */
-        //if()
+        if (ship_collide(ship.cx, ship.cy, SHIP_W, SHIP_H))
+        {
+            //fx_add(false, ship.cx, ship.cy);
+            //fx_add(false, ship.cx + 4, ship.cy + 2);
+            //fx_add(false, ship.cx - 2, ship.cy - 4);
+            //fx_add(false, ship.cx + 1, ship.cy - 5);
+            ship.curr_lifes--;
+            ship.invincible_timer = 3;
+        }
     }
 
     //if (ship.shot_timer)
@@ -339,17 +340,19 @@ void ship_update()
     if (ship.shot_timer)
         ship.shot_timer--;
     if (ship.shot_timer == 0) {
-        shots_add(true, false, ship.cx, ship.cy);
-        ship.shot_timer = 60;
+        for (int i = 1; i < ship.shot_count; ++i) 
+        {
+            shots_add(true, false, ship.cx, ship.cy);
+
+        }
+        ship.shot_timer = 60.0 / ship.fire_rate;
     }
 
 }
 
 void ship_draw()
 {
-    if (ship.lives < 0)
-        return;
-    if (ship.respawn_timer)
+    if (ship.curr_lifes < 0)
         return;
     if (((ship.invincible_timer / 2) % 3) == 1)
         return;
@@ -365,9 +368,17 @@ void ship_draw()
     //al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
 }
 
-//bool ship_collide(bool ship, int x, int y, int w, int h) {
-//
-//}
+bool ship_collide(int cx, int cy, int w, int h)
+{
+    for (int i = 0; i < ALIENS_N; ++i)
+    {
+        if (collide_circle(cx, cy, SHIP_R, aliens[i].cx, aliens[i].cy, ALIEN_R[aliens[i].type]))
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 /* --- Enemy --- */
 
@@ -453,19 +464,19 @@ void aliens_update()
                 switch (aliens[i].type)
                 {
                 case ALIEN_TYPE_BUG:
-                    aliens[i].life = 4;
+                    aliens[i].life = 10;
                     aliens[i].speed = 1.5f;
                     break;
                 case ALIEN_TYPE_ARROW:
-                    aliens[i].life = 2;
+                    aliens[i].life = 10;
                     aliens[i].speed = 2.0f;
                     break;
                 case ALIEN_TYPE_THICCBOI:
-                    aliens[i].life = 12;
+                    aliens[i].life = 20;
                     aliens[i].speed = 0.9f;
                     break;
                 case ALIEN_TYPE_BOSS:
-                    aliens[i].life = 100;
+                    aliens[i].life = 30;
                     aliens[i].speed = 0.5f;
                     break;
                 }
@@ -497,7 +508,11 @@ void aliens_update()
             aliens_move(i, aliens[i].speed);
         }
 
-        if (aliens[i].y >= BUFFER_H + 100)
+        /* 화면 범위 밖으로 나갈시, 제거*/
+        if (aliens[i].x > BUFFER_W + 100 ||
+            aliens[i].x < -100 ||
+            aliens[i].y > BUFFER_H + 100 ||
+            aliens[i].y < -100)
         {
             aliens[i].used = false;
             continue;

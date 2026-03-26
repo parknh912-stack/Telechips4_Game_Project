@@ -12,7 +12,7 @@ typedef struct SHOT
     bool used;
 } SHOT;
 
-#define SHOTS_N 128
+#define SHOTS_N 256
 
 extern SHOT shots[SHOTS_N];
 void shots_init();
@@ -44,10 +44,9 @@ typedef struct SHIP
 
     int damage;         //데미지
     int shot_count;     //투사체 갯수
-    int max_lives;      //최대 체력
-    int lives;          //현재 체력
+    int max_lifes;      //최대 체력
+    int curr_lifes;     //현재 체력
 
-    int respawn_timer;  //나중에 제거 예정
     int invincible_timer;   //무적시간 (배리어 용)
 } SHIP;
 extern SHIP ship;
@@ -55,6 +54,7 @@ extern SHIP ship;
 void ship_init();
 void ship_update();
 void ship_draw();
+bool ship_collide(int cx, int cy, int w, int h);
 
 
 /* --- Enemy --- */

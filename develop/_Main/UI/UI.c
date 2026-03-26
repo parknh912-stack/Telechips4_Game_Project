@@ -82,10 +82,10 @@ void hud_draw()
     );
 
     int spacing = LIFE_W + 1;
-    for (int i = 0; i < ship.lives; i++)
+    for (int i = 0; i < ship.curr_lifes; i++)
         al_draw_bitmap(sprites.life, 1 + (i * spacing), 10, 0);
 
-    if (ship.lives < 0)
+    if (ship.curr_lifes < 0)
         al_draw_text(
             font,
             al_map_rgb_f(1, 1, 1),

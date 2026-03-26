@@ -6,7 +6,7 @@
 
 const int ALIEN_W[] = { 50, 36, 45, 101 };
 const int ALIEN_H[] = { 42, 20, 27, 84 };
-
+const int ALIEN_R[] = { 21, 10, 15, 40 };
 SPRITES sprites;
 
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h)
