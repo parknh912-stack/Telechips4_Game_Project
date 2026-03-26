@@ -109,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\한국전파진흥협회\source\repos\Telechips4_Game_Project\develop\_Main</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +139,7 @@
   <ItemGroup>
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
+    <Image Include="ui_sheet.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c" />

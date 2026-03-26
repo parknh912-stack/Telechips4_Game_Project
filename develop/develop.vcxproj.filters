@@ -33,6 +33,9 @@
     <Image Include="spritesheet.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="ui_sheet.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c">
