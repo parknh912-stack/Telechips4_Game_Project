@@ -4,8 +4,8 @@
 /* --- Sprites --- */
 
 
-const int ALIEN_W[] = { 50, 13, 45 };
-const int ALIEN_H[] = { 42, 10, 27 };
+const int ALIEN_W[] = { 50, 36, 45, 101 };
+const int ALIEN_H[] = { 42, 20, 27, 84 };
 
 SPRITES sprites;
 
@@ -31,8 +31,14 @@ void sprites_init()
     sprites.alien[0] = sprite_grab(224, 748, 101, 84); //"meteorGrey_big1.png" x = "224" y = "748" width = "101" height = "84" / >
     sprites.alien[1] = sprite_grab(19, 10, ALIEN_ARROW_W, ALIEN_ARROW_H);
     sprites.alien[2] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
+    sprites.alien[3] = sprite_grab(224, 748, 101, 84);
+    sprites.alien[4] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
+    sprites.alien[5] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
 
-    sprites.alien_shot = sprite_grab(13, 10, ALIEN_SHOT_W, ALIEN_SHOT_H);
+
+
+
+	sprites.alien_shot = sprite_grab(310, 982, 41, 41); //"turretBase_big.png" x="310" y="982" width="41" height="41"/>
 
     sprites.explosion[0] = sprite_grab(33, 10, 9, 9);
     sprites.explosion[1] = sprite_grab(43, 9, 11, 11);
