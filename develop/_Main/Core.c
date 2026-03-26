@@ -147,6 +147,42 @@ void game_state_update(STATE* state, bool* done)
             current_menu_selection = 0;
         }
         break;
+    case STATE_LEVEL_UP:        // 재작성자: 신제현
+        menu_input_update(6);
+        if (is_select_pressed)
+        {
+            *state = STATE_LEVEL_UP;
+            
+            switch (current_menu_selection)
+            {
+            case 0:
+                // 공격력 증가 적용
+                
+                break;
+            case 1:
+                // 투사체 발사 수 증가
+                break;
+            case 2:
+                // 공격 속도 증가
+                break;
+            case 3:
+                // 이동 속도 증가
+                break;
+            case 4:
+                // 체력 최대치 증가
+                ship.lives *= 1.1;
+                break;
+            case 5:
+                // 체력 지속 회복 
+                break;
+            }
+
+            *state = STATE_PLAYING;
+            current_menu_selection = 0;
+        }
+        break;
+    case STATE_GAME_START:
+
     }
 }
 
