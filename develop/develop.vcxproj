@@ -138,6 +138,7 @@
   <ItemGroup>
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
+    <Image Include="ui_sheet.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c" />

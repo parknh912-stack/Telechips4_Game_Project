@@ -13,16 +13,7 @@
 /* --- General --- */
 extern long frames;
 extern long score;
-extern int level;			// 레벨을 관리하는 변수 추가
-
-typedef enum STATE {
-    STATE_MENU,          // 0: 게임 시작 전 메인 메뉴 화면 상태
-    STATE_PLAYING,       // 1: 실제 게임이 진행 중인 상태
-    STATE_PAUSE,         // 2: 게임 플레이 중 ESC 키를 눌러 일시정지된 상태
-    STATE_INPUT_NAME,    // 3: 게임 오버 후 신기록 달성 시 이름을 입력받는 화면 상태
-    STATE_GAMEOVER,      // 4: 게임 오버 후 재시작, 랭킹, 메뉴로 갈지 선택하는 화면 상태
-    STATE_RANK           // 5: 현재 저장된 랭킹 목록을 보여주는 화면 상태
-} STATE;
+extern int level;
 
 void must_init(bool test, const char* description);
 int between(int lo, int hi);
@@ -30,8 +21,18 @@ float between_f(float lo, float hi);
 bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2);
 
 /* --- Gameplay --- */
-void game_state_update(void* paused);
-void pause_resume_game(void* paused, void* frames);
+typedef enum STATE {
+    STATE_MENU,          // 0: 메인 메뉴
+    STATE_PLAYING,       // 1: 게임 진행 중
+    STATE_PAUSE,         // 2: 일시정지
+    STATE_INPUT_NAME,    // 3: 신기록 이름 입력
+    STATE_GAMEOVER,      // 4: 게임 오버
+    STATE_RANK           // 5: 랭킹 확인
+} STATE;
+
+extern STATE current_state;
+
+void game_state_update(STATE* state, bool* done);
+void pause_resume_game(STATE* state);
 
 #endif // !_CORE_H_
-

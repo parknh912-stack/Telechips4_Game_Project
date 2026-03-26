@@ -1,32 +1,21 @@
-/*
-텔레칩스 임베디드 스쿨 4기
-게임프로젝트
-팀원 : 박남현, 천원석, 신제현, 김병헌
-프로젝트 명 : Space Survivor
-*/
-
-/* --- header & addon --- */
 #include "Core.h"
 #include "Keyboard.h"
 #include "Sprites.h"
 #include "Display.h"
-//include stddd
 #include "Audio.h"
 #include "Fx.h"
-
 #include "Player_Enemy/Player_Enemy.h"
-#include "UI/UI.h"
-/* --- General --- */
+#include "UI.h"
 
+/* --- General --- */
 long frames;
 long score;
-
-STATE game_state = STATE_MENU; // 게임이 처음 실행될 때의 초기 상태를 메인 메뉴로 설정합니다.
+int level = 1;
+STATE current_state = STATE_MENU;
 
 void must_init(bool test, const char* description)
 {
     if (test) return;
-
     printf("couldn't initialize %s\n", description);
     exit(1);
 }
@@ -47,44 +36,95 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
     if (ax2 < bx1) return false;
     if (ay1 > by2) return false;
     if (ay2 < by1) return false;
-
     return true;
 }
 
 /* --- Gameplay --- */
-
-// pause_resume_game(): 게임 진행 상황을 일시 정지(pause) / 게임 재개(resume) 상태로 전환하는 함수
-void pause_resume_game(void* paused, void* frames)
+void pause_resume_game(STATE* state)
 {
-    *(bool*)paused = !(*(bool*)paused);     // pause의 값을 반전 (toggle: pause - resume)
-    ++(*(long long*)frames);                // frame을 하나 증가    
+    switch (*state)
+    {
+    case STATE_PLAYING:
+        *state = STATE_PAUSE;
+        current_menu_selection = 0;
+        break;
+    case STATE_PAUSE:
+        *state = STATE_PLAYING;
+        break;
+    default:
+        break;
+    }
 }
 
-// game_state_update(): fx, shot, star, ship, alien, hud 등의 가장 최근 상황을 업데이트 하고자할 때 사용하는 함수
-void game_state_update(void* paused)
+void game_state_update(STATE* state, bool* done)
 {
-    bool check = *(bool*)paused;
+    bool is_select_pressed = (key[ALLEGRO_KEY_ENTER] & KEY_SEEN) || (key[ALLEGRO_KEY_SPACE] & KEY_SEEN);
 
-    if (check == false)
+    switch (*state)
     {
+    case STATE_MENU:
+        menu_input_update(3);
+        if (is_select_pressed) {
+            if (current_menu_selection == 0) {
+                *state = STATE_PLAYING;
+            }
+            else if (current_menu_selection == 1) {
+                *state = STATE_RANK;
+                current_menu_selection = 0;
+            }
+            else if (current_menu_selection == 2) {
+                *done = true;
+            }
+        }
+        break;
+
+    case STATE_PLAYING:
         fx_update();
         shots_update();
         stars_update();
         ship_update();
         aliens_update();
         hud_update();
+        break;
+
+    case STATE_PAUSE:
+        menu_input_update(2);
+        if (is_select_pressed) {
+            if (current_menu_selection == 0) {
+                *state = STATE_PLAYING;
+            }
+            else if (current_menu_selection == 1) {
+                *state = STATE_MENU;
+                current_menu_selection = 0;
+            }
+        }
+        break;
+
+    case STATE_GAMEOVER:
+        menu_input_update(2);
+        if (is_select_pressed) {
+            if (current_menu_selection == 0) {
+                *state = STATE_PLAYING;
+            }
+            else if (current_menu_selection == 1) {
+                *state = STATE_MENU;
+                current_menu_selection = 0;
+            }
+        }
+        break;
+
+    case STATE_RANK:
+    case STATE_INPUT_NAME:
+        menu_input_update(1);
+        if (is_select_pressed) {
+            *state = STATE_MENU;
+            current_menu_selection = 0;
+        }
+        break;
     }
 }
 
-// level_up(): 특정 점수 구간에 도달했을 때 캐릭터의 레벨을 올려주는 함수 ==> 구현 중
-void level_up(void)
-{
-    ;
-}
-
-
 /* --- Main --- */
-
 int main()
 {
     must_init(al_init(), "allegro");
@@ -97,16 +137,14 @@ int main()
     must_init(queue, "queue");
 
     disp_init();
-
     audio_init();
 
     must_init(al_init_image_addon(), "image");
     sprites_init();
-
+    ui_init(); // UI 시트 로드
     hud_init();
 
     must_init(al_init_primitives_addon(), "primitives");
-
     must_init(al_install_audio(), "audio");
     must_init(al_init_acodec_addon(), "audio codecs");
     must_init(al_reserve_samples(16), "reserve samples");
@@ -127,9 +165,6 @@ int main()
 
     bool done = false;
     bool redraw = true;
-    // ====================
-    bool paused = false;        // 게임 진행 상황 일시정지/재개 여부 확인하는 변수
-    // ====================
     ALLEGRO_EVENT event;
 
     al_start_timer(timer);
@@ -141,19 +176,17 @@ int main()
         switch (event.type)
         {
         case ALLEGRO_EVENT_TIMER:
-            // ====================
-            game_state_update(&paused);
+            game_state_update(&current_state, &done);
 
             if (key[ALLEGRO_KEY_ESCAPE] & KEY_SEEN)
             {
-                pause_resume_game(&paused, &frames);
+                if (current_state == STATE_PLAYING || current_state == STATE_PAUSE) {
+                    pause_resume_game(&current_state);
+                }
             }
 
-            // ====================
-
-
             redraw = true;
-            frames++;
+            ++frames;
             break;
 
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
@@ -172,18 +205,50 @@ int main()
             al_clear_to_color(al_map_rgb(0, 0, 0));
 
             stars_draw();
-            aliens_draw();
-            shots_draw();
-            fx_draw();
-            ship_draw();
 
-            hud_draw();
+            switch (current_state)
+            {
+            case STATE_PLAYING:
+                aliens_draw();
+                shots_draw();
+                fx_draw();
+                ship_draw();
+                hud_draw();
+                break;
+
+            case STATE_PAUSE:
+                aliens_draw();
+                shots_draw();
+                fx_draw();
+                ship_draw();
+                hud_draw();
+                al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
+                ui_draw_pause_menu();
+                break;
+
+            case STATE_MENU:
+                ui_draw_main_menu();
+                break;
+
+            case STATE_GAMEOVER:
+                ui_draw_gameover_menu();
+                break;
+
+            case STATE_RANK:
+                ui_draw_rank_menu();
+                break;
+
+            case STATE_INPUT_NAME:
+                ui_draw_input_name_menu();
+                break;
+            }
 
             disp_post_draw();
             redraw = false;
         }
     }
 
+    ui_deinit();
     sprites_deinit();
     hud_deinit();
     audio_deinit();
