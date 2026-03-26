@@ -31,36 +31,17 @@ void hud_draw();
 
 /* --- UI --- */
 
-#define WINDOW_W    (100)
-#define WINDOW_H    (100)
+#define MENU_CHOICE_MAX     (2)
 
-typedef struct ui
+typedef struct pause_menu
 {
-    // 체력 바 계열
-    ALLEGRO_BITMAP* bar_left;
-    ALLEGRO_BITMAP* bar_mid;
-    ALLEGRO_BITMAP* bar_right;
-    ALLEGRO_BITMAP* bar_max;
-
-    // 버튼 계열
-    ALLEGRO_BITMAP* rect_button;
-
-    // 커서 계열
-    ALLEGRO_BITMAP* cursor;
-
-    // 윈도우 계열
-    ALLEGRO_BITMAP* window;
-} UI;
-
-typedef struct _window
-{
-    UI ui;
-    int x, y;
-    int cx, cy;
-} WINDOW;
-
-void ui_draw(void);
-void ui_init(void);
-void ui_deinit(void);
+    char* choice[MENU_CHOICE_MAX];        // 메뉴 항목 문자열
+    int choice_count;                     // 실제 항목 개수
+    int selected;                         // 현재 커서 위치
+    int x, y;                             // 메뉴를 그릴 기준 좌표
+    bool activated;                       // 메뉴 활성화 여부
+    ALLEGRO_COLOR color_selected;        // 선택된 항목 색상
+    int choice_spacing;                   // 항목 간 간격
+} PAUSE_MENU;
 
 #endif

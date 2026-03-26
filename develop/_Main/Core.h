@@ -30,8 +30,8 @@ typedef enum STATE {
     STATE_RANK           // 5: 현재 저장된 랭킹 목록을 보여주는 화면 상태
 } STATE;
 
-void game_state_update(void* paused);
-void pause_resume_game(void* paused, void* frames, STATE state);
+void game_state_update(STATE* state);
+void pause_resume_game(STATE* state);
 
 #endif // !_CORE_H_
 

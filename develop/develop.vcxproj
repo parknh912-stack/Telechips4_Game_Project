@@ -136,6 +136,11 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\bar_square_small.png" />
+    <Image Include="..\..\..\..\Desktop\bar_square_small_l.png" />
+    <Image Include="..\..\..\..\Desktop\bar_square_small_m.png" />
+    <Image Include="..\..\..\..\Desktop\bar_square_small_r.png" />
+    <Image Include="..\..\..\..\Desktop\cursor_g.png" />
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
   </ItemGroup>

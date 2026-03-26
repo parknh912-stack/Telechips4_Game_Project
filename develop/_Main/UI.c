@@ -118,41 +118,4 @@ void hud_draw()
 
 // =====================
 
-UI ui;
-
-void ui_init()
-{
-    must_init(ui.window, "ui");
-
-    ui.bar_left = al_load_bitmap("bar_square_small_l.png");
-    ui.bar_mid = al_load_bitmap("bar_square_small_m.png");
-    ui.bar_right = al_load_bitmap("bar_sqare_small_r.png");
-    ui.bar_max = al_load_bitmap("bar_square_small.png");
-
-    ui.cursor = al_load_bitmap("cursor_g.png");
-
-    ui.rect_button = al_load_bitmap("button_rectangle.png");
-
-    ui.window = al_load_bitmap("button_square_header_blade_rectangle_screws.png");
-}
-
-void ui_deinit()
-{
-    al_destroy_bitmap(ui.bar_left);
-    al_destroy_bitmap(ui.bar_mid);
-    al_destroy_bitmap(ui.bar_right);
-    al_destroy_bitmap(ui.bar_max);
-
-    al_destroy_bitmap(ui.cursor);
-
-    al_destroy_bitmap(ui.rect_button);
-
-    al_destroy_bitmap(ui.window);
-}
-
-void ui_draw(void)
-{
-    al_draw_bitmap(ui.window, BUFFER_W / 2, BUFFER_H / 2, 0);
-}
-
 // =====================

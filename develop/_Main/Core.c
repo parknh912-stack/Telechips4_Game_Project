@@ -15,7 +15,7 @@
 #include "Fx.h"
 
 #include "Player_Enemy/Player_Enemy.h"
-#include "UI/UI.h"
+#include "UI.h"
 /* --- General --- */
 
 long frames;
@@ -52,35 +52,49 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 /* --- Gameplay --- */
 
 // pause_resume_game(): 게임 진행 상황을 일시 정지(pause) / 게임 재개(resume) 상태로 전환하는 함수
-void pause_resume_game(void* paused, void* frames, STATE state)
+void pause_resume_game(STATE* state)
 {
-    if (state == STATE_PAUSE)
+    switch (*state)
     {
-        *(bool*)paused = !(*(bool*)paused);     // pause의 값을 반전 (toggle: pause - resume)
-        ++(*(long long*)frames);                // frame을 하나 증가
+    case STATE_PLAYING:
+        *state = STATE_PAUSE;
+        break;
+    case STATE_PAUSE:
+        *state = STATE_PLAYING;
     }
 }
 
 // game_state_update(): fx, shot, star, ship, alien, hud 등의 가장 최근 상황을 업데이트 하고자할 때 사용하는 함수
-void game_state_update(void* paused)
+void game_state_update(STATE* state)
 {
-    bool check = *(bool*)paused;
-
-    if (check == false)
+    switch (*state)
     {
+    case STATE_MENU:
+        // 메뉴 UI 업데이트 로직
+        break;
+    case STATE_PLAYING:
+        // 기존 게임 진행 로직
         fx_update();
         shots_update();
         stars_update();
         ship_update();
         aliens_update();
         hud_update();
+        break;
+    case STATE_PAUSE:
+        // 게임 일시정지 로직
+        // 일시정지 중에는 게임 로직이 멈춤
+        break;
+    case STATE_INPUT_NAME:
+        // 이름 입력 화면 로직
+        break;
+    case STATE_GAMEOVER:
+        // 게임 오버 화면 로직
+        break;
+    case STATE_RANK:
+        // 랭킹 화면 로직
+        break;
     }
-}
-
-// level_up(): 특정 점수 구간에 도달했을 때 캐릭터의 레벨을 올려주는 함수 ==> 구현 중
-void level_up(void)
-{
-    ;
 }
 
 
@@ -129,7 +143,7 @@ int main()
     bool done = false;
     bool redraw = true;
     // ====================
-    bool paused = false;        // 게임 진행 상황 일시정지/재개 여부 확인하는 변수
+    STATE current_state = STATE_MENU;   // 현재 게임 진행 상태를 나타내는 enum 변수, 게임 시작은 메뉴부터
     // ====================
     ALLEGRO_EVENT event;
 
@@ -143,17 +157,19 @@ int main()
         {
         case ALLEGRO_EVENT_TIMER:
             // ====================
-            game_state_update(&paused);
+            game_state_update(&current_state);
 
             if (key[ALLEGRO_KEY_ESCAPE] & KEY_SEEN)
             {
-                pause_resume_game(&paused, &frames, STATE_PAUSE);
+                pause_resume_game(&current_state);
             }
-
             // ====================
 
 
             redraw = true;
+            // ====================
+            ++frames;           // 기존 레퍼런스 코드에 있던 대로 원복
+            // ====================
             break;
 
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
