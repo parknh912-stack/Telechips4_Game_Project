@@ -178,7 +178,7 @@ void ship_init()
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
     ship.shot_timer = 0;
-    ship.lives = 100;
+    ship.lives = 1;
     ship.respawn_timer = 0;
     ship.invincible_timer = 3;
 }

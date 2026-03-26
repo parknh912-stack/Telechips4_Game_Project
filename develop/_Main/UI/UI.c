@@ -1,5 +1,5 @@
 #include "Core.h"
-#include "UI.h"
+#include "UI/UI.h"
 #include "Display.h"
 #include "Keyboard.h"
 #include "Sprites.h"
@@ -100,7 +100,7 @@ ALLEGRO_BITMAP* ui_sheet = NULL;
 int current_menu_selection = 0;
 
 void ui_init() {
-    ui_sheet = al_load_bitmap("uipack_rpg_sheet.png");
+    ui_sheet = al_load_bitmap("ui_sheet.png");
     must_init(ui_sheet, "ui_sheet");
 }
 

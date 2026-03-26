@@ -27,7 +27,8 @@ typedef enum STATE {
     STATE_PAUSE,         // 2: 일시정지
     STATE_INPUT_NAME,    // 3: 신기록 이름 입력
     STATE_GAMEOVER,      // 4: 게임 오버
-    STATE_RANK           // 5: 랭킹 확인
+    STATE_RANK,           // 5: 랭킹 확인
+    STATE_LEVEL_UP        // 6. 레벨 업햇을때 뜨는 창
 } STATE;
 
 extern STATE current_state;
