@@ -8,26 +8,6 @@
 #include "../Fx.h"
 
 
-//bool collide_x1(int ax1, int bx2)
-//{
-//    if (ax1 < bx2) return true;
-//}
-//bool collide_x2(int ax2, int bx1)
-//{
-//    if (ax2 > bx1) return true;
-//}
-//bool collide_y1(int ay1, int by2)
-//{
-//    if (ay1 < by2) return true;
-//}
-//bool collide_y2(int ay2, int by1)
-//{
-//    if (ay2 > by1) return true;
-//}
-
-
-
-
 /* --- shot --- */
 
 
@@ -292,6 +272,7 @@ void aliens_init()
         aliens[i].used = false;
 }
 
+// 적 끼리 충돌하면 밀려나게
 void aliens_collide()
 {
     for (int i = 0 ; i < ALIENS_N; i++)
@@ -303,27 +284,34 @@ void aliens_collide()
 
             aliens[j].bx2 = aliens[j].x + ALIEN_W[aliens[j].type];
             aliens[j].by2 = aliens[j].y + ALIEN_H[aliens[j].type];
+            int a_curr_x = aliens[i].x;
+            int b_curr_x = aliens[j].x;
+            int a_curr_y = aliens[i].y;
+            int b_curr_y = aliens[j].y;
 
             if (collide(aliens[i].x, aliens[i].y, aliens[i].ax2, aliens[i].ay2, aliens[j].x, aliens[j].y, aliens[j].bx2, aliens[j].by2))
             {
-                if (aliens[i].ax2 > aliens[j].x)
+                if (aliens[i].x > aliens[j].x)
                 {
-                    aliens[i].x -= 1;
-                    aliens[j].x += 1;
-                }
-                if (aliens[i].x >= aliens[j].bx2)
-                {
+                   
                     aliens[i].x += 1;
                     aliens[j].x -= 1;
                 }
-                if (aliens[i].ay2 < aliens[j].y)
+                if (aliens[i].x <= aliens[j].x)
                 {
-                    aliens[j].y -= 1;
-                    aliens[i].y += 1;
+                    
+                    aliens[i].x -= 1;
+                    aliens[j].x += 1;
                 }
-                if (aliens[i].y >= aliens[j].by2)
+                if (aliens[i].y > aliens[j].y)
                 {
+                    
                     aliens[i].y += 1;
+                    aliens[j].y -= 1;
+                }
+                if (aliens[i].y <= aliens[j].by2)
+                {
+                    aliens[i].y -= 1;
                     aliens[j].y += 1;
                 }
             }
