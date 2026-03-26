@@ -18,13 +18,16 @@ void shots_init()
         shots[i].used = false;
 }
 
-bool shots_add(bool ship, bool straight, int x, int y)
+//작성자 : 박남현
+//1. 최단거리 적 조준 추가
+//2. 적->캐릭터 추격조준 추가
+bool shots_add(bool is_ship, bool straight, float x, float y)
 {
     al_play_sample(
         sample_shot,
         0.3,
         0,
-        ship ? 1.0 : between_f(1.5, 1.6),
+        is_ship ? 1.0 : between_f(1.5, 1.6),
         ALLEGRO_PLAYMODE_ONCE,
         NULL
     );
@@ -34,26 +37,45 @@ bool shots_add(bool ship, bool straight, int x, int y)
         if (shots[i].used)
             continue;
 
-        shots[i].ship = ship;
+        shots[i].ship = is_ship;
 
-        if (ship)
+        if (is_ship)
         {
             shots[i].x = x - (SHIP_SHOT_W / 2);
             shots[i].y = y;
+            shots[i].speed = 4.0f;
+
+            int target_idx = get_closet_enemy();    //가장 가까운 적을 조준하는 함수 및 기능
+            if (target_idx == -1)
+                return false;
+
+            float dx = aliens[target_idx].cx - ship.cx; //벡터 연산
+            float dy = aliens[target_idx].cy - ship.cy;
+            float distance = sqrtf(dx * dx + dy * dy);
+
+            float speed = 4.0f;
+
+            shots[i].dx = dx / distance * speed;
+            shots[i].dy = dy / distance * speed;
         }
+
         else // alien
         {
             shots[i].x = x - (ALIEN_SHOT_W / 2);
             shots[i].y = y - (ALIEN_SHOT_H / 2);
 
+            // 작성자 : 박남현
+            /* 플레이어를 향해 쏘도록 수정*/
             if (straight)
             {
-                shots[i].dx = 0;
-                shots[i].dy = 2;
+                float angle = atan2f(ship.cy - y, ship.cx - x);
+                shots[i].speed = 3.0f;
+                shots[i].dx = cos(angle) * shots[i].speed;
+                shots[i].dy = sin(angle) * shots[i].speed;
             }
             else
             {
-
+                //추후에 랜덤 방향이 아닌, 여러 모양의 탄막으로 만들 예정
                 shots[i].dx = between(-2, 2);
                 shots[i].dy = between(-2, 2);
             }
@@ -73,6 +95,29 @@ bool shots_add(bool ship, bool straight, int x, int y)
     return false;
 }
 
+// 작성자 : 박남현
+/* --- 가장 가까운 적 식별 --- */
+int get_closet_enemy()
+{
+    int target_idx = -1;
+    float min_distance = 999999.0f;
+
+    for (int i = 0; i < ALIENS_N; ++i)
+    {
+        if (!aliens[i].used) continue;
+
+        float dx = aliens[i].cx - ship.cx;
+        float dy = aliens[i].cy - ship.cy;
+        float square_distance = (dx * dx) + (dy * dy);
+        if (min_distance > square_distance)
+        {
+            min_distance = square_distance;
+            target_idx = i;
+        }
+    }
+    return target_idx;
+}
+
 void shots_update()
 {
     for (int i = 0; i < SHOTS_N; i++)
@@ -82,9 +127,13 @@ void shots_update()
 
         if (shots[i].ship)
         {
-            shots[i].y -= 5;
+            shots[i].x += shots[i].dx;
+            shots[i].y += shots[i].dy;
 
-            if (shots[i].y < -SHIP_SHOT_H)
+            // 작성자 : 박남현
+            // 외곽 범위 수정
+            if (shots[i].x < -SHIP_SHOT_H || shots[i].y < -SHIP_SHOT_H ||
+                shots[i].x > BUFFER_W + SHIP_SHOT_W || shots[i].y > BUFFER_W + SHIP_SHOT_W)
             {
                 shots[i].used = false;
                 continue;
@@ -98,8 +147,8 @@ void shots_update()
             if ((shots[i].x < -ALIEN_SHOT_W)
                 || (shots[i].x > BUFFER_W)
                 || (shots[i].y < -ALIEN_SHOT_H)
-                || (shots[i].y > BUFFER_H)
-                ) {
+                || (shots[i].y > BUFFER_H))
+            {
                 shots[i].used = false;
                 continue;
             }
@@ -109,7 +158,9 @@ void shots_update()
     }
 }
 
-bool shots_collide(bool ship, int x, int y, int w, int h)
+//작성자 : 박남현
+//자료형 변경, 원형충돌 추가, 
+bool shots_collide(bool ship, float cx, float cy, float w, float h)
 {
     for (int i = 0; i < SHOTS_N; i++)
     {
@@ -125,24 +176,33 @@ bool shots_collide(bool ship, int x, int y, int w, int h)
         {
             sw = ALIEN_SHOT_W;
             sh = ALIEN_SHOT_H;
+            /* 적 -> 아군인 경우는 원형 충돌 */
+            if (collide_circle(cx, cy, 20, shots[i].x, shots[i].y, 5))
+            {
+                fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
+                shots[i].used = false;
+                return true;
+            }
+
         }
         else
         {
             sw = SHIP_SHOT_W;
             sh = SHIP_SHOT_H;
-        }
-
-        if (collide(x, y, x + w, y + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
-        {
-            fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
-            shots[i].used = false;
-            return true;
+            /* 아군 -> 적인 경우는 AABB 충돌 (차후 원형 충돌로 바꿀 예정) */
+            if (collide(cx, cy, cx + w, cy + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
+            {
+                fx_add(true, shots[i].x + (sw / 2), shots[i].y + (sh / 2));
+                shots[i].used = false;
+                return true;
+            }
         }
     }
-
     return false;
 }
 
+//작성자 : 박남현
+//총알 크기 수정
 void shots_draw()
 {
     for (int i = 0; i < SHOTS_N; i++)
@@ -151,17 +211,33 @@ void shots_draw()
             continue;
 
         int frame_display = (shots[i].frame / 2) % 2;
+        /*수정; 총알 크기 수정*/
+        ALLEGRO_BITMAP* current_shot = sprites.ship_shot[frame_display];
+        int sw = al_get_bitmap_width(current_shot);
+        int sh = al_get_bitmap_height(current_shot);
 
         if (shots[i].ship)
-            al_draw_bitmap(sprites.ship_shot[frame_display], shots[i].x, shots[i].y, 0);
+            al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
+                0, 0, sw, sh,
+                shots[i].x - (SHIP_SHOT_W / 2),
+                shots[i].y - (SHIP_SHOT_H / 2),
+                SHIP_SHOT_W, SHIP_SHOT_H,
+                0);
+
         else // alien
         {
             ALLEGRO_COLOR tint =
                 frame_display
-                ? al_map_rgb_f(1, 1, 1)
-                : al_map_rgb_f(0.5, 0.5, 0.5)
+                ? al_map_rgb_f(1, 0, 0)
+                : al_map_rgb_f(0.9, 0, 0)
                 ;
-            al_draw_tinted_bitmap(sprites.alien_shot, tint, shots[i].x, shots[i].y, 0);
+
+            al_draw_tinted_scaled_bitmap(sprites.alien_shot, tint,
+                0, 0, 41, 41,
+                shots[i].x, shots[i].y,
+                ALIEN_SHOT_W, ALIEN_SHOT_H,
+                0);
+            //al_draw_tinted_bitmap(sprites.alien_shot, tint, shots[i].x, shots[i].y, 0);
         }
     }
 }
@@ -171,14 +247,23 @@ void shots_draw()
 
 SHIP ship;
 
+// 작성자 : 박남현
+// 거의 전체적으로 변경되었음.
 void ship_init()
 {
-    ship.x = (BUFFER_W / 2) - (SHIP_W / 2); //왼쪽 위를 가르킴
+    ship.x = (BUFFER_W / 2) - (SHIP_W / 2);
     ship.y = (BUFFER_H / 2) - (SHIP_H / 2);
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
-    ship.shot_timer = 0;
+
+    ship.speed = 3.0f;
+    ship.fire_rate = 1.0f;
+    ship.shot_timer = 60;
+    ship.damage = 20;
+    ship.shot_count = 1;
+    ship.max_lives = 100;
     ship.lives = 100;
+
     ship.respawn_timer = 0;
     ship.invincible_timer = 3;
 }
@@ -186,7 +271,11 @@ void ship_init()
 void ship_update()
 {
     if (ship.lives < 0)
+    {
+        current_state = STATE_GAMEOVER;
         return;
+    }
+        
 
     if (ship.respawn_timer)
     {
@@ -195,13 +284,13 @@ void ship_update()
     }
 
     if (key[ALLEGRO_KEY_LEFT])
-        ship.x -= SHIP_SPEED;
+        ship.x -= ship.speed;
     if (key[ALLEGRO_KEY_RIGHT])
-        ship.x += SHIP_SPEED;
+        ship.x += ship.speed;
     if (key[ALLEGRO_KEY_UP])
-        ship.y -= SHIP_SPEED;
+        ship.y -= ship.speed;
     if (key[ALLEGRO_KEY_DOWN])
-        ship.y += SHIP_SPEED;
+        ship.y += ship.speed;
 
     if (ship.x < 0)
         ship.x = 0;
@@ -213,32 +302,45 @@ void ship_update()
     if (ship.y > SHIP_MAX_Y)
         ship.y = SHIP_MAX_Y;
 
+    ship.cx = ship.x + (SHIP_W / 2);
+    ship.cy = ship.y + (SHIP_H / 2);
+
     if (ship.invincible_timer)
         ship.invincible_timer--;
     else
     {
-        if (shots_collide(true, ship.x, ship.y, SHIP_W, SHIP_H))
+        //if (shots_collide(true, ship.x, ship.y, SHIP_W, SHIP_H))
+        if (shots_collide(true, ship.cx, ship.cy, SHIP_W, SHIP_H))
         {
-            int x = ship.x + (SHIP_W / 2);
-            int y = ship.y + (SHIP_H / 2);
-            fx_add(false, x, y);
-            fx_add(false, x + 4, y + 2);
-            fx_add(false, x - 2, y - 4);
-            fx_add(false, x + 1, y - 5);
+            fx_add(false, ship.cx, ship.cy);
+            fx_add(false, ship.cx + 4, ship.cy + 2);
+            fx_add(false, ship.cx - 2, ship.cy - 4);
+            fx_add(false, ship.cx + 1, ship.cy - 5);
 
             ship.lives--;
-            ship.respawn_timer = 90;
-            ship.invincible_timer = 180;
+            ship.respawn_timer = 3;
+            ship.invincible_timer = 0;
         }
+
+        /* 적과 직접 충돌 시에도 */
+        //if()
     }
 
+    //if (ship.shot_timer)
+    //    ship.shot_timer--;
+    //else if (key[ALLEGRO_KEY_X])
+    //{
+    //    if (shots_add(true, false, ship.cx, ship.cy))
+    //        ship.shot_timer = 120;
+    //}
+
+    // 작성자 : 박남현
+    // 일정 시간마다 자동 공격
     if (ship.shot_timer)
         ship.shot_timer--;
-    else if (key[ALLEGRO_KEY_X])
-    {
-        int x = ship.x + (SHIP_W / 2);
-        if (shots_add(true, false, x, ship.y))
-            ship.shot_timer = 5;
+    if (ship.shot_timer == 0) {
+        shots_add(true, false, ship.cx, ship.cy);
+        ship.shot_timer = 60;
     }
 }
 
@@ -250,20 +352,32 @@ void ship_draw()
         return;
     if (((ship.invincible_timer / 2) % 3) == 1)
         return;
+    // 작성자 : 박남현
+    // 크기 수정
     al_draw_scaled_bitmap(sprites.ship,
         0, 0,
         91, 91,
-		ship.x, ship.y,
+        ship.x, ship.y,
         SHIP_W, SHIP_H,
         0);
-        
+
     //al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
 }
+
+//작성자 : 박남현
+//근접 충돌 판정 추가 ( 미완성 )
+//bool ship_collide(bool ship, int x, int y, int w, int h) {
+//
+//}
 
 
 /* --- Enemy --- */
 
 ALIEN aliens[ALIENS_N];
+// 작성자 : 박남현
+/* 타입별 체력 및 속도 고정 */
+const int ALIEN_LIFE[] = { 50, 36, 45, 101 };
+const float ALIEN_SPEED[] = { 42, 20, 27, 84 };
 
 void aliens_init()
 {
@@ -274,12 +388,13 @@ void aliens_init()
 void aliens_update()
 {
     int new_quota = //2초마다 랜덤 생성
-        (frames % 120)
+        (frames % 60)
         ? 0
         : between(2, 4) //종류도 랜덤
         ;
-    int new_x = between(10, BUFFER_W - 50);
 
+    // 작성자 : 천원석 & 박남현
+    /* --- 적 생성 및 초기화 --- */
     for (int i = 0; i < ALIENS_N; i++)
     {
         if (!aliens[i].used)
@@ -287,14 +402,52 @@ void aliens_update()
             // if this alien is unused, should it spawn?
             if (new_quota > 0)
             {
-                new_x += between(40, 80);
-                if (new_x > (BUFFER_W - 60))
-                    new_x -= (BUFFER_W - 60);
+                int new_x = between(10, BUFFER_W - 50);
+                int new_y = between(10, BUFFER_H - 50);
+
+                int spawn_dup_check = 0;
+                while (!spawn_dup_check)
+                {
+                    int side = between(0, 4);
+                    switch (side)
+                    {
+                    case 0: //상
+                        new_x = between(10, BUFFER_W - 10);
+                        new_y = between(-40, -30);
+                        break;
+                    case 1: //하
+                        new_x = between(10, BUFFER_W - 10);
+                        new_y = between(BUFFER_H, BUFFER_H + 20);
+                        break;
+                    case 2: //좌
+                        new_x = between(-40, -30);
+                        new_y = between(10, BUFFER_H - 10);
+                        break;
+                    case 3: //우
+                        new_x = between(BUFFER_W + 30, BUFFER_W + 60);
+                        new_y = between(10, BUFFER_H - 10);
+                        break;
+                    }
+                    spawn_dup_check = 1;
+                    for (int j = 0; j < ALIENS_N; j++)
+                    {
+                        if (aliens[j].used && i != j)
+                        {
+                            int dx = aliens[j].x - new_x;
+                            int dy = aliens[j].y - new_y;
+                            if (dx * dx + dy * dy < 1000) {
+                                spawn_dup_check = 0;
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 aliens[i].x = new_x;
+                aliens[i].y = new_y;
 
-                aliens[i].y = between(-40, -30);
                 aliens[i].type = between(0, ALIEN_TYPE_N);
+                //aliens[i].type = 3;
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
                 aliens[i].used = true;
@@ -303,12 +456,19 @@ void aliens_update()
                 {
                 case ALIEN_TYPE_BUG:
                     aliens[i].life = 4;
+                    aliens[i].speed = 1.5f;
                     break;
                 case ALIEN_TYPE_ARROW:
                     aliens[i].life = 2;
+                    aliens[i].speed = 2.0f;
                     break;
                 case ALIEN_TYPE_THICCBOI:
                     aliens[i].life = 12;
+                    aliens[i].speed = 0.9f;
+                    break;
+                case ALIEN_TYPE_BOSS:
+                    aliens[i].life = 100;
+                    aliens[i].speed = 0.5f;
                     break;
                 }
 
@@ -316,78 +476,27 @@ void aliens_update()
             }
             continue;
         }
-        
+
+        aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2);
+        aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2);
+
+        // 작성자 : 천원석
+        // 적-> 캐릭터 방향으로 움직임
         switch (aliens[i].type)
         {
         case ALIEN_TYPE_BUG:
-            if (frames % 2) {
-                if (aliens[i].x > ship.x)           //추격 기능 추가 , 차후에 이속에 따라 이동하는거 넣어야함
-                {
-                    aliens[i].x--;
-                }
-                if (aliens[i].x < ship.x)
-                {
-                    aliens[i].x++;
-                }
-                if (aliens[i].y > ship.y)
-                {
-                    aliens[i].y--;
-                }
-                if (aliens[i].y < ship.y)
-                {
-                    aliens[i].y++;
-                }
-                /*aliens[i].y++;*/
-            }
-
+            aliens_move(i, aliens[i].speed);
             break;
 
         case ALIEN_TYPE_ARROW:
-        {
-            if (aliens[i].x > ship.x)
-            {
-                aliens[i].x--;
-            }
-            if (aliens[i].x < ship.x)
-            {
-                aliens[i].x++;
-            }
-            if (aliens[i].y > ship.y)
-            {
-                aliens[i].y--;
-            }
-            if (aliens[i].y < ship.y)
-            {
-
-                aliens[i].y++;
-            }
-        }
-            //aliens[i].y++;
+            aliens_move(i, aliens[i].speed);
             break;
 
         case ALIEN_TYPE_THICCBOI:
-            if (!(frames % 4)) {
-                if (aliens[i].x > ship.x)
-                {
-                    aliens[i].x--;
-                }
-                if (aliens[i].x < ship.x)
-                {
-
-                    aliens[i].x++;
-                }
-                if (aliens[i].y > ship.y)
-                {
-                    aliens[i].y--;
-                }
-                if (aliens[i].y < ship.y)
-                {
-
-                    aliens[i].y++;
-                }
-            }
-                //aliens[i].y++;
+            aliens_move(i, aliens[i].speed);
             break;
+        case ALIEN_TYPE_BOSS:
+            aliens_move(i, aliens[i].speed);
         }
 
         if (aliens[i].y >= BUFFER_H)
@@ -401,16 +510,15 @@ void aliens_update()
 
         if (shots_collide(false, aliens[i].x, aliens[i].y, ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type]))
         {
-            aliens[i].life--;
+            aliens[i].life -= ship.damage;
             aliens[i].blink = 4;
         }
 
-        int cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2);
-        int cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2);
+
 
         if (aliens[i].life <= 0)
         {
-            fx_add(false, cx, cy);
+            fx_add(false, aliens[i].cx, aliens[i].cy);
 
             switch (aliens[i].type)
             {
@@ -424,9 +532,15 @@ void aliens_update()
 
             case ALIEN_TYPE_THICCBOI:
                 score += 800;
-                fx_add(false, cx - 10, cy - 4);
-                fx_add(false, cx + 4, cy + 10);
-                fx_add(false, cx + 8, cy + 8);
+                fx_add(false, aliens[i].cx - 10, aliens[i].cy - 4);
+                fx_add(false, aliens[i].cx + 4, aliens[i].cy + 10);
+                fx_add(false, aliens[i].cx + 8, aliens[i].cy + 8);
+                break;
+            case ALIEN_TYPE_BOSS:
+                score += 2000;
+                fx_add(false, aliens[i].cx - 10, aliens[i].cy - 4);
+                fx_add(false, aliens[i].cx + 4, aliens[i].cy + 10);
+                fx_add(false, aliens[i].cx + 8, aliens[i].cy + 8);
                 break;
             }
 
@@ -444,19 +558,33 @@ void aliens_update()
                 aliens[i].shot_timer = 150;*/
                 break;
             case ALIEN_TYPE_ARROW:
-                shots_add(false, true, cx, aliens[i].y);
+                shots_add(false, true, aliens[i].cx, aliens[i].cy);
                 aliens[i].shot_timer = 80;
                 break;
             case ALIEN_TYPE_THICCBOI:
-                shots_add(false, true, cx - 5, cy);
-                shots_add(false, true, cx + 5, cy);
-                shots_add(false, true, cx - 5, cy + 8);
-                shots_add(false, true, cx + 5, cy + 8);
+                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy);
+                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy);
+                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy + 8);
+                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy + 8);
                 aliens[i].shot_timer = 200;
+                break;
+            case ALIEN_TYPE_BOSS:
+                shots_add(false, true, aliens[i].cx, aliens[i].cy);
+                aliens[i].shot_timer = 10;
                 break;
             }
         }
     }
+}
+
+// 작성자 : 박남현
+// 움직이는것 함수화
+void aliens_move(int i, float speed)
+{
+    if (aliens[i].cx > ship.cx) aliens[i].x -= speed;
+    if (aliens[i].cx < ship.cx) aliens[i].x += speed;
+    if (aliens[i].cy > ship.cy) aliens[i].y -= speed;
+    if (aliens[i].cy < ship.cy) aliens[i].y += speed;
 }
 
 void aliens_draw()
@@ -472,7 +600,7 @@ void aliens_draw()
             0, 0,
             101, 84,
             aliens[i].x, aliens[i].y,
-            ALIEN_W[aliens[i].type], ALIEN_W[aliens[i].type],
+            ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
             0);
         //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
     }
