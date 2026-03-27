@@ -3,6 +3,7 @@
 
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include "../Display.h"
 #include "../Core.h"
@@ -21,6 +22,17 @@
 #define UI_BTN_BLUE_P_X 0
 #define UI_BTN_BLUE_P_Y 143
 #define UI_BTN_P_H      45
+
+//0327 김병헌 : 상수 사용을 줄이기 위함
+#define UI_BTN_POS_Y_LOW    -80 
+#define UI_BTN_POS_Y_MID    50
+#define UI_BTN_POS_Y_HI     120
+
+#define UI_PANEL_SIZE_W     350
+#define UI_PANEL_SIZE_W_L   550
+#define UI_PANEL_SIZE_H_M   270
+#define UI_PANEL_SIZE_H_L   450
+//0327 김병헌 : 상수 사용을 줄이기 위함
 
 /* --- stars --- */
 typedef struct STAR
@@ -63,7 +75,7 @@ typedef struct MENU {
 void ui_init();
 void ui_deinit();
 void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh);
-void draw_menu_ui(MENU* m, const char* title);
+void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_with, float wanted_height);
 void menu_input_update(int item_count);
 
 void ui_draw_main_menu();

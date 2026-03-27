@@ -90,6 +90,26 @@ void pause_resume_game(STATE* state)
 	}
 }
 
+// 0327 신제현
+// 게임 초기화 동작을 함수로 모듈화
+void game_state_init(void)
+{
+	frames = 0;
+	score = 0;
+	level = 1;
+	score_display = 0;
+
+	ship_init();
+	hud_init();
+	keyboard_init();
+	fx_init();
+	aliens_init();
+	stars_init();
+	shots_init();
+
+	current_state = STATE_PLAYING;
+}
+
 // 작성자: 신제현
 void game_state_update(STATE* state, bool* done)
 {
@@ -175,20 +195,8 @@ void game_state_update(STATE* state, bool* done)
 			break;
 
 	case STATE_NEWGAME:
-		frames = 0;
-		score = 0;
-		level = 1;
-		score_display = 0;
-		ship_init();
-		hud_init();
-		keyboard_init();
-		fx_init();
-		aliens_init();
-		stars_init();
-		shots_init();
-		current_state = STATE_PLAYING;
+		game_state_init();		// 수정, 0327 신제현
 		return;
-		break;
 
 	case STATE_RANK:
 		menu_input_update(1);
@@ -302,6 +310,7 @@ int main()
 	ship_init();
 	aliens_init();
 	stars_init();
+	rank_init();
 
 	frames = 0;
 	score = 0;
@@ -412,8 +421,6 @@ int main()
 				al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
 				ui_draw_level_up_menu();
 				break;
-
-
 			}
 			disp_post_draw();
 			redraw = false;

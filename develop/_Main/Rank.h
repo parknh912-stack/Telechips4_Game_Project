@@ -1,7 +1,7 @@
 #ifndef _RANK_H_
 #define _RANK_H_
 
-#define MAX_RANKING 5
+#define MAX_RANKING     (10)
 #define RANK_QUEUE_SIZE 20
 #define MAX_NAME_LEN 15
 

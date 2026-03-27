@@ -3,7 +3,11 @@
 
 // 작성자: 신제현
 // 레벨 업에 필요한 점수의 양
-#define LV_UP           (1000)
+#define LV_UP           (500000)
+// 투사체 발사 최대 수(5개가 디폴트)
+#define SHOT_COUNT_MAX	(5)	
+// 레벨업 요구치 증가 상수
+#define LV_UP_REQ		(1.7)
 
 #include "../Core.h"
 #include "../Player_Enemy/Player_Enemy.h"
@@ -16,5 +20,7 @@ void speed_up(void);
 void max_lifes_up(void);
 void instant_lifes(void);
 STATE check_level_up(long score);
+
+extern long score_at_last_level;
 
 #endif // !_ITEM_H_
