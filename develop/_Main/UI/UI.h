@@ -24,7 +24,7 @@
 #define UI_BTN_POS_Y_MID 50
 #define UI_BTN_POS_Y_HI 120
 
-#define UI_PANEL_SIZE_W 350
+#define UI_PANEL_SIZE_W 400
 #define UI_PANEL_SIZE_W_L 550
 #define UI_PANEL_SIZE_H_M 270
 #define UI_PANEL_SIZE_H_L 450
@@ -46,6 +46,8 @@ void stars_draw();
 
 /* --- hud --- */
 extern ALLEGRO_FONT* font;
+extern ALLEGRO_FONT* bold_font;//제목용
+extern ALLEGRO_FONT* compcolor_font;//보색용
 extern long score_display;
 void hud_init();
 void hud_deinit();
@@ -71,7 +73,7 @@ typedef struct MENU {
 void ui_init();
 void ui_deinit();
 void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh);
-void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height);
+void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height, ALLEGRO_FONT* fonto);
 void menu_input_update(int item_count);
 
 void ui_draw_main_menu();
