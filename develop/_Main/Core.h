@@ -34,7 +34,8 @@ typedef enum STATE {
     STATE_INPUT_NAME,    // 3: 신기록 이름 입력
     STATE_GAMEOVER,      // 4: 게임 오버
     STATE_RANK,           // 5: 랭킹 확인
-    STATE_LEVEL_UP        // 6. 레벨 업햇을때 뜨는 창
+    STATE_LEVEL_UP,       // 6. 레벨 업햇을때 뜨는 창
+    STATE_NEWGAME         // 7. 재시작
 } STATE;
 
 // 작성자: 신제현

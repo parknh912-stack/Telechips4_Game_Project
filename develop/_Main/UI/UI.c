@@ -4,6 +4,7 @@
 #include "../Keyboard.h"
 #include "../Sprites.h"
 #include "../Player_Enemy/Player_Enemy.h"
+#include "../Rank.h"    //추가
 
 // --- stars ---
 STAR stars[STARS_N];
@@ -72,6 +73,9 @@ void hud_update()
 
 void hud_draw()
 {
+    // 1. 점수 출력
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "%06ld", score_display);
+
     al_draw_textf(
         font,
         al_map_rgb_f(1, 1, 1),
@@ -179,11 +183,49 @@ void ui_draw_gameover_menu() {
 }
 
 void ui_draw_rank_menu() {
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 280, {"Back"}, 1, current_menu_selection };
+    // 1. 기본 메뉴 판 그리기 (Back 버튼 포함)
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "LEADERBOARD");
+
+    // 2. 랭킹 데이터 출력 (상위 5개)
+    float start_y = m.y - (m.height / 2) + 60; // 타이틀 아래 지점
+    for (int i = 0; i < MAX_RANKING; i++) {
+        // 순위 및 이름 (왼쪽 정렬 느낌)
+        al_draw_textf(font, al_map_rgb(255, 255, 255), m.x - 80, start_y + (i * 25),
+            ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+
+        // 점수 (오른쪽 정렬 느낌)
+        al_draw_textf(font, al_map_rgb(255, 255, 0), m.x + 80, start_y + (i * 25),
+            ALLEGRO_ALIGN_RIGHT, "%ld", ranking[i].score);
+    }
 }
 
-void ui_draw_input_name_menu() {
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 150, {"Save"}, 1, current_menu_selection };
+void ui_draw_input_name_menu() 
+{
+    // 1. 배경 판 그리기
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
     draw_menu_ui(&m, "NEW HIGH SCORE!");
+
+    // 2. 입력 박스 영역 (버튼 위 빈 공간)
+    float input_y = m.y - 10;
+
+    // 현재 입력 중인 이름 출력
+    al_draw_text(font, al_map_rgb(255, 255, 255), m.x, input_y,
+        ALLEGRO_ALIGN_CENTER, player_name);
+}
+
+// 작성자: 신제현
+void ui_draw_level_up_menu()
+{
+    MENU m = {
+        BUFFER_W / 2,
+        BUFFER_H / 2,
+        200,
+        400,
+        { "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"},
+        6,
+        current_menu_selection
+    };
+
+    draw_menu_ui(&m, "LEVEL UP!!!");
 }

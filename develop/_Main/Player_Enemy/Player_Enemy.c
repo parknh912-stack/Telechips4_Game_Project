@@ -286,6 +286,7 @@ void ship_update()
     if (ship.curr_lifes < 0)
     {
         current_state = STATE_GAMEOVER;
+        ship_init();
         return;
     }
 
@@ -580,7 +581,7 @@ void aliens_update()
                 break;
             case ALIEN_TYPE_BOSS:
                 shots_add(false, true, aliens[i].cx, aliens[i].cy);
-                aliens[i].shot_timer = 10;
+                aliens[i].shot_timer = 1000;
                 break;
             }
         }
