@@ -31,14 +31,11 @@ void sprites_init()
     sprites.life_bar = sprite_grab(0, 0, 222, 39); //UI
 
     sprites.alien[0] = sprite_grab(224, 748, 101, 84); //"meteorGrey_big1.png" x = "224" y = "748" width = "101" height = "84" / >
-    sprites.alien[1] = sprite_grab(19, 10, ALIEN_ARROW_W, ALIEN_ARROW_H);
-    sprites.alien[2] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
+    sprites.alien[1] = sprite_grab(19, 10, ALIEN_FAST_W, ALIEN_FAST_H);
+    sprites.alien[2] = sprite_grab(0, 21, ALIEN_SHOOTER_W, ALIEN_SHOOTER_H);
     sprites.alien[3] = sprite_grab(224, 748, 101, 84);
-    sprites.alien[4] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
-    sprites.alien[5] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
-
-
-
+    sprites.alien[4] = sprite_grab(0, 21, ALIEN_SHOOTER_W, ALIEN_SHOOTER_H);
+    sprites.alien[5] = sprite_grab(0, 21, ALIEN_SHOOTER_W, ALIEN_SHOOTER_H);
 
     sprites.alien_shot = sprite_grab(310, 982, 41, 41); //"turretBase_big.png" x="310" y="982" width="41" height="41"/>
 
@@ -51,10 +48,17 @@ void sprites_init()
     sprites.sparks[1] = sprite_grab(45, 0, 7, 8);
     sprites.sparks[2] = sprite_grab(54, 0, 9, 8);
 
-    sprites.powerup[0] = sprite_grab(0, 49, 9, 12);
-    sprites.powerup[1] = sprite_grab(10, 49, 9, 12);
-    sprites.powerup[2] = sprite_grab(20, 49, 9, 12);
-    sprites.powerup[3] = sprite_grab(30, 49, 9, 12);
+
+    //0327 박남현
+    sprites.item[ITEM_TYPE_NONE];   //NONE이라서 선언만
+    sprites.item[ITEM_TYPE_HEAL_POTION] = sprite_grab(573, 989, 22, 21); //"pill_green.png" x="573" y="989" width="22" height="21
+    sprites.item[ITEM_TYPE_BOMB] = sprite_grab(778, 527, 31, 30); //"star_silver.png" x = "778" y = "527" width = "31" height = "30"
+    sprites.item[ITEM_TYPE_EXP] = sprite_grab(696, 329, 34, 33); //powerupBlue.png" x="696" y="329" width="34" height="33"
+    sprites.item[ITEM_TYPE_BARRIER] = sprite_grab(797, 113, 30, 30); //shield_gold.png" x="797" y="113" width="30" height="30"/>
+	sprites.item[ITEM_TYPE_RANDOM_STAT_CHANGE] = sprite_grab(505, 898, 91, 91); //"ufoYellow.png" x="505" y="898" width="91" height="91"/>
+
+    //0327 박남현
+	sprites.barrier = sprite_grab(0, 412, 133, 108); //shield1.png" x="0" y="412" width="133" height="108"/>
 }
 
 void sprites_deinit()
@@ -82,10 +86,13 @@ void sprites_deinit()
     al_destroy_bitmap(sprites.sparks[1]);
     al_destroy_bitmap(sprites.sparks[2]);
 
-    al_destroy_bitmap(sprites.powerup[0]);
-    al_destroy_bitmap(sprites.powerup[1]);
-    al_destroy_bitmap(sprites.powerup[2]);
-    al_destroy_bitmap(sprites.powerup[3]);
+    al_destroy_bitmap(sprites.item[ITEM_TYPE_NONE]);
+    al_destroy_bitmap(sprites.item[ITEM_TYPE_HEAL_POTION]);
+    al_destroy_bitmap(sprites.item[ITEM_TYPE_BOMB]);
+    al_destroy_bitmap(sprites.item[ITEM_TYPE_EXP]);
+    al_destroy_bitmap(sprites.item[ITEM_TYPE_BARRIER]);
+    al_destroy_bitmap(sprites.item[ITEM_TYPE_RANDOM_STAT_CHANGE]);
+
 
     al_destroy_bitmap(sprites._sheet);
 }

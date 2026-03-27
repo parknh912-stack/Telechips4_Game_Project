@@ -1,6 +1,7 @@
 #ifndef _SPRITES_H_
 #define _SPRITES_H_
 #include <stdio.h>
+#include "Item/Item.h"
 /* --- Sprites --- */
 
 #define SHIP_W 32
@@ -18,12 +19,12 @@ extern const int ALIEN_W[];
 extern const int ALIEN_H[];
 extern const int ALIEN_R[];
 
-#define ALIEN_BUG_W      ALIEN_W[0]
-#define ALIEN_BUG_H      ALIEN_H[0]
-#define ALIEN_ARROW_W    ALIEN_W[1]
-#define ALIEN_ARROW_H    ALIEN_H[1]
-#define ALIEN_THICCBOI_W ALIEN_W[2]
-#define ALIEN_THICCBOI_H ALIEN_H[2]
+#define ALIEN_METEOR_W   ALIEN_W[0]
+#define ALIEN_METEOR_H   ALIEN_H[0]
+#define ALIEN_FAST_W    ALIEN_W[1]
+#define ALIEN_FAST_H    ALIEN_H[1]
+#define ALIEN_SHOOTER_W ALIEN_W[2]
+#define ALIEN_SHOOTER_H ALIEN_H[2]
 #define ALIEN_BOSS_W     ALIEN_W[3]
 #define ALIEN_BOSS_H     ALIEN_H[3]
 
@@ -34,6 +35,14 @@ extern const int ALIEN_R[];
 #define EXPLOSION_FRAMES 4
 #define SPARKS_FRAMES    3
 
+//0327 ¹Ú³²Çö
+#define ITEMS_W 20
+#define ITEMS_H 20
+#define ITEMS_R 10
+#define ITEMS_TYPE_N 6
+
+#define ITEMS_BARRIER_W 50
+#define ITEMS_BARRIER_H 50
 typedef struct SPRITES
 {
     ALLEGRO_BITMAP* _sheet;
@@ -49,7 +58,8 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* explosion[EXPLOSION_FRAMES];
     ALLEGRO_BITMAP* sparks[SPARKS_FRAMES];
 
-    ALLEGRO_BITMAP* powerup[4];
+    ALLEGRO_BITMAP* item[ITEMS_TYPE_N];
+    ALLEGRO_BITMAP* barrier;
 } SPRITES;
 
 extern SPRITES sprites;

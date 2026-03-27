@@ -17,6 +17,7 @@
 #include "Player_Enemy/Player_Enemy.h"
 #include "UI/UI.h"
 #include "Rank.h"
+#include "Item/Item.h"
 
 /* --- General --- */
 
@@ -103,7 +104,7 @@ void game_state_update(STATE* state, bool* done)
 		menu_input_update(3);
 		if (is_select_pressed) {
 			if (current_menu_selection == 0) {
-				*state = STATE_PLAYING;
+				*state = STATE_NEWGAME;
 			}
 			else if (current_menu_selection == 1) {
 				*state = STATE_RANK;
@@ -121,6 +122,7 @@ void game_state_update(STATE* state, bool* done)
 		stars_update();
 		ship_update();
 		aliens_update();
+		item_update();
 		hud_update();
 		// 작성자: 신제현
 		// 레벨 증가하는 점수에 따라 해당 조건 검사
@@ -167,7 +169,7 @@ void game_state_update(STATE* state, bool* done)
 		menu_input_update(3);
 		if (is_select_pressed) {
 			if (current_menu_selection == 0) {
-				*state = STATE_PLAYING;
+				*state = STATE_NEWGAME;
 			}
 			else if (current_menu_selection == 1) {
 				*state = STATE_RANK;
@@ -372,8 +374,13 @@ int main()
 
 			switch (current_state)
 			{
+			case STATE_MENU:
+				ui_draw_main_menu();
+				break;
+
 			case STATE_PLAYING:
 				aliens_draw();
+				item_draw();	//0327 박남현
 				shots_draw();
 				fx_draw();
 				ship_draw();
@@ -382,6 +389,7 @@ int main()
 
 			case STATE_PAUSE:
 				aliens_draw();
+				item_draw();	//0327 박남현
 				shots_draw();
 				fx_draw();
 				ship_draw();
@@ -390,8 +398,8 @@ int main()
 				ui_draw_pause_menu();
 				break;
 
-			case STATE_MENU:
-				ui_draw_main_menu();
+			case STATE_INPUT_NAME:
+				ui_draw_input_name_menu();
 				break;
 
 			case STATE_GAMEOVER:
@@ -402,12 +410,9 @@ int main()
 				ui_draw_rank_menu();
 				break;
 
-			case STATE_INPUT_NAME:
-				ui_draw_input_name_menu();
-				break;
-
 			case STATE_LEVEL_UP:        // 재작성자: 신제현
 				aliens_draw();
+				item_draw();		//0327 박남현
 				shots_draw();
 				fx_draw();
 				ship_draw();

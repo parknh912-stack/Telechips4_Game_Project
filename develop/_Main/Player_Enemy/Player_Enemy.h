@@ -49,22 +49,23 @@ typedef struct SHIP
     int curr_lifes;     //현재 체력
 
     int invincible_timer;   //무적시간 (배리어 용)
+    bool barrier;
 } SHIP;
 extern SHIP ship;
 
 void ship_init();
 void ship_update();
 void ship_draw();
-bool ship_collide(int cx, int cy, int w, int h);
+bool ship_collide(int cx, int cy);
 
 
 /* --- Enemy --- */
 
 typedef enum ALIEN_TYPE
 {
-    ALIEN_TYPE_BUG = 0,
-    ALIEN_TYPE_ARROW,       //1
-    ALIEN_TYPE_THICCBOI,    //2
+    ALIEN_TYPE_METEOR = 0,
+    ALIEN_TYPE_FAST,       //1
+    ALIEN_TYPE_SHOOTER,    //2
     ALIEN_TYPE_BOSS,        //3
     ALIEN_TYPE_N
 } ALIEN_TYPE;
@@ -80,7 +81,7 @@ typedef struct ALIEN
     float speed;        //이동 속도
     float fire_rate;    //초당 공격 속도
     int shot_timer;     //공격 타이머
-
+    int shot_count;
     ALIEN_TYPE type;
     int blink;
     int life;
@@ -89,9 +90,9 @@ typedef struct ALIEN
 
 #define ALIENS_N 16  //나오는 적 숫자
 
-#define ALIEN_LIFE_BUG      ALIEN_LIFE[0]
-#define ALIEN_LIFE_ARROW    ALIEN_LIFE[1]
-#define ALIEN_LIFE_THICCBOI ALIEN_LIFE[2]
+#define ALIEN_LIFE_METEOR      ALIEN_LIFE[0]
+#define ALIEN_LIFE_FAST    ALIEN_LIFE[1]
+#define ALIEN_LIFE_SHOOTER ALIEN_LIFE[2]
 #define ALIEN_LIFE_BOSS     ALIEN_LIFE[3]
 
 
