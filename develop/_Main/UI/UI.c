@@ -157,6 +157,7 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         al_draw_text(font, al_map_rgb(0, 0, 0), m->x, btn_y + 13, ALLEGRO_ALIGN_CENTER, m->items[i]);
         al_draw_text(font, al_map_rgb(0, 0, 0), m->x, btn_y + 11, ALLEGRO_ALIGN_CENTER, m->items[i]);
         al_draw_text(font, al_map_rgb(255, 255, 255), m->x, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
+        //해당 4줄 추가도 보색22
     }
 }
 
