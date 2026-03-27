@@ -5,6 +5,7 @@
 #include "../Sprites.h"
 #include "../Player_Enemy/Player_Enemy.h"
 #include "../Rank.h"
+#include <allegro5/allegro_ttf.h>
 
 // --- stars ---
 STAR stars[STARS_N];

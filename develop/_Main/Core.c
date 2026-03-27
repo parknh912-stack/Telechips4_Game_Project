@@ -285,6 +285,7 @@ int main()
     aliens_init();
     stars_init();
     rank_init();
+    
 
     frames = 0;
     score = 0;

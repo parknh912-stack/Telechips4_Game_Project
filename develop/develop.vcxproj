@@ -163,6 +163,9 @@
     <ClInclude Include="_Main\Sprites.h" />
     <ClInclude Include="_Main\UI\UI.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="PressStart2P.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\AllegroDeps.1.16.0\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.16.0\build\native\AllegroDeps.targets')" />

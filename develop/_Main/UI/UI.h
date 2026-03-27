@@ -20,14 +20,15 @@
 #define UI_BTN_BLUE_P_Y 143
 #define UI_BTN_P_H      45
 
-#define UI_BTN_POS_Y_LOW -80
+//0327 김병헌 : 상수 사용을 줄이기 위함
+#define UI_BTN_POS_Y_LOW -80 
 #define UI_BTN_POS_Y_MID 50
 #define UI_BTN_POS_Y_HI 120
 
 #define UI_PANEL_SIZE_W 350
 #define UI_PANEL_SIZE_H_M 270
 #define UI_PANEL_SIZE_H_L 450
-
+//0327 김병헌 : 상수 사용을 줄이기 위함
 
 /* --- stars --- */
 typedef struct STAR
