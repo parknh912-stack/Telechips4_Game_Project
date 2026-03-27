@@ -17,12 +17,10 @@
 #include "Player_Enemy/Player_Enemy.h"
 #include "UI/UI.h"
 #include "Rank.h"
+#include "Level_UP/Level_up.h"			// 레벨 업(스탯 강화) / 0327 신제현
 
 /* --- General --- */
 
-// 작성자: 신제현
-// 레벨 업에 필요한 점수의 양
-#define LV_UP           (10000)
 
 long frames;
 long score;
@@ -124,12 +122,10 @@ void game_state_update(STATE* state, bool* done)
 		hud_update();
 		// 작성자: 신제현
 		// 레벨 증가하는 점수에 따라 해당 조건 검사
-		if (score >= level * LV_UP)
-		{
-			*state = STATE_LEVEL_UP;
-			current_menu_selection = 0;
-			++level;
-		}
+
+		*state = check_level_up(score);
+		current_menu_selection = 0;
+
 		//0327 김병헌
 		if (ship.curr_lifes < 0)
 		{
@@ -142,7 +138,7 @@ void game_state_update(STATE* state, bool* done)
 			}
 			else
 			{
-				*state = STATE_GAMEOVER;   // 아니면 그냥 게임오버로
+				*state = STATE_GAMEOVER;   // 아니면 그냥 게임 오버로
 			}
 			current_menu_selection = 0;
 			return; // 상태가 바뀌었으므로 즉시 빠져나감
@@ -205,62 +201,63 @@ void game_state_update(STATE* state, bool* done)
 		menu_input_update(1);
 		if (is_select_pressed)
 		{
+			// 0326 김병헌
 			if (name_len > 0) { // 이름이 한 글자라도 있을 때만
-				rank_add(player_name, score); // 삽입정렬
+				rank_add(player_name, score); // 삽입 정렬
 				rank_save();                  // 파일에 기록
 				*state = STATE_RANK;          // 랭킹판으로 이동해서 점수 확인
 				current_menu_selection = 0;
 			}
 		}
 		break;
-	case STATE_LEVEL_UP:        // 재작성자: 신제현
+	case STATE_LEVEL_UP:        // 0326 신제현
 		menu_input_update(6);
 		if (is_select_pressed)
 		{
 			*state = STATE_LEVEL_UP;
 
 			// 재작성자: 신제현
-			// 캐릭터 강화 단순화하여 구현
+			// 캐릭터 강화 단순화하여 구현(0326 신제현)
+			// 강화 함수를 따로 구현하여 적용(0327 신제현)
 			switch (current_menu_selection)
 			{
 			case 0:
 				// 공격력 증가 적용
-				printf("before ship damage: %d\n", ship.damage);
-				++ship.damage;
-				printf("after ship damage: %d\n", ship.damage);
+				printf("Before: %d\n", ship.damage);
+				damage_up();
+				printf("After: %d\n", ship.damage);
 				break;
 			case 1:
 				// 투사체 발사 수 증가
-				printf("before ship shot count: %d\n", ship.shot_count);
-				ship.shot_count += 2;
-				printf("after ship shot count: %d\n", ship.shot_count);
+				printf("Before: %d\n", ship.shot_count);
+				shot_count_up();
+				printf("After: %d\n", ship.shot_count);
 				break;
 			case 2:
 				// 공격 속도 증가
-				printf("before ship fire rate: %f\n", ship.fire_rate);
-				ship.fire_rate += (float)1.0;
-				printf("after ship fire rate: %f\n", ship.fire_rate);
+				printf("Before: %f\n", ship.fire_rate);
+				fire_rate_up();
+				printf("After: %f\n", ship.fire_rate);
 				break;
 			case 3:
 				// 이동 속도 증가
-				printf("before ship speed: %f\n", ship.speed);
-				ship.speed += (float)1.0;
-				printf("after ship speed: %f\n", ship.speed);
+				printf("Before: %f\n", ship.speed);
+				speed_up();
+				printf("After: %f\n", ship.speed);
 				break;
 			case 4:
 				// 체력 최대치 증가
-				printf("before ship max lives: %d\n", ship.max_lifes);
-				ship.max_lifes *= 1.1;
-				printf("after ship max lives: %d\n", ship.max_lifes);
+				printf("Before: %d\n", ship.max_lifes);
+				max_lifes_up();
+				printf("After: %d\n", ship.max_lifes);
 				break;
 			case 5:
 				// 체력 즉시 회복
-				printf("before ship max lives: %d\n", ship.curr_lifes);
-				ship.curr_lifes = ship.max_lifes;
-				printf("after ship max lives: %d\n", ship.curr_lifes);
+				printf("Before: %d\n", ship.curr_lifes);
+				instant_lifes();
+				printf("After: %d\n", ship.curr_lifes);
 				break;
 			}
-
 			*state = STATE_PLAYING;
 			current_menu_selection = 0;
 		}

@@ -51,6 +51,7 @@ void hud_init()
     font = al_create_builtin_font();
     must_init(font, "font");
     score_display = 0;
+    
 }
 
 void hud_deinit()
@@ -73,18 +74,19 @@ void hud_update()
 
 void hud_draw()
 {
+    // 0. 글씨 크기 확대(현재 너무 작음)
+    ALLEGRO_TRANSFORM transform;
+    
+    al_identity_transform(&transform);
+    al_scale_transform(&transform, 2.0, 2.0);
+    al_use_transform(&transform);
+
     // 1. 점수 출력
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "%06ld", score_display);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 100 / 2, 0, "%012ld", score_display);
 
-    al_draw_textf(
-        font,
-        al_map_rgb_f(1, 1, 1),
-        1, 1,
-        0,
-        "%06ld",
-        score_display
-    );
-
+    // 2. 레벨 출력
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 70, 0, "LEVEL: %03d", level);
+    
     int spacing = LIFE_W + 1;
     for (int i = 0; i < ship.curr_lifes; i++)
         al_draw_bitmap(sprites.life, 1 + (i * spacing), 10, 0);
@@ -97,6 +99,12 @@ void hud_draw()
             ALLEGRO_ALIGN_CENTER,
             "G A M E  O V E R"
         );
+
+    // [*** 중요 ***] 글씨만 커지게 하고 나머지 것들은 커지지 않도록 화면 배율 유지
+    // 작성자: 신제현
+    ALLEGRO_TRANSFORM backup;
+    al_identity_transform(&backup);
+    al_use_transform(&backup);
 }
 
 // --- UI ---
@@ -122,6 +130,21 @@ void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float d
 }
 
 void draw_menu_ui(MENU* m, const char* title) {
+    float scaling = 1.5f;       // 원하는 배율
+    
+    // 1. 현재 화면 변환 상태를 백업함
+    ALLEGRO_TRANSFORM backup;
+    ALLEGRO_TRANSFORM transform;
+
+    al_copy_transform(&backup, al_get_current_transform());
+
+    // 2. 메뉴의 중심을 기준으로 전체로 확대
+    al_identity_transform(&transform);
+    al_translate_transform(&transform, -m->x, -m->y);   // 중심을 0.0, 0.0으로 이동하기
+    al_scale_transform(&transform, scaling, scaling);   // 원하는 배율로 확대
+    al_translate_transform(&transform, m->x, m->y);     // 원래 위치로 복귀
+    al_use_transform(&transform);                       // 변환 적용하기
+
     draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H,
         m->x - (m->width / 2), m->y - (m->height / 2), m->width, m->height);
 
@@ -137,6 +160,7 @@ void draw_menu_ui(MENU* m, const char* title) {
         float btn_y = m->y - (m->height / 2) + 60 + (i * 50);
 
         int sx, sy, sh;
+
         if (m->selected == i) {
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
             btn_y += 4;
@@ -146,10 +170,13 @@ void draw_menu_ui(MENU* m, const char* title) {
         }
 
         draw_ui_element(sx, sy, UI_BTN_W, sh, btn_x, btn_y, btn_w, btn_h);
-
+    
         al_draw_text(font, al_map_rgb(255, 255, 255), m->x, btn_y + 12,
             ALLEGRO_ALIGN_CENTER, m->items[i]);
     }
+
+    // 3. 모든 그리기가 끝나고 화면 배율을 원래대로로 복구할 것
+    al_use_transform(&backup);
 }
 
 void menu_input_update(int item_count) {
@@ -222,7 +249,7 @@ void ui_draw_level_up_menu()
         BUFFER_H / 2,
         200,
         400,
-        { "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"},
+        { "Damage Up", "Shot Count Up", "Fire Rate Up", "Speed Up", "Max Lifes Up", "Instant Lifes"},
         6,
         current_menu_selection
     };
