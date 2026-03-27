@@ -92,21 +92,10 @@ void hud_draw()
         level
     );
 
-    
     int spacing = LIFE_W + 1;
     al_draw_bitmap(sprites.life_bar,spacing,10,0);
     for (int i = 0; i < ship.lives; i++)
-        al_draw_bitmap(sprites.life, 1 + (i * spacing), 10, 0);
-
-    // 3. 게임 오버 메시지 (기존과 동일)
-    if (ship.lives < 0)
-        al_draw_text(
-            font,
-            al_map_rgb_f(1, 1, 1),
-            BUFFER_W / 2, BUFFER_H / 2,
-            ALLEGRO_ALIGN_CENTER,
-            "G A M E  O V E R"
-        );
+        al_draw_bitmap(sprites.life, 9 + (i * spacing), 13, 0);
 }
 
 // --- UI ---

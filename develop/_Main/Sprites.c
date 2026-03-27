@@ -28,7 +28,7 @@ void sprites_init()
     sprites.ship_shot[1] = sprite_grab(698, 795, 38, 37); //"laserBlue11.png" x="698" y="795" width="38" height="37"
 
     sprites.life_bar = sprite_grab(0, 0, 222, 39);
-    sprites.life = sprite_grab(222, 108, 22, 21);
+    sprites.life = sprite_grab(491, 182, 34, 33);
 
     sprites.alien[0] = sprite_grab(224, 748, 101, 84); //"meteorGrey_big1.png" x = "224" y = "748" width = "101" height = "84" / >
     sprites.alien[1] = sprite_grab(19, 10, ALIEN_ARROW_W, ALIEN_ARROW_H);
