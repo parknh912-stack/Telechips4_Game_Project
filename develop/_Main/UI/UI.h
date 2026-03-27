@@ -25,6 +25,7 @@
 #define UI_BTN_POS_Y_HI 120
 
 #define UI_PANEL_SIZE_W 350
+#define UI_PANEL_SIZE_W_L 550
 #define UI_PANEL_SIZE_H_M 270
 #define UI_PANEL_SIZE_H_L 450
 //0327 김병헌 : 상수 사용을 줄이기 위함

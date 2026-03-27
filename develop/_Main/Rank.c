@@ -14,7 +14,7 @@ void rank_init()
     rank_count = 0;
     for (int i = 0; i < RANK_QUEUE_SIZE; i++) 
     {
-        strcpy(ranking[i].username, "---");
+        strcpy(ranking[i].username, "----------");
         ranking[i].score = 0;
     }
 }

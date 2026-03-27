@@ -39,12 +39,7 @@ typedef enum STATE {
     STATE_NEWGAME           //7. 새로운 게임
 } STATE;
 
-
-//랭킹 관련 함수입니다.
-void rank_init();
-void rank_add();
-void rank_save();
-void rank_load();
+//0327 김병헌 - rank함수 여기 없어도 됩니다.
 
 // 작성자: 신제현
 extern STATE current_state;
