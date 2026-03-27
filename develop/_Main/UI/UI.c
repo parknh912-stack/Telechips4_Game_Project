@@ -45,10 +45,11 @@ void stars_draw()
 ALLEGRO_FONT* font;
 long score_display;
 
-void hud_init()
+void hud_init()//0327 김병헌
 {
-    al_init_font_addon();
-    font = al_load_font("PressStart2P.ttf", 20, 0);
+    al_init_font_addon();//0327 김병헌 수정사항 : 글씨 크기를 키웠습니다.
+    al_init_ttf_addon();
+    font = al_load_ttf_font("PressStart2P.ttf", 15, 0);//해당 항목 두 번째가 size입니다.
     must_init(font, "font");
     score_display = 0;
 }
@@ -79,20 +80,12 @@ void hud_draw()
     float hp_ratio = (float)ship.lives / 5.0f;
     if (hp_ratio < 0) hp_ratio = 0;
 
-    al_draw_textf
-    (
-        font,
-        al_map_rgb_f(1, 1, 1),
-        1, 50,
-        0,
-        "Level: %02d",
-        level
-    );
+    al_draw_textf(font,al_map_rgb_f(1, 1, 1),1, 80, 0,"Level: %02d",level);
 
     int spacing = LIFE_W + 1;
-    al_draw_bitmap(sprites.life_bar, spacing, 10, 0);
+    al_draw_bitmap(sprites.life_bar, spacing, 25, 0);
     for (int i = 0; i < ship.lives; i++)
-        al_draw_bitmap(sprites.life, 9 + (i * spacing), 11, 0);
+        al_draw_bitmap(sprites.life, 9 + (i * spacing), 25, 0);
 }
 
 // --- UI ---
