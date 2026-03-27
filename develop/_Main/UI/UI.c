@@ -30,6 +30,7 @@ void stars_update()
         }
     }
 }
+
 void stars_draw()
 {
     float star_x = 1.5;
