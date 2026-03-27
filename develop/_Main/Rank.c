@@ -57,7 +57,8 @@ void rank_add(const char* name, long new_score)
     }
 }
 
-void rank_save() {
+void rank_save() 
+{
     FILE* f = fopen("ranking.dat", "wb");
     if (f) {
         fwrite(&rank_count, sizeof(int), 1, f); // 현재 개수 먼저 저장
@@ -66,7 +67,8 @@ void rank_save() {
     }
 }
 
-void rank_load() {
+void rank_load() 
+{
     FILE* f = fopen("ranking.dat", "rb");
     if (f) {
         fread(&rank_count, sizeof(int), 1, f);

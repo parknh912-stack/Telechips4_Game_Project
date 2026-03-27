@@ -6,7 +6,6 @@
 #include "../Display.h"
 #include "../Core.h"
 
-// --- UI 이미지 좌표 (uipack_rpg_sheet.xml 기준) ---
 #define UI_PANEL_BLUE_X 190
 #define UI_PANEL_BLUE_Y 0
 #define UI_PANEL_W      100
@@ -20,6 +19,11 @@
 #define UI_BTN_BLUE_P_X 0
 #define UI_BTN_BLUE_P_Y 143
 #define UI_BTN_P_H      45
+
+#define UI_BTN_POS_Y_LOW -80
+#define UI_BTN_POS_Y_MID 50
+#define UI_BTN_POS_Y_HI 120
+
 
 /* --- stars --- */
 typedef struct STAR

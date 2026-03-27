@@ -262,8 +262,8 @@ void ship_init()
     ship.shot_timer = 60;
     ship.damage = 20;
     ship.shot_count = 1;
-    ship.max_lives = 1;
-    ship.lives = 1;
+    ship.max_lives = 20;
+    ship.lives = 20;
 
     ship.respawn_timer = 0;
     ship.invincible_timer = 3;

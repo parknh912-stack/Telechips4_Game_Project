@@ -27,8 +27,8 @@ void sprites_init()
     sprites.ship_shot[0] = sprite_grab(434, 325, 48, 46); //"laserBlue09.png" x="434" y="325" width="48" height="46"
     sprites.ship_shot[1] = sprite_grab(698, 795, 38, 37); //"laserBlue11.png" x="698" y="795" width="38" height="37"
 
-    sprites.life_bar = sprite_grab(0, 0, 222, 39);
-    sprites.life = sprite_grab(491, 182, 34, 33);
+    sprites.life_bar = sprite_grab(0, 0, 222, 38);//0327 UI 
+    sprites.life = sprite_grab(843, 977, 13, 37);//0327 UI 
 
     sprites.alien[0] = sprite_grab(224, 748, 101, 84); //"meteorGrey_big1.png" x = "224" y = "748" width = "101" height = "84" / >
     sprites.alien[1] = sprite_grab(19, 10, ALIEN_ARROW_W, ALIEN_ARROW_H);

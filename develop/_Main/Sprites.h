@@ -9,8 +9,8 @@
 #define SHIP_SHOT_W 9
 #define SHIP_SHOT_H 9
 
-#define LIFE_W 6
-#define LIFE_H 6
+#define LIFE_W 9//0327 UI 체력바 변경
+#define LIFE_H 9//0327 UI 체력바 변경
 
 extern const int ALIEN_W[];
 extern const int ALIEN_H[];

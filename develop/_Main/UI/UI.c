@@ -74,11 +74,6 @@ void hud_draw()
     // 1. 점수 출력
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "%06ld", score_display);
 
-    float bar_x = 1.0f;       // 체력바 시작 X 위치
-    float bar_y = 12.0f;      // 점수 아래에 배치할 Y 위치
-    float bar_max_w = 60.0f;  // 체력바의 전체 가로 길이 (픽셀)
-    float bar_h = 4.0f;       // 체력바의 세로 두께
-
     float hp_ratio = (float)ship.lives / 5.0f;
     if (hp_ratio < 0) hp_ratio = 0;
 
@@ -86,7 +81,7 @@ void hud_draw()
     (
         font,
         al_map_rgb_f(1, 1, 1),
-        1, 50,
+        1, 5,
         0,
         "Level: %02d",
         level
@@ -95,7 +90,7 @@ void hud_draw()
     int spacing = LIFE_W + 1;
     al_draw_bitmap(sprites.life_bar,spacing,10,0);
     for (int i = 0; i < ship.lives; i++)
-        al_draw_bitmap(sprites.life, 9 + (i * spacing), 13, 0);
+        al_draw_bitmap(sprites.life, 9 + (i * spacing), 11, 0);
 }
 
 // --- UI ---
@@ -104,43 +99,52 @@ void hud_draw()
 ALLEGRO_BITMAP* ui_sheet = NULL;
 int current_menu_selection = 0;
 
-void ui_init() {
+void ui_init() 
+{
     ui_sheet = al_load_bitmap("ui_sheet.png");
     must_init(ui_sheet, "ui_sheet");
 }
 
-void ui_deinit() {
-    if (ui_sheet) {
+void ui_deinit() 
+{
+    if (ui_sheet) 
+    {
         al_destroy_bitmap(ui_sheet);
         ui_sheet = NULL;
     }
 }
 
-void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh) {
+void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh) 
+{
     al_draw_scaled_bitmap(ui_sheet, sx, sy, sw, sh, dx, dy, dw, dh, 0);
 }
 
-void draw_menu_ui(MENU* m, const char* title) {
+void draw_menu_ui(MENU* m, const char* title, int button_y) 
+{
     draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H,
         m->x - (m->width / 2), m->y - (m->height / 2), m->width, m->height);
 
-    if (title) {
+    if (title) 
+    {
         al_draw_text(font, al_map_rgb(255, 255, 0), m->x, m->y - (m->height / 2) + 20,
             ALLEGRO_ALIGN_CENTER, title);
     }
 
-    for (int i = 0; i < m->item_count; i++) {
+    for (int i = 0; i < m->item_count; i++) 
+    {
         float btn_w = m->width * 0.8f;
         float btn_h = 40.0f;
-        float btn_x = m->x - (btn_w / 2);
-        float btn_y = m->y - (m->height / 2) + 60 + (i * 50);
+        float btn_x = m->x - (btn_w / 2);//여긴 고정입니다. 저희가 yes no를 만들지는 좀 고민을 해봐야겟어요.
+        float btn_y = m->y - button_y + (i * 50);
 
         int sx, sy, sh;
-        if (m->selected == i) {
+        if (m->selected == i) 
+        {
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
             btn_y += 4;
         }
-        else {
+        else 
+        {
             sx = UI_BTN_BLUE_X; sy = UI_BTN_BLUE_Y; sh = UI_BTN_H;
         }
 
@@ -151,44 +155,55 @@ void draw_menu_ui(MENU* m, const char* title) {
     }
 }
 
-void menu_input_update(int item_count) {
-    if (key[ALLEGRO_KEY_UP] & KEY_SEEN) {
+void menu_input_update(int item_count) 
+{
+    if (key[ALLEGRO_KEY_UP] & KEY_SEEN) 
+    {
         current_menu_selection--;
-        if (current_menu_selection < 0) {
+        if (current_menu_selection < 0) 
+        {
             current_menu_selection = item_count - 1;
         }
     }
-    if (key[ALLEGRO_KEY_DOWN] & KEY_SEEN) {
+    if (key[ALLEGRO_KEY_DOWN] & KEY_SEEN) 
+    {
         current_menu_selection++;
-        if (current_menu_selection >= item_count) {
+        if (current_menu_selection >= item_count) 
+        {
             current_menu_selection = 0;
         }
     }
 }
 
-void ui_draw_main_menu() {
+void ui_draw_main_menu() 
+{
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Start Game", "Ranking", "Exit"}, 3, current_menu_selection };
-    draw_menu_ui(&m, "- SPACE SURVIVOR -");
+    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID);
 }
 
-void ui_draw_pause_menu() {
+
+void ui_draw_pause_menu() 
+{
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 180, 200, {"Resume", "Main Menu"}, 2, current_menu_selection };
-    draw_menu_ui(&m, "PAUSED");
+    draw_menu_ui(&m, "PAUSED", UI_BTN_POS_Y_MID);
 }
 
-void ui_draw_gameover_menu() {
+void ui_draw_gameover_menu() 
+{
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Restart", "Ranking","Main Menu"}, 3, current_menu_selection };
-    draw_menu_ui(&m, "GAME OVER");
+    draw_menu_ui(&m, "GAME OVER", UI_BTN_POS_Y_MID);
 }
 
-void ui_draw_rank_menu() {
+void ui_draw_rank_menu() 
+{
     // 1. 기본 메뉴 판 그리기 (Back 버튼 포함)
     MENU m = { BUFFER_W / 2, BUFFER_H/2, 220, 300, {"Back"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "LEADERBOARD");
+    draw_menu_ui(&m, "LEADERBOARD", UI_BTN_POS_Y_LOW);
 
     // 2. 랭킹 데이터 출력 (상위 5개)
     float start_y = m.y - (m.height / 2) + 60; // 타이틀 아래 지점
-    for (int i = 0; i < MAX_RANKING; i++) {
+    for (int i = 0; i < MAX_RANKING; i++) 
+    {
         // 순위 및 이름 (왼쪽 정렬 느낌)
         al_draw_textf(font, al_map_rgb(255, 255, 255), m.x - 80, start_y + (i * 25),
             ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
@@ -199,10 +214,11 @@ void ui_draw_rank_menu() {
     }
 }
 
-void ui_draw_input_name_menu() {
+void ui_draw_input_name_menu() 
+{
     // 1. 배경 판 그리기
     MENU m = { BUFFER_W/2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "NEW HIGH SCORE!");
+    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW);
 
     // 2. 입력 박스 영역 (버튼 위 빈 공간)
     float input_y = m.y - 10;
@@ -227,5 +243,5 @@ void ui_draw_level_up_menu()
         current_menu_selection
     };
 
-    draw_menu_ui(&m, "LEVEL UP!!!");
+    draw_menu_ui(&m, "LEVEL UP!!!",UI_BTN_POS_Y_HI);
 }
