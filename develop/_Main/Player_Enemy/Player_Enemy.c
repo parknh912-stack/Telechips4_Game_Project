@@ -274,8 +274,8 @@ void ship_init()
     ship.shot_timer = 60;       //shot_timer
     ship.damage = 10;           //데미지, int      (수정가능)
     ship.shot_count = 1;        //투사체 수 (홀수개만)
-    ship.max_lifes = 100;       //최대 체력
-    ship.curr_lifes = 100;      //현재 체력
+    ship.max_lifes = 10000;       //최대 체력
+    ship.curr_lifes = 10000;      //현재 체력
 
 
     ship.invincible_timer = 3;  //무적시간
@@ -374,7 +374,7 @@ bool ship_collide(int cx, int cy, int w, int h)
     for (int i = 0; i < ALIENS_N; ++i)
     {
         if (!aliens[i].used) continue;
-        if (collide_circle(cx, cy, SHIP_R, aliens[i].cx, aliens[i].cy, ALIEN_R[aliens[i].type]))
+        if (collide_circle(cx, cy, SHIP_R, aliens[i].cx, aliens[i].cy, ALIEN_H[aliens[i].type] / 4))
             return true;
     }
     return false;
@@ -401,6 +401,7 @@ void aliens_update()
         ? 0
         : between(2, 4) //종류도 랜덤
         ;
+
 
     // 작성자 : 천원석 & 박남현
     /* --- 적 생성 및 초기화 --- */
@@ -454,6 +455,9 @@ void aliens_update()
 
                 aliens[i].x = new_x;
                 aliens[i].y = new_y;
+
+                aliens[i].cx = new_x + (ALIEN_W[aliens[i].type] / 2.0f);
+                aliens[i].cy = new_y + (ALIEN_H[aliens[i].type] / 2.0f);
 
                 aliens[i].type = between(0, ALIEN_TYPE_N);
                 //aliens[i].type = 3;
@@ -603,17 +607,25 @@ void aliens_draw()
 {
     for (int i = 0; i < ALIENS_N; i++)
     {
+        float between_angle = atan2(ship.y - aliens[i].y, ship.x - aliens[i].x) + (ALLEGRO_PI / 2.0);
         if (!aliens[i].used)
             continue;
         if (aliens[i].blink > 2)
             continue;
 
-        al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
-            0, 0,
-            101, 84,
-            aliens[i].x, aliens[i].y,
-            ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
+        al_draw_scaled_rotated_bitmap(sprites.alien[aliens[i].type],
+            ALIEN_W[aliens[i].type] / 2, ALIEN_H[aliens[i].type] / 2,
+            aliens[i].cx, aliens[i].cy, 
+            0.5, 0.5,
+            between_angle,  
             0);
+
+       //al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
+       //     0, 0,
+       //     101, 84,
+       //     aliens[i].x, aliens[i].y,
+       //     ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
+       //     0);
         //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
     }
 }
@@ -631,8 +643,8 @@ void aliens_collide()
 
             // 1. 직접 만드신 collide_circle 함수 활용
             // 반지름(R)은 ALIEN_W[type] / 2.0f 정도로 잡으면 적당합니다.
-            float r_i = ALIEN_W[aliens[i].type] / 2.0f;
-            float r_j = ALIEN_W[aliens[j].type] / 2.0f;
+            float r_i = ALIEN_W[aliens[i].type] / 4.0f;
+            float r_j = ALIEN_W[aliens[j].type] / 4.0f;
 
             if (collide_circle(aliens[i].cx, aliens[i].cy, r_i, aliens[j].cx, aliens[j].cy, r_j))
             {
