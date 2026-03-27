@@ -24,6 +24,10 @@
 #define UI_BTN_POS_Y_MID 50
 #define UI_BTN_POS_Y_HI 120
 
+#define UI_PANEL_SIZE_W 350
+#define UI_PANEL_SIZE_H_M 270
+#define UI_PANEL_SIZE_H_L 450
+
 
 /* --- stars --- */
 typedef struct STAR

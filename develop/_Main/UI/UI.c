@@ -25,7 +25,7 @@ void stars_update()
         if (stars[i].y >= BUFFER_H)
         {
             stars[i].y = 0;
-            stars[i].speed = between_f(0.1,1);
+            stars[i].speed = between_f(0.1, 1);
         }
     }
 }
@@ -81,14 +81,14 @@ void hud_draw()
     (
         font,
         al_map_rgb_f(1, 1, 1),
-        1, 5,
+        1, 50,
         0,
         "Level: %02d",
         level
     );
 
     int spacing = LIFE_W + 1;
-    al_draw_bitmap(sprites.life_bar,spacing,10,0);
+    al_draw_bitmap(sprites.life_bar, spacing, 10, 0);
     for (int i = 0; i < ship.lives; i++)
         al_draw_bitmap(sprites.life, 9 + (i * spacing), 11, 0);
 }
@@ -99,38 +99,37 @@ void hud_draw()
 ALLEGRO_BITMAP* ui_sheet = NULL;
 int current_menu_selection = 0;
 
-void ui_init() 
+void ui_init()
 {
     ui_sheet = al_load_bitmap("ui_sheet.png");
     must_init(ui_sheet, "ui_sheet");
 }
 
-void ui_deinit() 
+void ui_deinit()
 {
-    if (ui_sheet) 
+    if (ui_sheet)
     {
         al_destroy_bitmap(ui_sheet);
         ui_sheet = NULL;
     }
 }
 
-void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh) 
+void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float real_width, float real_height)
 {
-    al_draw_scaled_bitmap(ui_sheet, sx, sy, sw, sh, dx, dy, dw, dh, 0);
+    al_draw_scaled_bitmap(ui_sheet, sx, sy, sw, sh, dx, dy, real_width, real_height, 0);
 }
 
-void draw_menu_ui(MENU* m, const char* title, int button_y) 
+void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height)
 {
-    draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H,
-        m->x - (m->width / 2), m->y - (m->height / 2), m->width, m->height);
+    draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H, m->x - wanted_width/2, m->y - wanted_height/2, wanted_width, wanted_height);
 
-    if (title) 
+    if (title)
     {
         al_draw_text(font, al_map_rgb(255, 255, 0), m->x, m->y - (m->height / 2) + 20,
             ALLEGRO_ALIGN_CENTER, title);
     }
 
-    for (int i = 0; i < m->item_count; i++) 
+    for (int i = 0; i < m->item_count; i++)
     {
         float btn_w = m->width * 0.8f;
         float btn_h = 40.0f;
@@ -138,12 +137,12 @@ void draw_menu_ui(MENU* m, const char* title, int button_y)
         float btn_y = m->y - button_y + (i * 50);
 
         int sx, sy, sh;
-        if (m->selected == i) 
+        if (m->selected == i)
         {
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
             btn_y += 4;
         }
-        else 
+        else
         {
             sx = UI_BTN_BLUE_X; sy = UI_BTN_BLUE_Y; sh = UI_BTN_H;
         }
@@ -155,54 +154,54 @@ void draw_menu_ui(MENU* m, const char* title, int button_y)
     }
 }
 
-void menu_input_update(int item_count) 
+void menu_input_update(int item_count)
 {
-    if (key[ALLEGRO_KEY_UP] & KEY_SEEN) 
+    if (key[ALLEGRO_KEY_UP] & KEY_SEEN)
     {
         current_menu_selection--;
-        if (current_menu_selection < 0) 
+        if (current_menu_selection < 0)
         {
             current_menu_selection = item_count - 1;
         }
     }
-    if (key[ALLEGRO_KEY_DOWN] & KEY_SEEN) 
+    if (key[ALLEGRO_KEY_DOWN] & KEY_SEEN)
     {
         current_menu_selection++;
-        if (current_menu_selection >= item_count) 
+        if (current_menu_selection >= item_count)
         {
             current_menu_selection = 0;
         }
     }
 }
 
-void ui_draw_main_menu() 
+void ui_draw_main_menu()
 {
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Start Game", "Ranking", "Exit"}, 3, current_menu_selection };
-    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID);
+    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M);
 }
 
 
-void ui_draw_pause_menu() 
+void ui_draw_pause_menu()
 {
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 180, 200, {"Resume", "Main Menu"}, 2, current_menu_selection };
-    draw_menu_ui(&m, "PAUSED", UI_BTN_POS_Y_MID);
+    draw_menu_ui(&m, "PAUSED", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M);
 }
 
-void ui_draw_gameover_menu() 
+void ui_draw_gameover_menu()
 {
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Restart", "Ranking","Main Menu"}, 3, current_menu_selection };
-    draw_menu_ui(&m, "GAME OVER", UI_BTN_POS_Y_MID);
+    draw_menu_ui(&m, "GAME OVER", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M);
 }
 
-void ui_draw_rank_menu() 
+void ui_draw_rank_menu()
 {
     // 1. 기본 메뉴 판 그리기 (Back 버튼 포함)
-    MENU m = { BUFFER_W / 2, BUFFER_H/2, 220, 300, {"Back"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "LEADERBOARD", UI_BTN_POS_Y_LOW);
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
+    draw_menu_ui(&m, "LEADERBOARD", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L);
 
     // 2. 랭킹 데이터 출력 (상위 5개)
     float start_y = m.y - (m.height / 2) + 60; // 타이틀 아래 지점
-    for (int i = 0; i < MAX_RANKING; i++) 
+    for (int i = 0; i < MAX_RANKING; i++)
     {
         // 순위 및 이름 (왼쪽 정렬 느낌)
         al_draw_textf(font, al_map_rgb(255, 255, 255), m.x - 80, start_y + (i * 25),
@@ -214,11 +213,11 @@ void ui_draw_rank_menu()
     }
 }
 
-void ui_draw_input_name_menu() 
+void ui_draw_input_name_menu()
 {
     // 1. 배경 판 그리기
-    MENU m = { BUFFER_W/2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW);
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
+    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M);
 
     // 2. 입력 박스 영역 (버튼 위 빈 공간)
     float input_y = m.y - 10;
@@ -227,7 +226,7 @@ void ui_draw_input_name_menu()
     al_draw_text(font, al_map_rgb(255, 255, 255), m.x, input_y,
         ALLEGRO_ALIGN_CENTER, player_name);
 
-    
+
 }
 
 // 작성자: 신제현
@@ -243,5 +242,5 @@ void ui_draw_level_up_menu()
         current_menu_selection
     };
 
-    draw_menu_ui(&m, "LEVEL UP!!!",UI_BTN_POS_Y_HI);
+    draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L);
 }
