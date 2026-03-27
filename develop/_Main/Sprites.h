@@ -24,8 +24,8 @@ extern const int ALIEN_R[];
 #define ALIEN_FAST_H            ALIEN_H[1]
 #define ALIEN_SHOOTER_W         ALIEN_W[2]
 #define ALIEN_SHOOTER_H         ALIEN_H[2]
-#define ALIEN_BOSS_W            ALIEN_W[3]
-#define ALIEN_BOSS_H            ALIEN_H[3]
+//#define ALIEN_BOSS_W            ALIEN_W[3]
+//#define ALIEN_BOSS_H            ALIEN_H[3]
 
 #define ALIEN_SHOT_W 9
 #define ALIEN_SHOT_H 9
@@ -37,6 +37,7 @@ extern const int ALIEN_R[];
 typedef struct SPRITES
 {
     ALLEGRO_BITMAP* _sheet;
+    ALLEGRO_BITMAP* _sheet2;
 
     ALLEGRO_BITMAP* ship;
     ALLEGRO_BITMAP* ship_shot[2];
@@ -45,6 +46,8 @@ typedef struct SPRITES
 
     ALLEGRO_BITMAP* alien[4];
     ALLEGRO_BITMAP* alien_shot;
+
+    ALLEGRO_BITMAP* boss;
 
     ALLEGRO_BITMAP* explosion[EXPLOSION_FRAMES];
     ALLEGRO_BITMAP* sparks[SPARKS_FRAMES];

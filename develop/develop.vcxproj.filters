@@ -36,6 +36,9 @@
     <Image Include="ui_sheet.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\..\..\..\..\Desktop\예제_게임_실행_정리\이미지파일 2\PNG\Sprites X2\Station\spaceStation_026.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c">
@@ -62,6 +65,15 @@
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="_Main\Item\Item.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="_Main\Level_UP\Level_up.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="_Main\Rank.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Sprites.h">
@@ -86,6 +98,15 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="_Main\Item\Item.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="_Main\Level_UP\Level_up.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="_Main\Rank.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
