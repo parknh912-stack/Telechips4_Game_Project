@@ -195,10 +195,10 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_INPUT_NAME:
-        menu_input_update(1); // "Save" 버튼
+        menu_input_update(1);
         if (is_select_pressed) {
             if (name_len > 0) { // 이름이 한 글자라도 있을 때만
-                rank_add(player_name, score); // 우선순위 큐
+                rank_add(player_name, score); // 삽입정렬
                 rank_save();                  // 파일에 기록
                 *state = STATE_RANK;          // 랭킹판으로 이동해서 점수 확인
                 current_menu_selection = 0;
@@ -313,11 +313,14 @@ int main()
             break;
 
         case ALLEGRO_EVENT_KEY_CHAR: // 실시간 문자 입력 처리 : 김병헌
-            if (current_state == STATE_INPUT_NAME) {
-                if (event.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && name_len > 0) {
+            if (current_state == STATE_INPUT_NAME) 
+            {
+                if (event.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && name_len > 0) 
+                {
                     player_name[--name_len] = '\0';
                 }
-                else if (event.keyboard.unichar >= 32 && event.keyboard.unichar <= 126 && name_len < MAX_NAME_LEN - 1) {
+                else if (event.keyboard.unichar >= 32 && event.keyboard.unichar <= 126 && name_len < MAX_NAME_LEN - 1) 
+                {
                     player_name[name_len++] = (char)event.keyboard.unichar;
                     player_name[name_len] = '\0';
                 }
@@ -368,8 +371,6 @@ int main()
                 break;
 
             case STATE_GAMEOVER:
-                level = 0;
-                score = 0;
                 ui_draw_gameover_menu();
                 break;
 

@@ -27,7 +27,8 @@ void sprites_init()
     sprites.ship_shot[0] = sprite_grab(434, 325, 48, 46); //"laserBlue09.png" x="434" y="325" width="48" height="46"
     sprites.ship_shot[1] = sprite_grab(698, 795, 38, 37); //"laserBlue11.png" x="698" y="795" width="38" height="37"
 
-    sprites.life = sprite_grab(777, 443, 32, 26); //"playerLife3_red.png" x = "777" y = "443" width = "32" height = "26" / >
+    sprites.life_bar = sprite_grab(0, 0, 222, 39);
+    sprites.life = sprite_grab(222, 108, 22, 21);
 
     sprites.alien[0] = sprite_grab(224, 748, 101, 84); //"meteorGrey_big1.png" x = "224" y = "748" width = "101" height = "84" / >
     sprites.alien[1] = sprite_grab(19, 10, ALIEN_ARROW_W, ALIEN_ARROW_H);
@@ -64,6 +65,7 @@ void sprites_deinit()
     al_destroy_bitmap(sprites.ship_shot[1]);
 
     al_destroy_bitmap(sprites.life);
+    al_destroy_bitmap(sprites.life_bar);
 
     al_destroy_bitmap(sprites.alien[0]);
     al_destroy_bitmap(sprites.alien[1]);

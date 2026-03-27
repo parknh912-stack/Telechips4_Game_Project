@@ -17,7 +17,6 @@ void stars_init()
         stars[i].speed = between_f(0.1, 1);
     }
 }
-
 void stars_update()
 {
     for (int i = 0; i < STARS_N; i++)
@@ -30,7 +29,6 @@ void stars_update()
         }
     }
 }
-
 void stars_draw()
 {
     float star_x = 1.5;
@@ -73,31 +71,19 @@ void hud_update()
 
 void hud_draw()
 {
-    // 1. 점수 출력 (기존과 동일)
+    // 1. 점수 출력
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "%06ld", score_display);
-
-    // --- [교체 구간: 아이콘 for문 대신 사각형 체력바 그리기] ---
 
     float bar_x = 1.0f;       // 체력바 시작 X 위치
     float bar_y = 12.0f;      // 점수 아래에 배치할 Y 위치
     float bar_max_w = 60.0f;  // 체력바의 전체 가로 길이 (픽셀)
     float bar_h = 4.0f;       // 체력바의 세로 두께
 
-    // 최대 체력을 5라고 가정했을 때의 비율 계산 (현재 lives / 최대 lives)
-    // 만약 최대 체력이 다르다면 5.0f 대신 해당 숫자를 넣으세요.
     float hp_ratio = (float)ship.lives / 5.0f;
     if (hp_ratio < 0) hp_ratio = 0;
 
-    // (1) 배경 막대: 어두운 회색으로 전체 칸을 먼저 그립니다.
-    al_draw_filled_rectangle(bar_x, bar_y, bar_x + bar_max_w, bar_y + bar_h, al_map_rgb(60, 60, 60));
-
-    // (2) 현재 체력 막대: 남은 비율만큼 빨간색으로 덮어 그립니다.
-    al_draw_filled_rectangle(bar_x, bar_y, bar_x + (bar_max_w * hp_ratio), bar_y + bar_h, al_map_rgb(255, 50, 50));
-
-    // (3) 테두리: 가느다란 흰색 선으로 깔끔하게 마무리합니다.
-    al_draw_rectangle(bar_x, bar_y, bar_x + bar_max_w, bar_y + bar_h, al_map_rgb(200, 200, 200), 1);
-
-    al_draw_textf(
+    al_draw_textf
+    (
         font,
         al_map_rgb_f(1, 1, 1),
         1, 50,
@@ -106,7 +92,9 @@ void hud_draw()
         level
     );
 
+    
     int spacing = LIFE_W + 1;
+    al_draw_bitmap(sprites.life_bar,spacing,10,0);
     for (int i = 0; i < ship.lives; i++)
         al_draw_bitmap(sprites.life, 1 + (i * spacing), 10, 0);
 

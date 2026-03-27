@@ -37,6 +37,7 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* ship;
     ALLEGRO_BITMAP* ship_shot[2];
     ALLEGRO_BITMAP* life;
+    ALLEGRO_BITMAP* life_bar;
 
     ALLEGRO_BITMAP* alien[6];
     ALLEGRO_BITMAP* alien_shot;
