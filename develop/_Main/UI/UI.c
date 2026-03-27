@@ -226,6 +226,7 @@ void ui_draw_input_name_menu()
 void ui_draw_level_up_menu()
 {
     MENU m =  { BUFFER_W / 2,BUFFER_H / 2,200,400,{ "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"}, 6,current_menu_selection};
-
+    
     draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L);
+    
 }
