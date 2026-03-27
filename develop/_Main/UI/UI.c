@@ -5,7 +5,7 @@
 #include "../Sprites.h"
 #include "../Player_Enemy/Player_Enemy.h"
 #include "../Rank.h"
-#include <allegro5/allegro_ttf.h>
+
 
 // --- stars ---
 STAR stars[STARS_N];
@@ -47,7 +47,8 @@ long score_display;
 
 void hud_init()
 {
-    font = al_create_builtin_font();
+    al_init_font_addon();
+    font = al_load_font("PressStart2P.ttf", 20, 0);
     must_init(font, "font");
     score_display = 0;
 }

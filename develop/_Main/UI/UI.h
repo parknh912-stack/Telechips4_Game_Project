@@ -2,7 +2,6 @@
 #define _UI_H_
 
 #include <allegro5/allegro5.h>
-#include <allegro5/allegro_font.h>
 #include "../Display.h"
 #include "../Core.h"
 
@@ -71,7 +70,7 @@ typedef struct MENU {
 void ui_init();
 void ui_deinit();
 void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float dw, float dh);
-void draw_menu_ui(MENU* m, const char* title);
+void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height);
 void menu_input_update(int item_count);
 
 void ui_draw_main_menu();

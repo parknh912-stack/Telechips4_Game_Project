@@ -10,7 +10,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
-#include <allegro5/allegro_ttf.h> // 0327 김병헌 : 폰트 사이즈, 종류를 선택하기 위한 헤더입니다.
+#include <allegro5/allegro_font.h> // 0327 김병헌 : 폰트 사이즈, 종류를 선택하기 위한 헤더입니다.
 
 /* --- General --- */
 extern long frames;
