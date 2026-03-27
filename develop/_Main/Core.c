@@ -1,3 +1,10 @@
+/*
+텔레칩스 임베디드 스쿨 4기
+게임프로젝트
+팀원 : 박남현, 천원석, 신제현, 김병헌
+프로젝트 명 : Space Survivor
+*/
+
 /* --- header & addon --- */
 #include "Core.h"
 #include "Keyboard.h"
@@ -10,16 +17,14 @@
 #include "Player_Enemy/Player_Enemy.h"
 #include "UI/UI.h"
 #include "Rank.h"
+#include "Item/Item.h"
+#include "Level_UP/Level_up.h"			// 레벨 업(스탯 강화) / 0327 신제현
 
-// 작성자: 신제현
-// 레벨 업에 필요한 점수의 양
-#define LV_UP           (1000)
 
 /* --- General --- */
 long frames = 0;
 long score = 0;
 int level = 1;
-
 STATE current_state = STATE_MENU;
 
 void must_init(bool test, const char* description)
@@ -48,11 +53,7 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
     return true;
 }
 
-/* --- Rank --- */ //0327 김병헌
-RANK ranking[RANK_QUEUE_SIZE]; // Rank.h의 extern 변수 실제 선언
-int rank_count = 0;
-char player_name[MAX_NAME_LEN] = "";
-extern int name_len = 0;
+
 
 // 작성자 : 박남현
 /* --- 원형 충돌 --- */
@@ -66,6 +67,12 @@ bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
 
     return (distance <= radium_Square);     //반지름의 제곱이 더 크면 충돌
 }
+
+/* --- Rank --- */ //0327 김병헌
+RANK ranking[RANK_QUEUE_SIZE]; // Rank.h의 extern 변수 실제 선언
+int rank_count = 0;
+char player_name[MAX_NAME_LEN] = "";
+extern int name_len = 0;
 
 /* --- Gameplay --- */
 // 작성자: 신제현
@@ -81,6 +88,27 @@ void pause_resume_game(STATE* state)
         *state = STATE_PLAYING;
         break;
     }
+}
+
+// 0327 신제현
+// 게임 초기화 동작을 함수로 모듈화
+void game_state_init(void)
+{
+    frames = 0;
+    score = 0;
+    level = 1;
+    score_display = 0;
+
+    ship_init();
+    hud_init();
+    keyboard_init();
+    fx_init();
+    aliens_init();
+    item_init();
+    stars_init();
+    shots_init();
+
+    current_state = STATE_PLAYING;
 }
 
 // 작성자: 신제현
@@ -112,17 +140,15 @@ void game_state_update(STATE* state, bool* done)
         stars_update();
         ship_update();
         aliens_update();
+        item_update();  //0327 박남현
         hud_update();
         // 작성자: 신제현
         // 레벨 증가하는 점수에 따라 해당 조건 검사
-        if (score >= level * LV_UP)
-        {
-            *state = STATE_LEVEL_UP;
-            current_menu_selection = 0;
-            ++level;
-        }
+        *state = check_level_up(score);
+        current_menu_selection = 0;
+
         //0327 김병헌
-        if (ship.lives < 0)
+        if (ship.curr_lifes < 0)
         {
             // 랭킹 진입 가능 여부 체크
             if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
@@ -175,21 +201,8 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_NEWGAME:
-        frames = 0;
-        score = 0;
-        level = 1;
-        score_display = 0;
-        ship_init();
-        hud_init();
-        keyboard_init();
-        fx_init();
-        aliens_init();
-        stars_init();
-        shots_init();
-        current_state = STATE_PLAYING;
+        game_state_init();		// 수정, 0327 신제현
         return;
-        break;
-
 
     case STATE_RANK:
         menu_input_update(1);
@@ -201,8 +214,10 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_INPUT_NAME:
         menu_input_update(1);
-        if (is_select_pressed) {
-            if (name_len > 0) { // 이름이 한 글자라도 있을 때만
+        if (is_select_pressed) 
+        {
+            if (name_len > 0) 
+            { // 이름이 한 글자라도 있을 때만
                 rank_add(player_name, score); // 삽입정렬
                 rank_save();                  // 파일에 기록
                 *state = STATE_RANK;          // 랭킹판으로 이동해서 점수 확인
@@ -211,36 +226,54 @@ void game_state_update(STATE* state, bool* done)
         }
         break;
 
-    case STATE_LEVEL_UP:        // 재작성자: 신제현
+    case STATE_LEVEL_UP:        // 0326 신제현
         menu_input_update(6);
         if (is_select_pressed)
         {
             *state = STATE_LEVEL_UP;
-            
+
+            // 재작성자: 신제현
+            // 캐릭터 강화 단순화하여 구현(0326 신제현)
+            // 강화 함수를 따로 구현하여 적용(0327 신제현)
             switch (current_menu_selection)
             {
             case 0:
                 // 공격력 증가 적용
-             
+                printf("Before: %d\n", ship.damage);
+                damage_up();
+                printf("After: %d\n", ship.damage);
                 break;
             case 1:
                 // 투사체 발사 수 증가
+                printf("Before: %d\n", ship.shot_count);
+                shot_count_up();
+                printf("After: %d\n", ship.shot_count);
                 break;
             case 2:
                 // 공격 속도 증가
+                printf("Before: %f\n", ship.fire_rate);
+                fire_rate_up();
+                printf("After: %f\n", ship.fire_rate);
                 break;
             case 3:
                 // 이동 속도 증가
+                printf("Before: %f\n", ship.speed);
+                speed_up();
+                printf("After: %f\n", ship.speed);
                 break;
             case 4:
                 // 체력 최대치 증가
-                ship.lives *= 1.1;
+                printf("Before: %d\n", ship.max_lifes);
+                max_lifes_up();
+                printf("After: %d\n", ship.max_lifes);
                 break;
             case 5:
-                // 체력 지속 회복 
+                // 체력 즉시 회복
+                printf("Before: %d\n", ship.curr_lifes);
+                instant_lifes();
+                printf("After: %d\n", ship.curr_lifes);
                 break;
             }
-
             *state = STATE_PLAYING;
             current_menu_selection = 0;
         }
@@ -283,10 +316,10 @@ int main()
     shots_init();
     ship_init();
     aliens_init();
+    item_init();
     stars_init();
     rank_init();
     
-
     frames = 0;
     score = 0;
 
@@ -354,8 +387,13 @@ int main()
 
             switch (current_state)
             {
+            case STATE_MENU:
+                ui_draw_main_menu();
+                break;
+
             case STATE_PLAYING:
                 aliens_draw();
+                item_draw(); //0327
                 shots_draw();
                 fx_draw();
                 ship_draw();
@@ -364,6 +402,7 @@ int main()
 
             case STATE_PAUSE:
                 aliens_draw();
+                item_draw();
                 shots_draw();
                 fx_draw();
                 ship_draw();
@@ -372,8 +411,8 @@ int main()
                 ui_draw_pause_menu();
                 break;
 
-            case STATE_MENU:
-                ui_draw_main_menu();
+            case STATE_INPUT_NAME:
+                ui_draw_input_name_menu();
                 break;
 
             case STATE_GAMEOVER:
@@ -384,12 +423,9 @@ int main()
                 ui_draw_rank_menu();
                 break;
 
-            case STATE_INPUT_NAME:
-                ui_draw_input_name_menu();
-                break;
-
             case STATE_LEVEL_UP:
                 aliens_draw();
+                item_draw();    //0327
                 shots_draw();
                 fx_draw();
                 ship_draw();

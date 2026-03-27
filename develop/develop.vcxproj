@@ -148,7 +148,9 @@
     <ClCompile Include="_Main\Core.c" />
     <ClCompile Include="_Main\Display.c" />
     <ClCompile Include="_Main\Fx.c" />
+    <ClCompile Include="_Main\Item\Item.c" />
     <ClCompile Include="_Main\Keyboard.c" />
+    <ClCompile Include="_Main\Level_UP\Level_up.c" />
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c" />
     <ClCompile Include="_Main\Rank.c" />
     <ClCompile Include="_Main\Sprites.c" />
@@ -159,7 +161,9 @@
     <ClInclude Include="_Main\Core.h" />
     <ClInclude Include="_Main\Display.h" />
     <ClInclude Include="_Main\Fx.h" />
+    <ClInclude Include="_Main\Item\Item.h" />
     <ClInclude Include="_Main\Keyboard.h" />
+    <ClInclude Include="_Main\Level_UP\Level_up.h" />
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h" />
     <ClInclude Include="_Main\Rank.h" />
     <ClInclude Include="_Main\Sprites.h" />

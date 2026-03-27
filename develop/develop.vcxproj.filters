@@ -62,7 +62,13 @@
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Rank.c">
+    <ClCompile Include="_Main\Rank.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="_Main\Item\Item.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="_Main\Level_UP\Level_up.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -91,8 +97,17 @@
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Rank.h">
+    <ClInclude Include="_Main\Rank.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="_Main\Item\Item.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="_Main\Level_UP\Level_up.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="PressStart2P.ttf" />
   </ItemGroup>
 </Project>

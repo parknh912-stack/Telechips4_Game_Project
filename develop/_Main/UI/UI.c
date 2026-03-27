@@ -82,14 +82,14 @@ void hud_draw()
     // 1. 점수 출력
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 15, 0, "%06ld", score_display);
 
-    float hp_ratio = (float)ship.lives / 5.0f;
+    float hp_ratio = (float)ship.curr_lifes / 5.0f;
     if (hp_ratio < 0) hp_ratio = 0;
 
     al_draw_textf(font,al_map_rgb_f(1, 1, 1),5, 90, 0,"Level: %02d",level);
 
     int spacing = LIFE_W + 1;
     al_draw_bitmap(sprites.life_bar, spacing, 35, 0);
-    for (int i = 0; i < ship.lives; i++)
+    for (int i = 0; i < ship.curr_lifes; i++)
         al_draw_bitmap(sprites.life, 9 + (i * spacing), 35, 0);
 }
 
