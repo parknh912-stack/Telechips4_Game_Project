@@ -88,7 +88,7 @@ void hud_draw()
     al_draw_textf(font,al_map_rgb_f(1, 1, 1),5, 90, 0,"Level: %02d",level);
 
     int spacing = LIFE_W + 1;
-    al_draw_bitmap(sprites.life_bar, spacing, 35, 0);
+    al_draw_scaled_bitmap(sprites.life_bar, 0, 0, 222, 38, spacing, 35, (LIFE_W+2) * ship.max_lifes, 38, 0);//0328김병헌 - 체력바 길이 조정
     for (int i = 0; i < ship.curr_lifes; i++)
         al_draw_bitmap(sprites.life, 9 + (i * spacing), 35, 0);
 }
