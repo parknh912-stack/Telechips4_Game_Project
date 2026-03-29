@@ -17,17 +17,28 @@
 #include "Player_Enemy/Player_Enemy.h"
 #include "UI/UI.h"
 #include "Rank.h"
+#include "Level_UP/Level_up.h"			// 레벨 업(스탯 강화) / 0327 신제현
 
 /* --- General --- */
 
-// 작성자: 신제현
-// 레벨 업에 필요한 점수의 양
-#define LV_UP           (10000)
 
 long frames;
 long score;
 int level = 1;
 STATE current_state = STATE_MENU;
+
+// 작성자: 0329 신제현 - 현재 스테이지를 관리하는 변수
+int curr_stage = 1;
+// 작성자: 0329 신제현 - 스테이지별 보스 등장 시간(단위: 프레임)
+const long STAGE_DURATION[] = {
+	60 * 60 * 1,
+	60 * 60 * 2,
+	60 * 60 * 4
+};
+// 작성자: 0329 신제현 - 스테이지별 시작 프레임 관리 전역변수
+long stage_start_frame = 0;
+
+// 작성한 전역변수가 너무 많으므로 호출로 관리하는 형식으로 리팩토링 필요
 
 void must_init(bool test, const char* description)
 {
@@ -92,6 +103,40 @@ void pause_resume_game(STATE* state)
 	}
 }
 
+// 0327 신제현
+// 게임 초기화 동작을 함수로 모듈화
+// is_boss_spawned 플래그 추가(0329 신제현)
+void game_state_init(void)
+{
+	frames = 0;
+	score = 0;
+	level = 1;
+	score_display = 0;
+	curr_stage = 1;
+	stage_start_frame = 0;
+
+	ship_init();
+	hud_init();
+	keyboard_init();
+	fx_init();
+	aliens_init();
+	stars_init();
+	shots_init();
+
+	current_state = STATE_PLAYING;
+}
+
+// 0329 신제현
+// 화면에 다시 그리는 작업을 함수로 작성하여 모듈화
+void game_redraw(void)
+{
+	aliens_draw();
+	shots_draw();
+	fx_draw();
+	ship_draw();
+	hud_draw();
+}
+
 // 작성자: 신제현
 void game_state_update(STATE* state, bool* done)
 {
@@ -122,14 +167,21 @@ void game_state_update(STATE* state, bool* done)
 		ship_update();
 		aliens_update();
 		hud_update();
+
+		// 0329 신제현 - 보스 스테이지 진입 검사
+		if (frames - stage_start_frame >= STAGE_DURATION[curr_stage - 1])
+		{
+			aliens_init();			// 잡몹을 제거함
+			shots_init();			// 뿌린 총알 제거함
+			*state = STATE_BOSS;
+		}
+		
 		// 작성자: 신제현
 		// 레벨 증가하는 점수에 따라 해당 조건 검사
-		if (score >= level * LV_UP)
-		{
-			*state = STATE_LEVEL_UP;
-			current_menu_selection = 0;
-			++level;
-		}
+		
+		*state = check_level_up(score);
+		current_menu_selection = 0;
+
 		//0327 김병헌
 		if (ship.curr_lifes < 0)
 		{
@@ -176,23 +228,12 @@ void game_state_update(STATE* state, bool* done)
 				*state = STATE_MENU;
 				current_menu_selection = 0;
 			}
-			break;
+		}
+		break;
 
 	case STATE_NEWGAME:
-		frames = 0;
-		score = 0;
-		level = 1;
-		score_display = 0;
-		ship_init();
-		hud_init();
-		keyboard_init();
-		fx_init();
-		aliens_init();
-		stars_init();
-		shots_init();
-		current_state = STATE_PLAYING;
+		game_state_init();
 		return;
-		break;
 
 	case STATE_RANK:
 		menu_input_update(1);
@@ -213,61 +254,87 @@ void game_state_update(STATE* state, bool* done)
 			}
 		}
 		break;
-	case STATE_LEVEL_UP:        // 재작성자: 신제현
+	case STATE_LEVEL_UP:        // 재작성자: 0326 신제현
 		menu_input_update(6);
+
 		if (is_select_pressed)
 		{
 			*state = STATE_LEVEL_UP;
 
 			// 재작성자: 신제현
-			// 캐릭터 강화 단순화하여 구현
+			// 캐릭터 강화 단순화하여 구현(0326 신제현)
+			// 강화 함수를 따로 구현하여 적용(0327 신제현)
 			switch (current_menu_selection)
 			{
-			case 0:
-				// 공격력 증가 적용
-				printf("before ship damage: %d\n", ship.damage);
-				++ship.damage;
-				printf("after ship damage: %d\n", ship.damage);
-				break;
-			case 1:
-				// 투사체 발사 수 증가
-				printf("before ship shot count: %d\n", ship.shot_count);
-				ship.shot_count += 2;
-				printf("after ship shot count: %d\n", ship.shot_count);
-				break;
-			case 2:
-				// 공격 속도 증가
-				printf("before ship fire rate: %f\n", ship.fire_rate);
-				ship.fire_rate += (float)1.0;
-				printf("after ship fire rate: %f\n", ship.fire_rate);
-				break;
-			case 3:
-				// 이동 속도 증가
-				printf("before ship speed: %f\n", ship.speed);
-				ship.speed += (float)1.0;
-				printf("after ship speed: %f\n", ship.speed);
-				break;
-			case 4:
-				// 체력 최대치 증가
-				printf("before ship max lives: %d\n", ship.max_lifes);
-				ship.max_lifes *= 1.1;
-				printf("after ship max lives: %d\n", ship.max_lifes);
-				break;
-			case 5:
-				// 체력 즉시 회복
-				printf("before ship max lives: %d\n", ship.curr_lifes);
-				ship.curr_lifes = ship.max_lifes;
-				printf("after ship max lives: %d\n", ship.curr_lifes);
-				break;
+				case 0:
+					// 공격력 증가 적용
+					printf("Before: %d\n", ship.damage);
+					damage_up();
+					printf("After: %d\n", ship.damage);
+					break;
+				case 1:
+					// 투사체 발사 수 증가
+					printf("Before: %d\n", ship.shot_count);
+					shot_count_up();
+					printf("After: %d\n", ship.shot_count);
+					break;
+				case 2:
+					// 공격 속도 증가
+					printf("Before: %f\n", ship.fire_rate);
+					fire_rate_up();
+					printf("After: %f\n", ship.fire_rate);
+					break;
+				case 3:
+					// 이동 속도 증가
+					printf("Before: %f\n", ship.speed);
+					speed_up();
+					printf("After: %f\n", ship.speed);
+					break;
+				case 4:
+					// 체력 최대치 증가
+					printf("Before: %d\n", ship.max_lifes);
+					max_lifes_up();
+					printf("After: %d\n", ship.max_lifes);
+					break;
+				case 5:
+					// 체력 즉시 회복
+					printf("Before: %d\n", ship.curr_lifes);
+					instant_lifes();
+					printf("After: %d\n", ship.curr_lifes);
+					break;
 			}
-
 			*state = STATE_PLAYING;
 			current_menu_selection = 0;
 		}
 		break;
 
+	case STATE_BOSS:
+		fx_update();
+		shots_update();
+		stars_update();
+		ship_update();
+		boss_update();
+		hud_update();
+
+		// 보스를 잡았다면?
+		if (!boss.used)
+		{
+			++curr_stage;					// 다음 스테이지로
+			stage_start_frame = frames;		// 스테이지 시작 프레임을 기존 프레임으로 초기화
+			
+			if (curr_stage > MAX_STAGE)
+				*state = STATE_GAMECLEAR;
+			else
+				*state = STATE_PLAYING;
 		}
+
+		// 플레이어 사망했을 때?
+		if (ship.curr_lifes < 0)
+			*state = STATE_GAMEOVER;
+
+		break;
 	}
+
 }
 
 /* --- Main --- */
@@ -283,7 +350,7 @@ int main()
 	must_init(queue, "queue");
 
 	disp_init();
-	audio_init();
+	// audio_init();
 
 	must_init(al_init_image_addon(), "image");
 	sprites_init();
@@ -304,7 +371,12 @@ int main()
 	shots_init();
 	ship_init();
 	aliens_init();
+	// ====================
+	boss_init();		// 보스 초기화: 0329 천원석 & 신제현
+	// ====================
 	stars_init();
+	rank_init();
+
 
 	frames = 0;
 	score = 0;
@@ -369,23 +441,29 @@ int main()
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 
 			stars_draw();
+			
+
 
 			switch (current_state)
 			{
 			case STATE_PLAYING:
-				aliens_draw();
-				shots_draw();
-				fx_draw();
-				ship_draw();
-				hud_draw();
+				// 작성자: 0329 신제현
+				 
+				game_redraw();
+
+				// 작성자: 0329 신제현
+				// 특정 시간이 지났을 때 모든 잡몹을 지우고 보스만 나타나게 하는 동작을 수행
+				if (frames - stage_start_frame >= STAGE_DURATION[current_state - 1])		// 여기서는 보스 스폰 프레임이 36000프레임(10분)
+				{
+					shots_init();			// 총알을 화면에서 전부 제거
+					aliens_init();			// 잡몹을 화면에서 전부 제거
+					printf("=== BOSS PHASE IN ===\n");
+				}
+
 				break;
 
 			case STATE_PAUSE:
-				aliens_draw();
-				shots_draw();
-				fx_draw();
-				ship_draw();
-				hud_draw();
+				game_redraw();
 				al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
 				ui_draw_pause_menu();
 				break;
@@ -407,16 +485,19 @@ int main()
 				break;
 
 			case STATE_LEVEL_UP:        // 재작성자: 신제현
-				aliens_draw();
-				shots_draw();
-				fx_draw();
-				ship_draw();
-				hud_draw();
+				game_redraw();
 				al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
 				ui_draw_level_up_menu();
 				break;
 
+			case STATE_BOSS:
+				game_redraw();
+				boss_draw();
+				break;
 
+			case STATE_GAMECLEAR:
+				ui_draw_game_clear_menu();
+				break;
 			}
 			disp_post_draw();
 			redraw = false;

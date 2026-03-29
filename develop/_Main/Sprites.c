@@ -37,7 +37,7 @@ void sprites_init()
     sprites.alien[0] = sprite_grab(224, 748, ALIEN_METEOR_W, ALIEN_METEOR_H); // "meteorGrey_big1.png" x="224" y="748" width="101" height="84"/>
     sprites.alien[1] = sprite_grab(120, 520, ALIEN_FAST_W, ALIEN_FAST_H); // "enemyRed2.png" x="120" y="520" width="104" height="84"/>
     sprites.alien[2] = sprite_grab(224, 496, ALIEN_SHOOTER_W, ALIEN_SHOOTER_H); // "enemyGreen3.png" x="224" y="496" width="103" height="84"/>
-    //sprites.alien[3] = sprite_grab(0, 941, ALIEN_BOSS_W, ALIEN_BOSS_H); // "playerShip2_red.png" x="0" y="941" width="112" height="75"/>
+    sprites.alien[3] = sprite_grab(0, 941, 112, 75); // "playerShip2_red.png" x="0" y="941" width="112" height="75"/>
     /*sprites.alien[4] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
     sprites.alien[5] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);*/
 

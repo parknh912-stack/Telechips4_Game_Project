@@ -459,7 +459,7 @@ void aliens_update()
                 aliens[i].cx = new_x + (ALIEN_W[aliens[i].type] / 2.0f);
                 aliens[i].cy = new_y + (ALIEN_H[aliens[i].type] / 2.0f);
 
-                aliens[i].type = between(0, ALIEN_TYPE_N);
+                aliens[i].type = between(0, ALIEN_TYPE_N - 1);
                 //aliens[i].type = 3;
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
@@ -607,25 +607,26 @@ void aliens_draw()
 {
     for (int i = 0; i < ALIENS_N; i++)
     {
-        float between_angle = atan2(ship.y - aliens[i].y, ship.x - aliens[i].x) + (ALLEGRO_PI / 2.0);
         if (!aliens[i].used)
             continue;
         if (aliens[i].blink > 2)
             continue;
 
+        float between_angle = atan2(ship.y - aliens[i].y, ship.x - aliens[i].x) + (ALLEGRO_PI / 2.0);
+
         al_draw_scaled_rotated_bitmap(sprites.alien[aliens[i].type],
             ALIEN_W[aliens[i].type] / 2, ALIEN_H[aliens[i].type] / 2,
-            aliens[i].cx, aliens[i].cy, 
+            aliens[i].cx, aliens[i].cy,
             0.5, 0.5,
-            between_angle,  
+            between_angle,
             0);
 
-       //al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
-       //     0, 0,
-       //     101, 84,
-       //     aliens[i].x, aliens[i].y,
-       //     ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
-       //     0);
+        //al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
+        //    0, 0,
+        //    101, 84,
+        //    aliens[i].x, aliens[i].y,
+        //    ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
+        //    0);
         //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
     }
 }
@@ -683,4 +684,139 @@ void aliens_collide()
             }
         }
     }
+}
+
+
+// --- boss ---
+
+BOSS boss;
+
+// 0329 천원석
+void boss_init()
+{
+    for (int i = 0; i < BOSS_N; i++)
+        boss.used = false;
+}
+
+// 0329 신제현
+// alien_update() 대거 참고하였음
+void boss_update(void)
+{
+    // 보스는 단 한 번만 나올 것
+    // 리스폰 없음
+    int new_quota = 1;
+
+    // 작성자: 천원석 & 신제현
+    /* --- 보스 생성 및 초기화 --- */
+    for (int i = 0; i < BOSS_N; ++i)
+    {
+        if (boss.used == false)
+        {
+            int new_x = between(10, BUFFER_W - 50);
+            int new_y = between(10, BUFFER_H - 50);
+
+            boss.x = new_x;
+            boss.y = new_y;
+
+            boss.x = new_x + (ALIEN_W[ALIEN_TYPE_BOSS] / 2.0f);
+            boss.y = new_y + (ALIEN_H[ALIEN_TYPE_BOSS] / 2.0f);
+
+            boss.shot_timer = between(1, 99);
+            boss.blink = 0;
+            boss.used = true;
+
+            // 타입이 ALIEN_TYPE_BOSS이므로
+            boss.life = 30;
+            boss.speed = 0.5f;
+
+            --new_quota;
+            continue;
+        }
+
+
+        boss.cx = boss.x + (ALIEN_W[ALIEN_TYPE_BOSS] / 2.0f);
+        boss.cy = boss.y + (ALIEN_H[ALIEN_TYPE_BOSS] / 2.0f);
+
+        // 보스 또한 캐릭터 방향으로 이동함
+        boss_move(ALIEN_TYPE_BOSS, boss.speed);
+
+        // 보스는 화면 밖으로 나가도 제거되지 않음
+
+        if (boss.blink)
+            --boss.blink;
+
+        if (shots_collide(false, boss.x, boss.y, ALIEN_W[ALIEN_TYPE_BOSS], ALIEN_H[ALIEN_TYPE_BOSS]))
+        {
+            boss.life -= ship.damage;
+            boss.blink = 4;         // 얼마나 블링크를 할 것인지 추후 결정
+        }
+
+        if (boss.life <= 0)     // 보스가 죽었을 때!
+        {
+            fx_add(false, boss.cx, boss.cy);
+
+            score += 2000;      // 점수 2000점 획득!
+            fx_add(false, boss.cx - 10, boss.cy - 4);
+            fx_add(false, boss.cx + 4, boss.cy + 10);
+            fx_add(false, boss.cx + 10, boss.cy + 8);
+
+            boss.used = false;
+
+            // 추가: 0329 신제현
+            is_boss_spawned = false;
+            stage_start_frame = frames;
+            ++current_state;
+
+            continue;
+        }
+
+        boss.shot_timer--;
+
+        if (boss.shot_timer <= 0)
+        {
+            shots_add(false, true, boss.cx, boss.cy);
+            boss.shot_timer = 1000;
+        }
+    }
+
+    aliens_collide();        // 여기는 좀 생각해봐야 함.
+}
+
+// 0329 신제현
+void boss_draw()
+{
+    for (int i = 0; i < BOSS_N; ++i)
+    {
+        float between_angle = atan2(ship.y - boss.y, ship.x - boss.x) + (ALLEGRO_PI / 2.0);
+
+        if (boss.used)
+            continue;
+
+        if (boss.blink > 2)
+            continue;
+
+        al_draw_scaled_bitmap(sprites.boss,
+            0, 0,
+            552, 800,
+            boss.cx, boss.cy,
+            552, 800,
+            0);
+    }
+}
+
+// 작성자: 0329 신제현
+// alien_move() 함수를 재활용하여 보스 움직이는 것도 함수화
+void boss_move(int i, float speed)
+{
+    if (boss.cx > ship.cx)
+        boss.x -= speed;
+
+    if (boss.cx < ship.cx)
+        boss.x += speed;
+
+    if (boss.cy > ship.cy)
+        boss.y -= speed;
+
+    if (boss.cy < ship.cy)
+        boss.y += speed;
 }

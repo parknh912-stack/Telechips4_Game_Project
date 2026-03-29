@@ -92,7 +92,6 @@ typedef struct ALIEN
 #define ALIEN_LIFE_BUG      ALIEN_LIFE[0]
 #define ALIEN_LIFE_ARROW    ALIEN_LIFE[1]
 #define ALIEN_LIFE_THICCBOI ALIEN_LIFE[2]
-#define ALIEN_LIFE_BOSS     ALIEN_LIFE[3]
 
 
 extern ALIEN aliens[ALIENS_N];
@@ -104,5 +103,36 @@ void aliens_update();   //생성
 void aliens_draw();
 void aliens_move(int i, float speed);
 void aliens_collide();
+
+// --- boss ---
+
+// 작성자: 0329 신제현 - 화면에 등장하게 할 보스의 수 관리 매크로 상수
+#define BOSS_N 				(1)
+
+// 작성자: 0329 천원석, 신제현
+typedef struct BOSS
+{
+    /* 좌표 */
+    float x, y;
+    float cx, cy;       //중앙 좌표
+
+    /* 스텟*/
+    float speed;        //이동 속도
+    float fire_rate;    //초당 공격 속도
+    int shot_timer;     //공격 타이머
+
+    int blink;
+    int life;
+    bool used;
+} BOSS;
+
+extern BOSS boss;
+
+
+// 작성자: 0329 천원석 & 신제현
+void boss_init();
+void boss_update();     // 보스 생성
+void boss_draw();
+void boss_move(int i, float speed);
 
 #endif // 

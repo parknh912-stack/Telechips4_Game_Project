@@ -229,3 +229,19 @@ void ui_draw_level_up_menu()
 
     draw_menu_ui(&m, "LEVEL UP!!!");
 }
+
+// 작성자: 0329 신제현
+void ui_draw_game_clear_menu(void)
+{
+    MENU m = {
+        BUFFER_W / 2,
+        BUFFER_H / 2,
+        200,
+        400,
+        { "record your score", "exit without save" },
+        2,
+        current_menu_selection
+    };
+
+    draw_menu_ui(&m, "GAME CLEAR!!!");
+}

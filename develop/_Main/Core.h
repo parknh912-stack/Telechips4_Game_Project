@@ -28,20 +28,35 @@ bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2);
 /* --- Gameplay --- */
 // 작성자: 김병헌
 typedef enum STATE {
-    STATE_MENU,          // 0: 메인 메뉴
-    STATE_PLAYING,       // 1: 게임 진행 중
-    STATE_PAUSE,         // 2: 일시정지
-    STATE_INPUT_NAME,    // 3: 신기록 이름 입력
-    STATE_GAMEOVER,      // 4: 게임 오버
+    STATE_MENU,           // 0: 메인 메뉴
+    STATE_PLAYING,        // 1: 게임 진행 중
+    STATE_PAUSE,          // 2: 일시정지
+    STATE_INPUT_NAME,     // 3: 신기록 이름 입력
+    STATE_GAMEOVER,       // 4: 게임 오버
     STATE_RANK,           // 5: 랭킹 확인
     STATE_LEVEL_UP,       // 6. 레벨 업햇을때 뜨는 창
-    STATE_NEWGAME         // 7. 재시작
+    STATE_NEWGAME,        // 7. 재시작
+    STATE_BOSS,           // 8. 보스 나오는 스테이지 진입 상태 (수정: 0329 신제현)
+    STATE_GAMECLEAR       // 9. 게임을 전부 깼음(수정: 0329 신제현)
 } STATE;
+
+// 작성자: 0329 신제현
+// 게임에서 적용할 최대 스테이지
+#define MAX_STAGE           (3)
 
 // 작성자: 신제현
 extern STATE current_state;
 
 void game_state_update(STATE* state, bool* done);
 void pause_resume_game(STATE* state);
+
+// 보스가 스폰되었는지 체크하는 플래그 하나 선언
+extern bool is_boss_spawned;
+
+// 작성자: 0329 신제현 - 현재 스테이지 넘버 관리하는 변수
+extern int curr_stage;
+
+// 작성자: 0329 신제현 - 스테이지별 시작 프레임 관리 전역변수
+extern int stage_start_frame;
 
 #endif // !_CORE_H_
