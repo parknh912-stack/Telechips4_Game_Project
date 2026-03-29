@@ -5,8 +5,8 @@
 
 // 0: 접근만 하는 적 ( 운석 ), 1: 0번과 같지만 더 빠르고 체력이 높다,  2: 0번보다 느리지만 투사체 발사 3: 보스   
 // 1번적은 enemyred2로
-const int ALIEN_W[] = { 101, 104, 103, 112 };
-const int ALIEN_H[] = { 84, 84, 84, 75 };
+const int ALIEN_W[] = { 101, 104, 103, 800 };
+const int ALIEN_H[] = { 84, 84, 84, 552 };
 const int ALIEN_R[] = { 42, 42, 42, 32 };
 SPRITES sprites;
 
@@ -22,9 +22,9 @@ ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h)
 void sprites_init()
 {
     sprites._sheet = al_load_bitmap("sheet.png");
-    sprites._sheet2 = al_load_bitmap("spaceStation_026.png");
+   // sprites._sheet2 = al_load_bitmap("spaceStation_026.png");
     must_init(sprites._sheet, "spritesheet");
-    must_init(sprites._sheet2, "spritesheet");
+   // must_init(sprites._sheet2, "spaceStation_026.png");
 
     sprites.ship = sprite_grab(444, 91, 91, 91);    //"ufoBlue.png" x="444" y="91" width="91" height="91"/>
 
@@ -37,11 +37,12 @@ void sprites_init()
     sprites.alien[0] = sprite_grab(224, 748, ALIEN_METEOR_W, ALIEN_METEOR_H); // "meteorGrey_big1.png" x="224" y="748" width="101" height="84"/>
     sprites.alien[1] = sprite_grab(120, 520, ALIEN_FAST_W, ALIEN_FAST_H); // "enemyRed2.png" x="120" y="520" width="104" height="84"/>
     sprites.alien[2] = sprite_grab(224, 496, ALIEN_SHOOTER_W, ALIEN_SHOOTER_H); // "enemyGreen3.png" x="224" y="496" width="103" height="84"/>
-    //sprites.alien[3] = sprite_grab(0, 941, ALIEN_BOSS_W, ALIEN_BOSS_H); // "playerShip2_red.png" x="0" y="941" width="112" height="75"/>
+    //sprites.alien[3] = sprite_grab(0, 941, ALIEN_TEST_W, ALIEN_TEST_H); // "playerShip2_red.png" x="0" y="941" width="112" height="75"/>
     /*sprites.alien[4] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);
     sprites.alien[5] = sprite_grab(0, 21, ALIEN_THICCBOI_W, ALIEN_THICCBOI_H);*/
 
-    sprites.boss = al_create_bitmap(552, 800);
+    sprites.boss = al_load_bitmap("spaceStation_026.png");
+    must_init(sprites.boss, "boss");
 
     sprites.alien_shot = sprite_grab(310, 982, 41, 41); //"turretBase_big.png" x="310" y="982" width="41" height="41"/>
 

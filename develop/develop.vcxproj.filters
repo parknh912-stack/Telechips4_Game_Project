@@ -36,7 +36,7 @@
     <Image Include="ui_sheet.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\..\..\..\..\Desktop\예제_게임_실행_정리\이미지파일 2\PNG\Sprites X2\Station\spaceStation_026.png">
+    <Image Include="spaceStation_026.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

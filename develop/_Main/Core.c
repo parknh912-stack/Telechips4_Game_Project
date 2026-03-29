@@ -121,6 +121,7 @@ void game_state_update(STATE* state, bool* done)
 		stars_update();
 		ship_update();
 		aliens_update();
+		boss_update();
 		hud_update();
 		// 작성자: 신제현
 		// 레벨 증가하는 점수에 따라 해당 조건 검사
@@ -188,6 +189,7 @@ void game_state_update(STATE* state, bool* done)
 		keyboard_init();
 		fx_init();
 		aliens_init();
+		boss_init();
 		stars_init();
 		shots_init();
 		current_state = STATE_PLAYING;
@@ -283,7 +285,7 @@ int main()
 	must_init(queue, "queue");
 
 	disp_init();
-	audio_init();
+	//audio_init();
 
 	must_init(al_init_image_addon(), "image");
 	sprites_init();
@@ -291,9 +293,9 @@ int main()
 	hud_init();
 
 	must_init(al_init_primitives_addon(), "primitives");
-	must_init(al_install_audio(), "audio");
-	must_init(al_init_acodec_addon(), "audio codecs");
-	must_init(al_reserve_samples(16), "reserve samples");
+	//must_init(al_install_audio(), "audio");
+	//must_init(al_init_acodec_addon(), "audio codecs");
+	//must_init(al_reserve_samples(16), "reserve samples");
 
 	al_register_event_source(queue, al_get_keyboard_event_source());
 	al_register_event_source(queue, al_get_display_event_source(disp));
@@ -304,6 +306,7 @@ int main()
 	shots_init();
 	ship_init();
 	aliens_init();
+	boss_init();
 	stars_init();
 
 	frames = 0;
@@ -374,6 +377,7 @@ int main()
 			{
 			case STATE_PLAYING:
 				aliens_draw();
+				boss_draw();
 				shots_draw();
 				fx_draw();
 				ship_draw();
@@ -382,6 +386,7 @@ int main()
 
 			case STATE_PAUSE:
 				aliens_draw();
+				boss_draw();
 				shots_draw();
 				fx_draw();
 				ship_draw();
@@ -408,6 +413,7 @@ int main()
 
 			case STATE_LEVEL_UP:        // 재작성자: 신제현
 				aliens_draw();
+				boss_draw();
 				shots_draw();
 				fx_draw();
 				ship_draw();
@@ -426,7 +432,7 @@ int main()
 	ui_deinit();
 	sprites_deinit();
 	hud_deinit();
-	audio_deinit();
+	//audio_deinit();
 	disp_deinit();
 	al_destroy_timer(timer);
 	al_destroy_event_queue(queue);

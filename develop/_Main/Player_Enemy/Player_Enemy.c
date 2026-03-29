@@ -271,7 +271,7 @@ void ship_init()
 
     ship.speed = 3.0f;          //이동속도, 수정가능
     ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
-    ship.shot_timer = 60;       //shot_timer
+    ship.shot_timer = 600000;       //shot_timer
     ship.damage = 10;           //데미지, int      (수정가능)
     ship.shot_count = 1;        //투사체 수 (홀수개만)
     ship.max_lifes = 10000;       //최대 체력
@@ -459,8 +459,8 @@ void aliens_update()
                 aliens[i].cx = new_x + (ALIEN_W[aliens[i].type] / 2.0f);
                 aliens[i].cy = new_y + (ALIEN_H[aliens[i].type] / 2.0f);
 
-                aliens[i].type = between(0, ALIEN_TYPE_N);
-                //aliens[i].type = 3;
+                aliens[i].type = between(0, ALIEN_TYPE_N - 1);
+                //aliens[i].type = 3; // boss aliens type
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
                 aliens[i].used = true;
@@ -683,4 +683,174 @@ void aliens_collide()
             }
         }
     }
+}
+
+// --- boss --- 
+
+BOSS boss;
+
+bool boss_stop = false;
+
+void boss_init()
+{
+    for (int i = 0; i < BOSS_N; i++)
+        boss.used = false;
+}
+void boss_update(void)
+{
+    // 보스는 단 한 번만 나올 것
+    // 리스폰 없음
+    int new_quota = 1;
+
+    // 작성자: 천원석 & 신제현
+    /* --- 보스 생성 및 초기화 --- */
+    for (int i = 0; i < BOSS_N; ++i)
+    {
+        if (boss.used == false)
+        {
+            int new_x = -350;    
+            int new_y = -800;    // 화면 y축 밖
+            
+            boss.x = new_x;
+            boss.y = new_y;
+
+            boss.cx = new_x + (ALIEN_W[ALIEN_TYPE_BOSS] / 2.0f);
+            boss.cy = new_y + (ALIEN_H[ALIEN_TYPE_BOSS] / 2.0f);
+
+            boss.shot_timer = 500;
+            boss.blink = 0;
+            boss.used = true;
+
+            // 타입이 ALIEN_TYPE_BOSS이므로
+            boss.life = 30;
+            boss.speed = 0.5f;
+
+            --new_quota;
+            continue;
+        }
+
+        //boss.cx = 640;
+        //boss.cy = 320;
+        boss.cx = boss.x + (ALIEN_W[ALIEN_TYPE_BOSS] / 2.0f);
+        boss.cy = boss.y + (ALIEN_H[ALIEN_TYPE_BOSS] / 2.0f);
+
+        // 보스 또한 캐릭터 방향으로 이동함
+        boss_move(ALIEN_TYPE_BOSS, boss.speed);
+        // 보스는 화면 밖으로 나가도 제거되지 않음
+
+        if (boss.blink)
+            --boss.blink;
+
+        if (shots_collide(false, boss.x, boss.y, ALIEN_W[ALIEN_TYPE_BOSS], ALIEN_H[ALIEN_TYPE_BOSS]))
+        {
+            boss.life -= ship.damage;
+            boss.blink = 4;         // 얼마나 블링크를 할 것인지 추후 결정
+        }
+
+        if (boss.life <= 0)     // 보스가 죽었을 때
+        {
+            fx_add(false, boss.cx, boss.cy);
+
+            score += 2000;      // 점수 2000점 획득
+            fx_add(false, boss.cx - 10, boss.cy - 4);
+            fx_add(false, boss.cx + 4, boss.cy + 10);
+            fx_add(false, boss.cx + 10, boss.cy + 8);
+
+            boss.used = false;
+            continue;
+        }
+
+        boss.shot_timer--;
+
+        if (boss.shot_timer == 0)
+        {
+            boss_shot(boss.x + 800, boss.y+400);
+            boss_shot(boss.x - 200, boss.y+400);
+            boss_shot(boss.x + 200, boss.y+400);
+            boss_shot(boss.x + 1200, boss.y+400);
+            boss.shot_timer = 500;
+        }
+    }
+
+    aliens_collide();        // 여기는 좀 생각해봐야 함.
+}
+// 작성자 : 0329 천원석
+void boss_draw()
+{
+    for (int i = 0; i < BOSS_N; ++i)
+    {
+        // float between_angle = atan2(ship.y - boss.y, ship.x - boss.x) + (ALLEGRO_PI / 2.0);
+
+        if (!boss.used)
+            continue;
+
+        if (boss.blink > 2)
+            continue;
+
+        //al_draw_bitmap(sprites.boss, 640, 320, 0);
+
+        al_draw_scaled_bitmap(sprites.boss,
+            0, 0,
+            800, 552,
+            boss.cx, boss.cy,
+            1200, 552,
+            0);
+
+        /*al_draw_scaled_rotated_bitmap(sprites.boss,
+            ALIEN_W[3] / 2, ALIEN_H[3] / 2,
+            boss.cx, boss.cy,
+            0.5, 0.5,
+            between_angle,
+            0);*/
+    }
+}
+
+// 작성자 : 0329 천원석
+void boss_shot(float x, float y)
+{
+    al_play_sample(
+        sample_shot,
+        0.3,
+        0,
+        0.5,
+        ALLEGRO_PLAYMODE_ONCE,
+        NULL
+    );
+
+    float speed = 2.0f;
+
+    float spread_gap = 0.2f;
+    bool has_shot_created_success = false;
+        float base_angle = ALLEGRO_PI / 2.0f;
+        float start_angle = base_angle - (5 / 2.0f) * spread_gap;
+
+        for (int i = 0; i < 5; ++i)
+        {
+            float curr_angle = start_angle + i * spread_gap;
+            float dx = cos(curr_angle) * speed;
+            float dy = sin(curr_angle) * speed;
+            if (shots_create_instance(false, x, y, between_f(-2.0f, 2.0f), between_f(-2.0f, 2.0f)))
+                has_shot_created_success = true;
+        }
+    return has_shot_created_success;
+}
+
+ // 작성자: 0329 신제현
+ // alien_move() 함수를 재활용하여 보스 움직이는 것도 함수화
+void boss_move(int i, float speed)
+{
+    if (boss.cy < 0)
+    {
+        boss.y += speed;
+    }
+    if (boss.cy >= 0)  boss_stop = true;
+}
+
+// 작성자: 0329 신제현
+// aliens_collide() 함수와 동작 방식은 매우 비슷
+// 다만 일부 속성값의 변경이 존재
+// 혹시 보스가 2개 이상 나올 경우를 대비한 함수
+void boss_collide(void)
+{
+    // (작성 보류)
 }

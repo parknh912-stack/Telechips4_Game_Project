@@ -137,8 +137,8 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\Desktop\예제_게임_실행_정리\이미지파일 2\PNG\Sprites X2\Station\spaceStation_026.png" />
     <Image Include="sheet.png" />
+    <Image Include="spaceStation_026.png" />
     <Image Include="spritesheet.png" />
     <Image Include="ui_sheet.png" />
   </ItemGroup>

@@ -87,6 +87,8 @@ typedef struct ALIEN
     bool used;
 } ALIEN;
 
+
+
 #define ALIENS_N 16  //나오는 적 숫자
 
 #define ALIEN_LIFE_BUG      ALIEN_LIFE[0]
@@ -105,4 +107,32 @@ void aliens_draw();
 void aliens_move(int i, float speed);
 void aliens_collide();
 
-#endif // 
+void boss_init();
+void boss_draw();
+void boss_update();
+
+// --- boss ---
+// 작성자 : 천원석, 신제현
+
+#define BOSS_N (1)
+
+typedef struct BOSS
+{
+    /* 좌표 */
+    float x, y;
+    float cx, cy;       //중앙 좌표
+
+    /* 스텟*/
+    float speed;        //이동 속도
+    float fire_rate;    //초당 공격 속도
+    int shot_timer;     //공격 타이머
+
+    int blink;
+    int life;
+    bool used;
+} BOSS;
+
+void boss_move(int i, float speed);
+void boss_shot(float x, float y);
+
+#endif 
