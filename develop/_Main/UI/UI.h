@@ -5,7 +5,7 @@
 #include "../Display.h"
 #include "../Core.h"
 
-//0328 김병헌 : 매직넘버 수정을 위한 대대적인 작업이 있었습니다.
+//0328 김병헌 : 매직넘버 수정을 위한 작업이 있었습니다.
 /* -- Asset Location -- */
 #define UI_PANEL_BLUE_X            190 
 #define UI_PANEL_BLUE_Y            0
@@ -29,6 +29,7 @@
 /* -- UI Panel size -- */
 #define UI_PANEL_SIZE_W            400
 #define UI_PANEL_SIZE_W_L          550
+#define UI_PANEL_SIZE_W_VL         1000
 #define UI_PANEL_SIZE_H_M          270
 #define UI_PANEL_SIZE_H_L          450
 
@@ -59,6 +60,8 @@
 #define MENU_BTN_HEIGHT            40.0f
 #define MENU_BTN_SPACING           50
 #define MENU_BTN_PRESSED_OFFSET    4
+#define MENU_BTN_SIZE_X 220
+#define MENU_BTN_SIZE_Y 300
 
 /* -- RANKING -- */
 #define RANK_TITLE_OFFSET_Y        60
@@ -66,6 +69,15 @@
 #define RANK_POS_X_OFFSET          160
 #define INPUT_BOX_SRC_W            190
 #define INPUT_BOX_SRC_H            49
+
+/* -- COLOR -- */
+#define COLOR_GOLD                 al_map_rgb(255, 215, 0)
+#define COLOR_SILVER               al_map_rgb(192, 192, 192)
+#define COLOR_BRONZE               al_map_rgb(205, 127, 50)
+#define COLOR_WHITE                al_map_rgb(255, 255, 255)
+#define COLOR_BLACK                al_map_rgb(0, 0, 0)
+#define COLOR_YELLOW               al_map_rgb(255, 255, 0)
+#define COLOR_TITLE                al_map_rgb(230, 230, 0)
 
 /* -- stars -- */
 typedef struct STAR
@@ -113,11 +125,13 @@ void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float d
 void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height, ALLEGRO_FONT* fonto);
 void menu_input_update(int item_count);
 
+void draw_bold_text(ALLEGRO_FONT* font, ALLEGRO_COLOR main_color, ALLEGRO_COLOR outline_color, float x, float y, int flags,int thickness, const char* text); //0328 김병헌 볼드체 작성 함수
 void ui_draw_main_menu();
 void ui_draw_pause_menu();
 void ui_draw_gameover_menu();
 void ui_draw_rank_menu();
 void ui_draw_input_name_menu();
+void ui_draw_h2p_menu();//0328 김병헌
 
 // 작성자: 신제현
 void ui_draw_level_up_menu(void);

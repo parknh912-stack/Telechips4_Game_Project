@@ -120,17 +120,24 @@ void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float r
     al_draw_scaled_bitmap(ui_sheet, sx, sy, sw, sh, dx, dy, real_width, real_height, 0);
 }
 
+void draw_bold_text(ALLEGRO_FONT* font, ALLEGRO_COLOR main_color, ALLEGRO_COLOR outline_color, float x, float y, int flags, int thickness, const char* text)//0328 ±Ë∫¥«Â ∫ºµÂ√º ∏∏µÈ±‚ µ˚∑Œ «‘ºˆ∑Œ ∏∏µÍ
+{
+    //≈◊µŒ∏Æ
+    al_draw_text(font, outline_color, x + thickness, y, flags, text);//0328 ±Ë∫¥«Â
+    al_draw_text(font, outline_color, x - thickness, y, flags, text);//0328 ±Ë∫¥«Â
+    al_draw_text(font, outline_color, x, y + thickness, flags, text);//0328 ±Ë∫¥«Â
+    al_draw_text(font, outline_color, x, y - thickness, flags, text);//0328 ±Ë∫¥«Â
+    //∫ªπÆ
+    al_draw_text(font, main_color, x, y, flags, text);//0328 ±Ë∫¥«Â
+}
+
 void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height, ALLEGRO_FONT* fonto)
 {
     draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H, m->x - wanted_width/2, m->y - wanted_height/2, wanted_width, wanted_height);
 
     if (title)
     {
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x+1, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x-1, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y+3 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y-1 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(fonto, al_map_rgb(230, 230, 0), m->x, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫ºµÂ√º ±∏«ˆ
+        draw_bold_text(fonto, COLOR_TITLE, COLOR_BLACK, m->x, (m->y)/1.7, ALLEGRO_ALIGN_CENTER,2, title);//0328 ±Ë∫¥«Â
     }
 
     for (int i = 0; i < m->item_count; i++)
@@ -144,7 +151,7 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         if (m->selected == i)
         {
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
-            btn_y += 4;
+            btn_y += MENU_BTN_PRESSED_OFFSET;
         }
         else
         {
@@ -152,13 +159,9 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         }
 
         draw_ui_element(sx, sy, UI_BTN_W, sh, btn_x, btn_y, btn_w, btn_h);
-        //«ÿ¥Á 4¡Ÿ √ﬂ∞°µµ ∫∏ªˆ
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x+1, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x-1, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x, btn_y + 13, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x, btn_y + 11, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(255, 255, 255), m->x, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        //«ÿ¥Á 4¡Ÿ √ﬂ∞°µµ ∫∏ªˆ22
+        
+        draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m->x, btn_y + 12, ALLEGRO_ALIGN_CENTER, 1, m->items[i]);//0328 ±Ë∫¥«Â
+
     }
 }
 
@@ -184,8 +187,8 @@ void menu_input_update(int item_count)
 
 void ui_draw_main_menu()
 {
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Start Game", "Ranking", "Exit"}, 3, current_menu_selection };
-    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 250, 300, {"Start Game", "How to play", "Ranking", "Exit"}, 4, current_menu_selection };//0328 ±Ë∫¥«Â howtoplay √ﬂ∞°
+    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 }
 
 
@@ -208,27 +211,30 @@ void ui_draw_rank_menu()
     draw_menu_ui(&m, "LEADERBOARD", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W_L, UI_PANEL_SIZE_H_L, bold_font);
 
     // 2. ∑©≈∑ µ•¿Ã≈Õ √‚∑¬ (ªÛ¿ß 5∞≥)
-    float start_y = m.y - (m.height / 2) + 60; // ≈∏¿Ã∆≤ æ∆∑° ¡ˆ¡°
+    float start_y = m.y - (m.height / 2) + RANK_TITLE_OFFSET_Y; // 0328 ±Ë∫¥«Â
     for (int i = 0; i < MAX_RANKING; i++)
     {
-        // º¯¿ß π◊ ¿Ã∏ß (øﬁ¬  ¡§∑ƒ ¥¿≥¶)
-        //0327 ±Ë∫¥«Â √ﬂ∞° ±› ¿∫ µø ∏ﬁ¥ﬁ ¥¿≥¶ ±∏«ˆ
+        // º¯¿ß π◊ ¿Ã∏ß (øﬁ¬  ¡§∑ƒ)
+        //0328 ±Ë∫¥«Â ±› ¿∫ µø ∏ﬁ¥ﬁ π◊ ∫Øºˆ ¡§∏Æ
+        float left_x = m.x - RANK_POS_X_OFFSET; //0328 ±Ë∫¥«Â
+        float right_x = m.x + RANK_POS_X_OFFSET; //0328 ±Ë∫¥«Â
+        float line_y = start_y + (i * RANK_LINE_SPACING); //0328 ±Ë∫¥«Â
+
         if (i == 0)
         {
-            al_draw_textf(font, al_map_rgb(255, 215, 0), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+            al_draw_textf(font, COLOR_GOLD, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
         }
         else if (i == 1)
         {
-            al_draw_textf(font, al_map_rgb(192, 192, 192), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+            al_draw_textf(font, COLOR_SILVER, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
         }
         else if (i == 2)
         {
-            al_draw_textf(font, al_map_rgb(205, 127, 50), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+            al_draw_textf(font, COLOR_BRONZE, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
         }
-        else al_draw_textf(font, al_map_rgb(1, 1, 1), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+        else al_draw_textf(font, COLOR_BLACK, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
 
-        // ¡°ºˆ (ø¿∏•¬  ¡§∑ƒ ¥¿≥¶)
-        al_draw_textf(font, al_map_rgb(255, 255, 0), m.x + 160, start_y + (i * 25),ALLEGRO_ALIGN_RIGHT, "%ld", ranking[i].score);
+        al_draw_textf(font, COLOR_YELLOW, right_x, line_y,ALLEGRO_ALIGN_RIGHT, "%ld", ranking[i].score);//0328 ±Ë∫¥«Â
     }
 }
 
@@ -238,12 +244,16 @@ void ui_draw_input_name_menu()
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
     draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
 
+    float input_w = 320.0f; //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥ ∫Ò
+    float input_h = 50.0f; //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥Ù¿Ã
+    float input_x = m.x - (input_w / 2); //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥ ∫Òø° µ˚∏• ¿ßƒ°
+    float input_y = m.y - (input_h / 2); //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥Ù¿Ãø° µ˚∏• ¿ßƒ°
+
     // 2. ¿‘∑¬ π⁄Ω∫ øµø™ (πˆ∆∞ ¿ß ∫Û ∞¯∞£)
-    draw_ui_element(0,0,190,49,480,350,320,50);
-    float input_y = m.y;
+    draw_ui_element(0,0,INPUT_BOX_SRC_W, INPUT_BOX_SRC_H, input_x, input_y, input_w, input_h);//0328 ±Ë∫¥«Â
 
     // «ˆ¿Á ¿‘∑¬ ¡ﬂ¿Œ ¿Ã∏ß √‚∑¬
-    al_draw_text(font, al_map_rgb(0, 0, 0), m.x, input_y + 10,ALLEGRO_ALIGN_CENTER, player_name);
+    al_draw_text(font, COLOR_BLACK, m.x, m.y-6,ALLEGRO_ALIGN_CENTER, player_name);//0328 ±Ë∫¥«Â
 
 
 }
@@ -255,4 +265,14 @@ void ui_draw_level_up_menu()
     
     draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
     
+}
+
+void ui_draw_h2p_menu()//0328 ±Ë∫¥«Â
+{
+    int extra_y = 50;
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
+    draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y-6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 ±Ë∫¥«Â
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "Will change this into a decent function");//0328 ±Ë∫¥«Â
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "But Later");//0328 ±Ë∫¥«Â
 }
