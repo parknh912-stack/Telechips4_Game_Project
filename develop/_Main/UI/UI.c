@@ -152,6 +152,12 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         {
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
             btn_y += MENU_BTN_PRESSED_OFFSET;
+
+            float cursor_w = 20.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            float cursor_h = 20.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            float cursor_x = btn_x - cursor_w - 15.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            float cursor_y = btn_y + (btn_h / 2.0f) - (cursor_h / 2.0f);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            draw_ui_element(259, 486, 22, 21, cursor_x, cursor_y, cursor_w, cursor_h);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
         }
         else
         {
@@ -159,6 +165,7 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         }
 
         draw_ui_element(sx, sy, UI_BTN_W, sh, btn_x, btn_y, btn_w, btn_h);
+        
         
         draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m->x, btn_y + 12, ALLEGRO_ALIGN_CENTER, 1, m->items[i]);//0328 ±èº´Çå
 
