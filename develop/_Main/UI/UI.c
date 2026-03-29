@@ -222,7 +222,7 @@ void ui_draw_level_up_menu()
         BUFFER_H / 2,
         200,
         400,
-        { "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"},
+        { "Damage Up", "Shot Count Up", "Fire Rate Up", "Speed Up", "MAx Lifes Up", "Instant Lifes"},
         6,
         current_menu_selection
     };

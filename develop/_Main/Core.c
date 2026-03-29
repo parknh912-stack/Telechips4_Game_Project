@@ -105,7 +105,6 @@ void pause_resume_game(STATE* state)
 
 // 0327 신제현
 // 게임 초기화 동작을 함수로 모듈화
-// is_boss_spawned 플래그 추가(0329 신제현)
 void game_state_init(void)
 {
 	frames = 0;
@@ -137,6 +136,18 @@ void game_redraw(void)
 	hud_draw();
 }
 
+// 0330 신제현
+// 게임 상태 업데이트 작업을 함수로 작성하여 모듈화
+void game_draw_update(void)
+{
+	fx_update();
+	shots_update();
+	stars_update();
+	ship_update();
+	aliens_update();
+	hud_update();
+}
+
 // 작성자: 신제현
 void game_state_update(STATE* state, bool* done)
 {
@@ -161,12 +172,7 @@ void game_state_update(STATE* state, bool* done)
 		break;
 
 	case STATE_PLAYING:
-		fx_update();
-		shots_update();
-		stars_update();
-		ship_update();
-		aliens_update();
-		hud_update();
+		game_draw_update();
 
 		// 0329 신제현 - 보스 스테이지 진입 검사
 		if (frames - stage_start_frame >= STAGE_DURATION[curr_stage - 1])
@@ -242,6 +248,7 @@ void game_state_update(STATE* state, bool* done)
 			current_menu_selection = 0;
 		}
 		break;
+
 	case STATE_INPUT_NAME:
 		menu_input_update(1);
 		if (is_select_pressed)
@@ -254,6 +261,7 @@ void game_state_update(STATE* state, bool* done)
 			}
 		}
 		break;
+
 	case STATE_LEVEL_UP:        // 재작성자: 0326 신제현
 		menu_input_update(6);
 
@@ -303,18 +311,14 @@ void game_state_update(STATE* state, bool* done)
 					printf("After: %d\n", ship.curr_lifes);
 					break;
 			}
+
 			*state = STATE_PLAYING;
 			current_menu_selection = 0;
 		}
 		break;
 
 	case STATE_BOSS:
-		fx_update();
-		shots_update();
-		stars_update();
-		ship_update();
-		boss_update();
-		hud_update();
+		game_draw_update();
 
 		// 보스를 잡았다면?
 		if (!boss.used)

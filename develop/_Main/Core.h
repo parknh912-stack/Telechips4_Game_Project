@@ -50,6 +50,11 @@ extern STATE current_state;
 void game_state_update(STATE* state, bool* done);
 void pause_resume_game(STATE* state);
 
+// 작성자: 0330 신제현
+void game_state_init(void);
+void game_redraw(void);
+void game_draw_update(void);
+
 // 작성자: 0329 신제현 - 현재 스테이지 넘버 관리하는 변수
 extern int curr_stage;
 
