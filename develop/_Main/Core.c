@@ -20,6 +20,7 @@
 #include "Item/Item.h"
 #include "Level_UP/Level_up.h"			// 레벨 업(스탯 강화) / 0327 신제현
 #include "Stage/Stage.h"                // 스테이지 /0329 박남현
+#include "Backgrounds/Background.h"     // 배경
 
 /* --- General --- */
 long frames = 0;
@@ -102,6 +103,7 @@ void game_state_init(void)
 
     stage_init();   //0329 박남현
     ship_init();
+    backgound_init();
     hud_init();
     keyboard_init();
     fx_init();
@@ -303,6 +305,7 @@ int main()
     must_init(al_init_image_addon(), "image");
     sprites_init();
     ui_init(); // UI 시트 로드
+    backgound_init();
     hud_init();
 
     must_init(al_init_primitives_addon(), "primitives");
@@ -396,6 +399,7 @@ int main()
                 break;
 
             case STATE_PLAYING:
+                background_draw();  //0329
                 aliens_draw();
                 item_draw(); //0327
                 shots_draw();
@@ -405,6 +409,7 @@ int main()
                 break;
 
             case STATE_PAUSE:
+                background_draw();  //0329
                 aliens_draw();
                 item_draw();
                 shots_draw();
@@ -428,6 +433,7 @@ int main()
                 break;
 
             case STATE_LEVEL_UP:
+                background_draw();  //0329
                 aliens_draw();
                 item_draw();    //0327
                 shots_draw();
@@ -444,6 +450,7 @@ int main()
         }
     }
 
+    background_deinit();
     ui_deinit();
     sprites_deinit();
     hud_deinit();

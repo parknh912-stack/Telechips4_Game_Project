@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="리소스 파일\Background">
+      <UniqueIdentifier>{e16bcca4-376e-4e3f-866c-e565c12239e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="explode1.flac">
@@ -35,6 +38,18 @@
     </Image>
     <Image Include="ui_sheet.png">
       <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="blue.png">
+      <Filter>리소스 파일\Background</Filter>
+    </Image>
+    <Image Include="black.png">
+      <Filter>리소스 파일\Background</Filter>
+    </Image>
+    <Image Include="darkPurple.png">
+      <Filter>리소스 파일\Background</Filter>
+    </Image>
+    <Image Include="purple.png">
+      <Filter>리소스 파일\Background</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +89,9 @@
     <ClCompile Include="_Main\Stage\Stage.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="_Main\Backgrounds\Background.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Sprites.h">
@@ -110,6 +128,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="_Main\Stage\Stage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="_Main\Backgrounds\Background.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

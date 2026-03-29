@@ -139,12 +139,17 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="black.png" />
+    <Image Include="blue.png" />
+    <Image Include="darkPurple.png" />
+    <Image Include="purple.png" />
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
     <Image Include="ui_sheet.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c" />
+    <ClCompile Include="_Main\Backgrounds\Background.c" />
     <ClCompile Include="_Main\Core.c" />
     <ClCompile Include="_Main\Display.c" />
     <ClCompile Include="_Main\Fx.c" />
@@ -159,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Audio.h" />
+    <ClInclude Include="_Main\Backgrounds\Background.h" />
     <ClInclude Include="_Main\Core.h" />
     <ClInclude Include="_Main\Display.h" />
     <ClInclude Include="_Main\Fx.h" />

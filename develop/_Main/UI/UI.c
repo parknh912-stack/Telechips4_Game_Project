@@ -85,7 +85,9 @@ void hud_draw()
     if (hp_ratio < 0) hp_ratio = 0;
 
     al_draw_textf(font,al_map_rgb_f(1, 1, 1),5, 90, 0,"Level: %02d",level);
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 0, "stage_num: %02d", stage_num);
+
+    //현재 스테이지 출력
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 0, "stage: %02d", stage_num + 1);
 
     int spacing = LIFE_W + 1;
     al_draw_bitmap(sprites.life_bar, spacing, 35, 0);
