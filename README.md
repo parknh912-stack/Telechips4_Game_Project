@@ -1,4 +1,5 @@
-# 0329_Background by 박남현
+## 박남현
+# 0329_Background
 
 1. Stage.c / Stage.h 추가
 2. Spawn 관련 함수 개별분리
