@@ -63,6 +63,11 @@
 #define MENU_BTN_SIZE_X 220
 #define MENU_BTN_SIZE_Y 300
 
+#define MENU_SEL_POS_X             171
+#define MENU_SEL_POS_Y             486
+#define MENU_SEL_WIDTH             22
+#define MENU_SEL_HEIGHT            21
+
 /* -- RANKING -- */
 #define RANK_TITLE_OFFSET_Y        60
 #define RANK_LINE_SPACING          25

@@ -157,7 +157,7 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
             float cursor_h = 20.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
             float cursor_x = btn_x - cursor_w - 15.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
             float cursor_y = btn_y + (btn_h / 2.0f) - (cursor_h / 2.0f);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
-            draw_ui_element(259, 486, 22, 21, cursor_x, cursor_y, cursor_w, cursor_h);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            draw_ui_element(MENU_SEL_POS_X, MENU_SEL_POS_Y, MENU_SEL_WIDTH, MENU_SEL_HEIGHT, cursor_x, cursor_y, cursor_w, cursor_h);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
         }
         else
         {
