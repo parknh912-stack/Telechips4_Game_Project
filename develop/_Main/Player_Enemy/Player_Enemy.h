@@ -28,6 +28,9 @@ int get_closet_enemy();     //최단거리 적 idx 반환하는 함수
 /* --- Player --- */
 
 //#define SHIP_SPEED 3 삭제
+#define MAP_WIDTH 5000
+#define MAP_HEIGHT 5000
+
 #define SHIP_MAX_X (BUFFER_W - SHIP_W)
 #define SHIP_MAX_Y (BUFFER_H - SHIP_H)
 

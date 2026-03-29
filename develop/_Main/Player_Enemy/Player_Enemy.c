@@ -302,15 +302,28 @@ void ship_update()
     if (key[ALLEGRO_KEY_DOWN])
         ship.y += ship.speed;
 
-    if (ship.x < 0)
-        ship.x = 0;
-    if (ship.y < 0)
-        ship.y = 0;
+	if (ship.x < 0)
+	    ship.x = 0;
+	if (ship.y < 0)
+	    ship.y = 0;
 
-    if (ship.x > SHIP_MAX_X)
-        ship.x = SHIP_MAX_X;
-    if (ship.y > SHIP_MAX_Y)
-        ship.y = SHIP_MAX_Y;
+	if (ship.x > SHIP_MAX_X)
+	    ship.x = SHIP_MAX_X;
+	if (ship.y > SHIP_MAX_Y)
+	    ship.y = SHIP_MAX_Y;
+
+    //// 가로 좌표 워프
+    //if (ship.x < 0)
+    //    ship.x = MAP_WIDTH;
+    //else if (ship.x > MAP_WIDTH)
+    //    ship.x = 0;
+
+    //// 세로 좌표 워프
+    //if (ship.y < 0)
+    //    ship.y = MAP_HEIGHT;
+    //else if (ship.y > MAP_HEIGHT)
+    //    ship.y = 0;
+
 
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
@@ -388,13 +401,20 @@ void ship_draw()
             ITEMS_BARRIER_W, ITEMS_BARRIER_H,
             0);
     }
-    al_draw_scaled_bitmap(sprites.ship,
-        0, 0,
-        91, 91,
-        ship.x, ship.y,
-        SHIP_W, SHIP_H,
-        0);
+    //al_draw_scaled_bitmap(sprites.ship,
+    //    0, 0,
+    //    91, 91,
+    //    ship.x, ship.y,
+    //    SHIP_W, SHIP_H,
+    //    0);
 
+    al_draw_scaled_bitmap(sprites.ship,
+        0, 0,                                // 원본 이미지 시작점
+        91, 91,                              // 원본 이미지 크기
+        (BUFFER_W / 2) - (SHIP_W / 2),           // [수정] 화면 가로 중앙
+        (BUFFER_H / 2) - (SHIP_H / 2),            // [수정] 화면 세로 중앙
+        SHIP_W, SHIP_H,                      // 화면에 그려질 크기
+        0);
     //al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
 }
 
@@ -492,6 +512,25 @@ void aliens_update()
             aliens[i].used = false;
             continue;
         }
+
+
+        ///* 맵 범위 밖으로 나갈 시, 반대편으로 워프 (무한 맵 루프) */
+        //if (aliens[i].x > MAP_WIDTH)  aliens[i].x = 0;
+        //if (aliens[i].x < 0)          aliens[i].x = MAP_WIDTH;
+        //if (aliens[i].y > MAP_HEIGHT) aliens[i].y = 0;
+        //if (aliens[i].y < 0)          aliens[i].y = MAP_HEIGHT;
+
+
+        ///* 우주선과 너무 멀어지면 삭제 (예: 2000 픽셀 이상) */
+        //float dx = aliens[i].x - ship.x;
+        //float dy = aliens[i].y - ship.y;
+        //float distance_sq = dx * dx + dy * dy; // 루트 계산보다 제곱 비교가 빠릅니다.
+
+        //if (distance_sq > 2000 * 2000)
+        //{
+        //    aliens[i].used = false;
+        //    continue;
+        //}
 
         if (aliens[i].blink)
             aliens[i].blink--;

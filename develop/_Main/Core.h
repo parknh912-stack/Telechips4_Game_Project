@@ -49,4 +49,6 @@ void game_state_update(STATE* state, bool* done);
 void pause_resume_game(STATE* state);
 void game_state_init(void);
 
+void camera_apply(ALLEGRO_TRANSFORM* trans);
+
 #endif // !_CORE_H_

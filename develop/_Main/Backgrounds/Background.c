@@ -1,8 +1,10 @@
 #include "../Core.h"
 #include "Background.h"
 #include "../Display.h"
+#include "../Player_Enemy/Player_Enemy.h"
 
 ALLEGRO_BITMAP* BG_sheet[4] = { NULL };
+
 
 void backgound_init()
 {
@@ -21,11 +23,18 @@ void backgound_init()
 
 void background_draw()
 {
-	for (int i = 0; i < 3; ++i)
+	float camera_x = ship.cx - 640;
+	float camera_y = ship.cy - 360;
+	float scroll_x = fmod(camera_x, 256);
+	float scroll_y = fmod(camera_y, 256);
+
+	for (int i = -1; i < 7; ++i)
 	{
-		for (int j = 0; j < 5; ++j)
+		for (int j = -1; j < 4; ++j)
 		{
-			al_draw_bitmap(BG_sheet[2], 256*j, 256 * i, 0);
+			float draw_x = camera_x + (i * 256) - scroll_x;
+			float draw_y = camera_y + (j * 256) - scroll_y;
+			al_draw_bitmap(BG_sheet[2], draw_x, draw_y, 0);
 		}
 	}
 }
