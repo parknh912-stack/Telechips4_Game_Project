@@ -1,10 +1,6 @@
 #ifndef _UI_H_
 #define _UI_H_
 
-#include <allegro5/allegro5.h>
-#include "../Display.h"
-#include "../Core.h"
-
 #define UI_PANEL_BLUE_X 190
 #define UI_PANEL_BLUE_Y 0
 #define UI_PANEL_W      100
@@ -38,7 +34,7 @@ typedef struct STAR
 } STAR;
 
 #define STARS_N ((BUFFER_W / 2) - 1)
-extern STAR stars[STARS_N];
+extern STAR stars[];
 
 void stars_init();
 void stars_update();

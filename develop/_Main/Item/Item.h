@@ -1,15 +1,6 @@
 #ifndef _ITEM_H_
 #define _ITEM_H_
 
-#include "../Core.h"
-
-#include "../Display.h"
-#include "../Keyboard.h"
-#include "../Sprites.h"
-#include "../Audio.h"
-#include "../Fx.h"
-#include "../Player_Enemy/Player_Enemy.h"
-
 #define ITEMS_N 20
 
 typedef enum ITEM_TYPE
@@ -36,7 +27,7 @@ typedef struct ITEM
 extern ITEM items[];
 
 void item_init();
-void item_add(float cx, float cy, ALIEN_TYPE type);
+void item_add(float cx, float cy, int type);
 bool item_create_instance(int type, float cx, float cy);
 bool item_collide(float cx, float cy);
 void item_update();

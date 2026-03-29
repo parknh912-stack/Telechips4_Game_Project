@@ -1,5 +1,12 @@
+#include "../Core.h"
 #include "Item.h"
 
+#include "../Display.h"
+#include "../Keyboard.h"
+#include "../Sprites.h"
+#include "../Audio.h"
+#include "../Fx.h"
+#include "../Player_Enemy/Player_Enemy.h"
 // 작성자 : 박남현
 /* --- ITEM --- */
 
@@ -7,10 +14,10 @@ ITEM items[ITEMS_N];
 
 float drop_table[ALIEN_TYPE_N][ITEM_TYPE_N] = {
 	// NONE, HEAL, BOMB, EXP, BARRIER, RANDOM_STAT
-	[ALIEN_TYPE_METEOR] = { 0.0f, 5.0f, 5.0f, 5.0f, 5.0f, 80.0f },
+	[ALIEN_TYPE_METEOR] = { 80.0f, 5.0f, 5.0f, 5.0f, 5.0f, 0.0f },
 	[ALIEN_TYPE_FAST] = { 75.0f, 5.0f, 5.0f, 10.0f, 5.0f, 0.0f },
 	[ALIEN_TYPE_SHOOTER] = { 40.0f, 20.0f, 10.0f, 20.0f, 10.0f, 0.0f },
-	[ALIEN_TYPE_BOSS] = { 0.0f,  39.9f, 20.0f, 20.0f, 20.0f, 0.01f },
+	[ALIEN_TYPE_BOSS] = { 0.0f,  39.0f, 20.0f, 20.0f, 20.0f, 1.0f },
 };
 
 void item_init()
@@ -20,7 +27,7 @@ void item_init()
 }
 
 //타입과 위치를 받아서, 드롭할 아이템을 정함
-void item_add(float cx, float cy, ALIEN_TYPE type)
+void item_add(float cx, float cy, int type)
 {
 	float* curr_drop_table = drop_table[type];
 	float curr_weight = 0.0f;
@@ -132,6 +139,7 @@ void item_use(ITEM_TYPE type)
 			aliens[i].used = false;
 		}
 		for (int i = 0; i < SHOTS_N; i++) {
+			if (shots[i].ship) continue;	//0329 박남현 - 아군 탄은 남아있게 변경
 			shots[i].used = false;
 		}
 		break;

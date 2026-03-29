@@ -16,6 +16,7 @@
 extern long frames;
 extern long score;
 extern int level;
+extern int stage_num;
 
 void must_init(bool test, const char* description);
 int between(int lo, int hi);
@@ -46,5 +47,6 @@ extern STATE current_state;
 
 void game_state_update(STATE* state, bool* done);
 void pause_resume_game(STATE* state);
+void game_state_init(void);
 
 #endif // !_CORE_H_

@@ -7,6 +7,7 @@
 #include "../Audio.h"
 #include "../Fx.h"
 #include "../Item/Item.h"
+#include "../Stage/Stage.h"
 
 /* --- shot --- */
 
@@ -274,7 +275,7 @@ void ship_init()
     ship.speed = 3.0f;          //이동속도, 수정가능
     ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
     ship.shot_timer = 60;       //shot_timer
-    ship.damage = 10;           //데미지, int      (수정가능)
+    ship.damage = 5;           //데미지, int      (수정가능)
     ship.shot_count = 1;        //투사체 수 (홀수개만)
     ship.max_lifes = 100;       //최대 체력
     ship.curr_lifes = 100;      //현재 체력
@@ -413,8 +414,6 @@ bool ship_collide(int cx, int cy)
 ALIEN aliens[ALIENS_N];
 // 작성자 : 박남현
 /* 타입별 체력 및 속도 고정 */
-const int ALIEN_LIFE[] = { 50, 36, 45, 101 };
-const float ALIEN_SPEED[] = { 42, 20, 27, 84 };
 
 void aliens_init()
 {
@@ -422,13 +421,13 @@ void aliens_init()
         aliens[i].used = false;
 }
 
+//0329 박남현 - stage 관련 기능 업데이트
 void aliens_update()
 {
-    int new_quota = //2초마다 랜덤 생성
-        (frames % 60)
-        ? 0
-        : between(2, 4) //종류도 랜덤
-        ;
+    int spawn_frames = (int)(60 * CURR_STAGE->spawn_interval);
+    int new_quota = (frames % spawn_frames) ? 0 : between(4, 6);
+
+    int curr_alive_alien = 0;
 
     // 작성자 : 천원석 & 박남현
     /* --- 적 생성 및 초기화 --- */
@@ -437,88 +436,32 @@ void aliens_update()
         if (!aliens[i].used)
         {
             // if this alien is unused, should it spawn?
-            if (new_quota > 0)
+            if (new_quota > 0 && curr_alive_alien < CURR_STAGE->max_enemies)
             {
-                int new_x = between(10, BUFFER_W - 50);
-                int new_y = between(10, BUFFER_H - 50);
+                float life_mul = CURR_STAGE->life_multiplier;
+                float new_x, new_y;
 
-                int spawn_dup_check = 0;
-                while (!spawn_dup_check)
-                {
-                    int side = between(0, 4);
-                    switch (side)
-                    {
-                    case 0: //상
-                        new_x = between(10, BUFFER_W - 10);
-                        new_y = between(-40, -30);
-                        break;
-                    case 1: //하
-                        new_x = between(10, BUFFER_W - 10);
-                        new_y = between(BUFFER_H + 30, BUFFER_H + 60);
-                        break;
-                    case 2: //좌
-                        new_x = between(-40, -30);
-                        new_y = between(10, BUFFER_H - 10);
-                        break;
-                    case 3: //우
-                        new_x = between(BUFFER_W + 30, BUFFER_W + 60);
-                        new_y = between(10, BUFFER_H - 10);
-                        break;
-                    }
-                    spawn_dup_check = 1;
-                    for (int j = 0; j < ALIENS_N; j++)
-                    {
-                        if (aliens[j].used && i != j)
-                        {
-                            int dx = aliens[j].x - new_x;
-                            int dy = aliens[j].y - new_y;
-                            if (dx * dx + dy * dy < 1000) {
-                                spawn_dup_check = 0;
-                                break;
-                            }
-                        }
-                    }
-                }
+                spawn_enemy(&new_x, &new_y, i);
 
+                aliens[i].type = decide_enemy_type();
+                set_aliens_info(i, life_mul);
                 aliens[i].x = new_x;
                 aliens[i].y = new_y;
 
                 aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
                 aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
 
-                aliens[i].type = between(0, ALIEN_TYPE_N);
-                //aliens[i].type = 3;
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
                 aliens[i].used = true;
 
-                switch (aliens[i].type)
-                {
-                case ALIEN_TYPE_METEOR:
-                    aliens[i].life = 10;
-                    aliens[i].speed = 1.5f;
-                    break;
-                case ALIEN_TYPE_FAST:
-                    aliens[i].life = 10;
-                    aliens[i].speed = 2.0f;
-                    break;
-                case ALIEN_TYPE_SHOOTER:
-                    aliens[i].life = 20;
-                    aliens[i].speed = 0.9f;
-                    break;
-                case ALIEN_TYPE_BOSS:
-                    aliens[i].life = 30;
-                    aliens[i].speed = 0.5f;
-                    break;
-                }
+                
 
                 new_quota--;
             }
             continue;
         }
 
-        aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
-        aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
 
         // 작성자 : 천원석
         // 적-> 캐릭터 방향으로 움직임
@@ -561,26 +504,27 @@ void aliens_update()
 
         if (aliens[i].life <= 0)
         {
+            float score_mul = CURR_STAGE->score_multiplier;
             fx_add(false, aliens[i].cx, aliens[i].cy);
 
-            switch (aliens[i].type)
-            {
-            case ALIEN_TYPE_METEOR:
-                score += 200;
-                break;
+			switch (aliens[i].type)
+			{
+			case ALIEN_TYPE_METEOR:
+				score += (int)(ALIEN_SCORE_METEOR * score_mul);
+				break;
 
-            case ALIEN_TYPE_FAST:
-                score += 150;
-                break;
+			case ALIEN_TYPE_FAST:
+				score += (int)(ALIEN_SCORE_FAST * score_mul);
+				break;
 
-            case ALIEN_TYPE_SHOOTER:
-                score += 800;
+			case ALIEN_TYPE_SHOOTER:
+				score += (int)(ALIEN_SCORE_SHOOTER * score_mul);
                 fx_add(false, aliens[i].cx - 10, aliens[i].cy - 4);
                 fx_add(false, aliens[i].cx + 4, aliens[i].cy + 10);
                 fx_add(false, aliens[i].cx + 8, aliens[i].cy + 8);
                 break;
             case ALIEN_TYPE_BOSS:
-                score += 2000;
+                score += (int)(ALIEN_SCORE_BOSS * score_mul);
                 fx_add(false, aliens[i].cx - 10, aliens[i].cy - 4);
                 fx_add(false, aliens[i].cx + 4, aliens[i].cy + 10);
                 fx_add(false, aliens[i].cx + 8, aliens[i].cy + 8);
@@ -624,14 +568,135 @@ void aliens_update()
     aliens_collide();
 }
 
+//0329 박남현
+void spawn_enemy(float* new_x, float* new_y, int i)
+{
+    int spawn_dup_check = 0;
+    while (!spawn_dup_check)
+    {
+        int side = between(0, 4);
+        switch (side)
+        {
+        case 0: //상
+            *new_x = between(10, BUFFER_W - 10);
+            *new_y = between(-40, -30);
+            break;
+        case 1: //하
+            *new_x = between(10, BUFFER_W - 10);
+            *new_y = between(BUFFER_H + 30, BUFFER_H + 60);
+            break;
+        case 2: //좌
+			*new_x = between(-40, -30);
+            *new_y = between(10, BUFFER_H - 10);
+            break;
+        case 3: //우
+            *new_x = between(BUFFER_W + 30, BUFFER_W + 60);
+            *new_y = between(10, BUFFER_H - 10);
+            break;
+        }
+        spawn_dup_check = 1;
+        for (int j = 0; j < ALIENS_N; j++)
+        {
+            if (aliens[j].used && i != j)
+            {
+                float dx = aliens[j].x - *new_x;
+                float dy = aliens[j].y - *new_y;
+                if (dx * dx + dy * dy < 1000) {
+                    spawn_dup_check = 0;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+//0329 박남현
+void spawn_boss()
+{
+    for (int i = 0; i < ALIENS_N; ++i)
+    {
+        if (!aliens[i].used)
+        {
+            float life_mul = CURR_STAGE->life_multiplier;
+            float new_x, new_y;
+            spawn_enemy(&new_x, &new_y, i);
+            
+            aliens[i].type = ALIEN_TYPE_BOSS;
+
+            set_aliens_info(i, life_mul);
+            aliens[i].x = new_x;
+            aliens[i].y = new_y;
+            aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
+            aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
+
+            aliens[i].shot_timer = 5;
+            aliens[i].blink = 0;
+            aliens[i].used = true;
+            break;
+        }
+    }
+}
+//0329 박남현
+bool is_boss_alive()
+{
+    for (int i = 0; i < ALIENS_N; ++i)
+    {
+        if (aliens[i].used && aliens[i].type == ALIEN_TYPE_BOSS)
+            return true;
+    }
+    return false;
+}
+//0329 박남현
+ int decide_enemy_type()
+{
+    int rand_num = between(0, 100);
+    int cumulate = 0;
+    int type = 0;
+    for (int i = 0; i < ALIEN_TYPE_N; ++i)
+    {
+        cumulate += CURR_STAGE->spawn_weight[i];
+        if (rand_num < cumulate)
+        {
+            type = i;
+            break;
+        }
+    }
+    return type;
+}
+
+ void set_aliens_info(int i, float life_mul)
+ {
+     switch (aliens[i].type)
+     {
+     case ALIEN_TYPE_METEOR:
+         aliens[i].life = ALIEN_LIFE_METEOR * life_mul;
+         aliens[i].speed = 1.5f;
+         break;
+     case ALIEN_TYPE_FAST:
+         aliens[i].life = ALIEN_LIFE_FAST * life_mul;
+         aliens[i].speed = 2.0f;
+         break;
+     case ALIEN_TYPE_SHOOTER:
+         aliens[i].life = ALIEN_LIFE_SHOOTER * life_mul;
+         aliens[i].speed = 0.9f;
+         break;
+     case ALIEN_TYPE_BOSS:
+         aliens[i].life = ALIEN_LIFE_BOSS * life_mul;
+         aliens[i].speed = 0.9f;
+         break;
+     }
+ }
 // 작성자 : 박남현
-// 움직이는것 함수화
 void aliens_move(int i, float speed)
 {
     if (aliens[i].cx > ship.cx) aliens[i].x -= speed;
     if (aliens[i].cx < ship.cx) aliens[i].x += speed;
     if (aliens[i].cy > ship.cy) aliens[i].y -= speed;
     if (aliens[i].cy < ship.cy) aliens[i].y += speed;
+
+    aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
+    aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
+
 }
 
 void aliens_draw()
@@ -646,7 +711,7 @@ void aliens_draw()
         float between_angle = atan2(ship.y - aliens[i].y, ship.x - aliens[i].x) + (ALLEGRO_PI / 2.0);
 
         al_draw_scaled_rotated_bitmap(sprites.alien[aliens[i].type],
-            ALIEN_W[aliens[i].type] / 2, ALIEN_H[aliens[i].type] / 2,
+            (float)ALIEN_W[aliens[i].type] / 2.0f, (float)ALIEN_H[aliens[i].type] / 2.0f,
             aliens[i].cx, aliens[i].cy,
             0.5, 0.5,
             between_angle,
@@ -661,7 +726,6 @@ void aliens_draw()
         //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
     }
 }
-
 
 void aliens_collide()
 {

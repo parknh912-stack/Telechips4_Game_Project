@@ -1,6 +1,7 @@
 #include "../Core.h"
 #include "Level_up.h"
 
+#include "../Player_Enemy/Player_Enemy.h"
 // 레벨 업 전 캐릭터의 가장 최근 스코어
 long score_at_last_level = 0;	
 

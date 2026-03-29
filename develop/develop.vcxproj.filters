@@ -71,6 +71,9 @@
     <ClCompile Include="_Main\Level_UP\Level_up.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="_Main\Stage\Stage.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Sprites.h">
@@ -104,6 +107,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="_Main\Level_UP\Level_up.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="_Main\Stage\Stage.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
