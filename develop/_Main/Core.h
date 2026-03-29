@@ -50,13 +50,10 @@ extern STATE current_state;
 void game_state_update(STATE* state, bool* done);
 void pause_resume_game(STATE* state);
 
-// 보스가 스폰되었는지 체크하는 플래그 하나 선언
-extern bool is_boss_spawned;
-
 // 작성자: 0329 신제현 - 현재 스테이지 넘버 관리하는 변수
 extern int curr_stage;
 
 // 작성자: 0329 신제현 - 스테이지별 시작 프레임 관리 전역변수
-extern int stage_start_frame;
+extern long stage_start_frame;
 
 #endif // !_CORE_H_

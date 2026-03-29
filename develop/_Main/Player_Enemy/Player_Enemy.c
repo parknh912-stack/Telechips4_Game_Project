@@ -763,7 +763,7 @@ void boss_update(void)
             boss.used = false;
 
             // 추가: 0329 신제현
-            is_boss_spawned = false;
+            //is_boss_spawned = false;
             stage_start_frame = frames;
             ++current_state;
 

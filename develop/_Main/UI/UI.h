@@ -73,4 +73,5 @@ void ui_draw_input_name_menu();
 
 // 작성자: 신제현
 void ui_draw_level_up_menu(void);
+void ui_draw_game_clear_menu(void);
 #endif
