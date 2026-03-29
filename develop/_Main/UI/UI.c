@@ -153,8 +153,8 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
             btn_y += MENU_BTN_PRESSED_OFFSET;
 
-            float cursor_w = 20.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
-            float cursor_h = 20.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            float cursor_w = MENU_CUR_SIZE;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
+            float cursor_h = MENU_CUR_SIZE;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
             float cursor_x = btn_x - cursor_w - 15.0f;//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
             float cursor_y = btn_y + (btn_h / 2.0f) - (cursor_h / 2.0f);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­
             draw_ui_element(MENU_SEL_POS_X, MENU_SEL_POS_Y, MENU_SEL_WIDTH, MENU_SEL_HEIGHT, cursor_x, cursor_y, cursor_w, cursor_h);//0328 ±èº´Çå - ¸Þ´º¼±ÅÃ Ä¿¼­

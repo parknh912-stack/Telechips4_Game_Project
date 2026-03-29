@@ -67,6 +67,7 @@
 #define MENU_SEL_POS_Y             486
 #define MENU_SEL_WIDTH             22
 #define MENU_SEL_HEIGHT            21
+#define MENU_CUR_SIZE              40.0f
 
 /* -- RANKING -- */
 #define RANK_TITLE_OFFSET_Y        60
