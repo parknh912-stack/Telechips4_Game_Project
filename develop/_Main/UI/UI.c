@@ -10,37 +10,39 @@
 // --- stars ---
 STAR stars[STARS_N];
 
-void stars_init()
+void stars_init()//0328 ±èº´Çå
 {
     for (int i = 0; i < STARS_N; i++)
     {
         stars[i].y = between_f(0, BUFFER_H);
-        stars[i].speed = between_f(0.1, 1);
+        stars[i].speed = between_f(STAR_SPEED_MIN, STAR_SPEED_MAX);//0328 ±èº´Çå
     }
 }
-void stars_update()
+void stars_update()//0328 ±èº´Çå
 {
-    for (int i = 0; i < STARS_N; i++)
+    for (int i = 0; i < STARS_N; i++)//0328 ±èº´Çå
     {
-        stars[i].y += stars[i].speed;
-        if (stars[i].y >= BUFFER_H)
+        stars[i].y += stars[i].speed;//0328 ±èº´Çå
+        if (stars[i].y >= BUFFER_H)//0328 ±èº´Çå
         {
-            stars[i].y = 0;
-            stars[i].speed = between_f(0.1, 1);
+            stars[i].y = 0;//0328 ±èº´Çå
+            stars[i].speed = between_f(STAR_SPEED_MIN, STAR_SPEED_MAX);//0328 ±èº´Çå
         }
     }
 }
 
 void stars_draw()
 {
-    float star_x = 1.5;
-    for (int i = 0; i < STARS_N; i++)
+    float star_x = STAR_START;//0328 ±èº´Çå
+    for (int i = 0; i < STARS_N; i++)//0328 ±èº´Çå
     {
-        float l = stars[i].speed * 0.8;
-        al_draw_pixel(star_x, stars[i].y, al_map_rgb_f(l, l, l));
-        star_x += 2;
+        float l = stars[i].speed;//0328 ±èº´Çå
+        al_draw_pixel(star_x, stars[i].y, al_map_rgb_f(l, l, l));//0328 ±èº´Çå
+        star_x += STAR_SPACING;//0328 ±èº´Çå
     }
 }
+
+
 
 // --- hud ---
 ALLEGRO_FONT* font;
@@ -48,13 +50,13 @@ ALLEGRO_FONT* bold_font;//0327 ±èº´Çå Á¦¸ñ¿ë Å« ÆùÆ®
 ALLEGRO_FONT* compcolor_font;//±èº´Çå º¸»ö¿ë ÆùÆ®
 long score_display;
 
-void hud_init()//0327 ±èº´Çå
+void hud_init()//0328 ±èº´Çå
 {
     al_init_font_addon();//0327 ±èº´Çå ¼öÁ¤»çÇ× : ±Û¾¾ Å©±â¸¦ Å°¿ü½À´Ï´Ù.
-    al_init_ttf_addon();//0327±è
-    font = al_load_ttf_font("PressStart2P.ttf", 15, 0);//ÇØ´ç Ç×¸ñ µÎ ¹øÂ°°¡ sizeÀÔ´Ï´Ù.
-    bold_font = al_load_ttf_font("PressStart2P.ttf", 22, 0);//Á¦¸ñ¿ëÀÔ´Ï´Ù.
-    compcolor_font = al_load_ttf_font("PressStart2P.ttf", 22, 0);//Á¦¸ñ¿ëÀÔ´Ï´Ù. compcolor = º¸»ö ÁÙÀÓ¸»
+    al_init_ttf_addon();//0328 ±èº´Çå
+    font = al_load_ttf_font("PressStart2P.ttf", FONT_SIZE_NORMAL, 0);//0328 ±èº´Çå
+    bold_font = al_load_ttf_font("PressStart2P.ttf", FONT_SIZE_TITLE, 0);//0328 ±èº´Çå
+    compcolor_font = al_load_ttf_font("PressStart2P.ttf", FONT_SIZE_TITLE, 0);//0328 ±èº´Çå
     must_init(font, "font");
     score_display = 0;
 }
@@ -79,18 +81,17 @@ void hud_update()
 
 void hud_draw()
 {
-    // 1. Á¡¼ö Ãâ·Â
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 15, 0, "%06ld", score_display);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), HUD_SCORE_X, HUD_SCORE_Y, 0, "%06ld", score_display);//0328 ±èº´Çå
 
-    float hp_ratio = (float)ship.curr_lifes / 5.0f;
+    float hp_ratio = (float)ship.curr_lifes / PLAYER_MAX_HP_BASE;//0328 ±èº´Çå
     if (hp_ratio < 0) hp_ratio = 0;
 
-    al_draw_textf(font,al_map_rgb_f(1, 1, 1),5, 90, 0,"Level: %02d",level);
+    al_draw_textf(font,al_map_rgb_f(1, 1, 1), HUD_LEVEL_X, HUD_LEVEL_Y, 0,"Level: %02d",level);//0328 ±èº´Çå
 
     int spacing = LIFE_W + 1;
-    al_draw_scaled_bitmap(sprites.life_bar, 0, 0, 222, 38, spacing, 35, (LIFE_W+2) * ship.max_lifes, 38, 0);//0328±èº´Çå - Ã¼·Â¹Ù ±æÀÌ Á¶Á¤
+    al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W+2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328±èº´Çå
     for (int i = 0; i < ship.curr_lifes; i++)
-        al_draw_bitmap(sprites.life, 9 + (i * spacing), 35, 0);
+        al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 ±èº´Çå
 }
 
 // --- UI ---
@@ -125,11 +126,11 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
 
     if (title)
     {
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x+2, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x-2, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y+2 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y-2 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
-        al_draw_text(fonto, al_map_rgb(180, 180, 0), m->x, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¼µåÃ¼ ±¸Çö
+        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x+1, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
+        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x-1, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
+        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y+3 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
+        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y-1 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¸»ö ±¸Çö
+        al_draw_text(fonto, al_map_rgb(230, 230, 0), m->x, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±èº´Çå º¼µåÃ¼ ±¸Çö
     }
 
     for (int i = 0; i < m->item_count; i++)

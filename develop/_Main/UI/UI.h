@@ -5,32 +5,69 @@
 #include "../Display.h"
 #include "../Core.h"
 
-#define UI_PANEL_BLUE_X 190
-#define UI_PANEL_BLUE_Y 0
-#define UI_PANEL_W      100
-#define UI_PANEL_H      100
+//0328 김병헌 : 매직넘버 수정을 위한 대대적인 작업이 있었습니다.
+/* -- Asset Location -- */
+#define UI_PANEL_BLUE_X            190 
+#define UI_PANEL_BLUE_Y            0
+#define UI_PANEL_W                 100
+#define UI_PANEL_H                 100
 
-#define UI_BTN_BLUE_X   0
-#define UI_BTN_BLUE_Y   188
-#define UI_BTN_W        190
-#define UI_BTN_H        49
+#define UI_BTN_BLUE_X              0
+#define UI_BTN_BLUE_Y              188
+#define UI_BTN_W                   190
+#define UI_BTN_H                   49
 
-#define UI_BTN_BLUE_P_X 0
-#define UI_BTN_BLUE_P_Y 143
-#define UI_BTN_P_H      45
+#define UI_BTN_BLUE_P_X            0
+#define UI_BTN_BLUE_P_Y            143
+#define UI_BTN_P_H                 45
 
-//0327 김병헌 : 상수 사용을 줄이기 위함
-#define UI_BTN_POS_Y_LOW -80 
-#define UI_BTN_POS_Y_MID 50
-#define UI_BTN_POS_Y_HI 120
+/* -- UI Button Position -- */
+#define UI_BTN_POS_Y_LOW           -80 
+#define UI_BTN_POS_Y_MID           50
+#define UI_BTN_POS_Y_HI            120
 
-#define UI_PANEL_SIZE_W 400
-#define UI_PANEL_SIZE_W_L 550
-#define UI_PANEL_SIZE_H_M 270
-#define UI_PANEL_SIZE_H_L 450
-//0327 김병헌 : 상수 사용을 줄이기 위함
+/* -- UI Panel size -- */
+#define UI_PANEL_SIZE_W            400
+#define UI_PANEL_SIZE_W_L          550
+#define UI_PANEL_SIZE_H_M          270
+#define UI_PANEL_SIZE_H_L          450
 
-/* --- stars --- */
+/* -- FONT -- */
+#define FONT_SIZE_NORMAL           15
+#define FONT_SIZE_TITLE            22
+
+/* -- STAR(Game Background) -- */
+#define STAR_SPEED_MIN             0.1f
+#define STAR_SPEED_MAX             1.0f
+#define STAR_START                 1.5f
+#define STAR_SPACING               2.0f
+
+/* -- HUD -- */
+#define HUD_SCORE_X                5
+#define HUD_SCORE_Y                15
+#define HUD_LEVEL_X                5
+#define HUD_LEVEL_Y                90
+#define HUD_LIFE_BAR_Y             35
+#define HUD_LIFE_ICON_OFFSET_X     9
+#define LIFE_BAR_SRC_W             222
+#define LIFE_BAR_SRC_H             38
+#define PLAYER_MAX_HP_BASE         5.0f
+
+/* -- MENU UI -- */
+#define MENU_TITLE_OFFSET_Y        20
+#define MENU_BTN_WIDTH_RATIO       0.9f
+#define MENU_BTN_HEIGHT            40.0f
+#define MENU_BTN_SPACING           50
+#define MENU_BTN_PRESSED_OFFSET    4
+
+/* -- RANKING -- */
+#define RANK_TITLE_OFFSET_Y        60
+#define RANK_LINE_SPACING          25
+#define RANK_POS_X_OFFSET          160
+#define INPUT_BOX_SRC_W            190
+#define INPUT_BOX_SRC_H            49
+
+/* -- stars -- */
 typedef struct STAR
 {
     float y;
@@ -44,7 +81,7 @@ void stars_init();
 void stars_update();
 void stars_draw();
 
-/* --- hud --- */
+/* -- hud -- */
 extern ALLEGRO_FONT* font;
 extern ALLEGRO_FONT* bold_font;//제목용
 extern ALLEGRO_FONT* compcolor_font;//보색용
@@ -54,7 +91,7 @@ void hud_deinit();
 void hud_update();
 void hud_draw();
 
-/* --- UI --- */
+/* -- UI -- */
 extern ALLEGRO_BITMAP* ui_sheet;
 extern int current_menu_selection;
 
@@ -84,4 +121,5 @@ void ui_draw_input_name_menu();
 
 // 작성자: 신제현
 void ui_draw_level_up_menu(void);
+
 #endif
