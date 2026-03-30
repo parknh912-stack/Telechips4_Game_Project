@@ -59,7 +59,8 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 
 // ÀÛ¼ºÀÚ : ¹Ú³²Çö
 /* --- ¿øÇü Ãæµ¹ --- */
-bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
+bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) 
+{
     long dx = cx2 - cx1;
     long dy = cy2 - cy1;
 
@@ -125,18 +126,24 @@ void game_state_update(STATE* state, bool* done)
     {
     case STATE_MENU:
         menu_input_update(5);
-        if (is_select_pressed) {
-            if (current_menu_selection == 0) {
+        if (is_select_pressed) 
+        {
+            if (current_menu_selection == 0) 
+            {
                 *state = STATE_NEWGAME;
             }
-            else if (current_menu_selection == 1) {//0328 ±èº´Çå °×¼³¸í
+
+            else if (current_menu_selection == 1) 
+            {
                 *state = STATE_ABOUT;//0328 ±èº´Çå °×¼³¸í
             }
-            else if (current_menu_selection == 2) {
+            else if (current_menu_selection == 2) 
+            {
                 *state = STATE_RANK;
                 current_menu_selection = 0;
             }
-            else if (current_menu_selection == 3) {
+            else if (current_menu_selection == 3) 
+            {
                 *done = true;
             }
             else if (current_menu_selection == 4)//0330 ±èº´Çå Àß ³ª¿À´ÂÁö Å×½ºÆ®
@@ -188,7 +195,8 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_PAUSE:
         menu_input_update(2);
-        if (is_select_pressed) {
+        if (is_select_pressed) 
+        {
             if (current_menu_selection == 0) 
             {
                 *state = STATE_PLAYING;
@@ -202,7 +210,8 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
-        if (is_select_pressed) {
+        if (is_select_pressed) 
+        {
             if (current_menu_selection == 0)
             {
                 *state = STATE_NEWGAME;
@@ -225,7 +234,8 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_RANK:
         menu_input_update(1);
-        if (is_select_pressed) {
+        if (is_select_pressed) 
+        {
             *state = STATE_MENU;
             current_menu_selection = 0;
         }
@@ -300,7 +310,9 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_ABOUT: //0328 ±èº´Çå °×¼³¸í
         menu_input_update(1);//0328 ±èº´Çå °×¼³¸í
-        if (is_select_pressed) {//0328 ±èº´Çå °×¼³¸í
+        if (is_select_pressed) 
+        {
+        
             *state = STATE_MENU;//0328 ±èº´Çå °×¼³¸í
             current_menu_selection = 0;//0328 ±èº´Çå °×¼³¸í
         }

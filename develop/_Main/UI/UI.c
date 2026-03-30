@@ -102,7 +102,8 @@ void hud_draw()
 
     // 0330 신제현 - 보스 나타난다고 화면에 메시지 2초간 표시
     if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
-        al_draw_text(
+        al_draw_text
+        (
             bold_font,
             al_map_rgb_f(1.0, 0.0, 0.0),
             BUFFER_W / 2, BUFFER_H / 2,
@@ -113,7 +114,8 @@ void hud_draw()
     // 0330 신제현 - 몇 번째 스테이지에 진입했다고 2초간 화면에 메시지 표시
     if (stage_alert_timer >= 0.0 && (al_get_time() - stage_alert_timer < 2.0))
     {
-        al_draw_textf(
+        al_draw_textf
+        (
             bold_font,
             al_map_rgb_f(1.0, 1.0, 1.0),
             BUFFER_W / 2, BUFFER_H / 2,
@@ -332,7 +334,8 @@ void ui_draw_h2p_menu()//0328 김병헌
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
     for (int i = 1; i <= 6; i++)
     {
-        al_draw_scaled_bitmap(
+        al_draw_scaled_bitmap
+        (
             sprites.item[i],           // 1. 비트맵
             0, 0,                      // 2, 3. 소스 시작 (sx, sy)
             al_get_bitmap_width(sprites.item[i]),  // 4. 소스 가로 (sw)
