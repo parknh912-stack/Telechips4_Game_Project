@@ -38,7 +38,8 @@ typedef enum STATE {
     STATE_RANK,             // 5: 랭킹 확인
     STATE_LEVEL_UP,          // 6. 레벨 업햇을때 뜨는 창
     STATE_NEWGAME,           //7. 새로운 게임
-    STATE_ABOUT             //0328 김병헌 - 8. 게임 설명
+    STATE_ABOUT,             //0328 김병헌 - 8. 게임 설명
+    STATE_ENDING            //0330 김병헌 - 9. 게임 엔딩
 } STATE;
 
 //0327 김병헌 - rank함수 여기 없어도 됩니다.

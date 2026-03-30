@@ -300,7 +300,7 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
     int extra_y = 50;
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
-    for (int i = 1; i < 5; i++)
+    for (int i = 1; i <= 6; i++)
     {
         al_draw_scaled_bitmap(
             sprites.item[i],           // 1. ºñÆ®¸Ê
@@ -315,10 +315,11 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
     }
     
     
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonud");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "i ballad seusung zzz");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0328 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonus");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "random box");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 4 * 25, ALLEGRO_ALIGN_CENTER, 1, "ufo");//0330 ±èº´Çå
     
     
 }
@@ -326,9 +327,12 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
 void ui_draw_clear_menu() // 0330 ±èº´Çå
 {
 
-    static float scroll_y = 100;
+    static float scroll_y = 200;
+    static int frame_count = 0;
+    frame_count++;
+    
     draw_bold_text(bold_font, COLOR_TITLE, COLOR_WHITE, BUFFER_W / 2, scroll_y - 40, ALLEGRO_ALIGN_CENTER, 2, "Congrats!");
-    scroll_y += 1.0;
+    scroll_y -= 0.5;
     al_draw_multiline_text(
         font,
         COLOR_WHITE,
@@ -339,12 +343,11 @@ void ui_draw_clear_menu() // 0330 ±èº´Çå
         ALLEGRO_ALIGN_CENTER,
         "You saved our land\nThank you for playing our game\nVisit www.gamelandTC2024.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
     );
-    if (scroll_y > 700)
+    if (scroll_y < -200)
     {
-        while (1)
+        if ((frame_count / 25) % 2 == 0)
         {
             draw_bold_text(bold_font, COLOR_BLACK, COLOR_WHITE, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
-            draw_bold_text(bold_font, COLOR_BLACK, COLOR_BLACK, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
         }
 
     }
