@@ -6,6 +6,12 @@
 #define LV_UP           (1000)			////0329 박남현 - 수치 조정 (테스트용)
 // 투사체 발사 최대 수(5개가 디폴트)
 #define SHOT_COUNT_MAX	(5)	
+// 이동 속도 상한선
+#define SPEED_MAX		(99)
+// 공격 속도 상한선
+#define FIRE_RATE_MAX	(49)
+// 체력 최대치 상한선
+#define MAX_LIFES_MAX	(250)
 // 레벨업 요구치 증가 상수
 #define LV_UP_REQ		(1.7)
 
