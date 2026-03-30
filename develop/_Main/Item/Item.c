@@ -17,7 +17,7 @@ float drop_table[ALIEN_TYPE_N][ITEM_TYPE_N] = {
 	[ALIEN_TYPE_METEOR] = { 80.0f, 5.0f, 5.0f, 5.0f, 5.0f, 0.0f },
 	[ALIEN_TYPE_FAST] = { 75.0f, 5.0f, 5.0f, 10.0f, 5.0f, 0.0f },
 	[ALIEN_TYPE_SHOOTER] = { 40.0f, 20.0f, 10.0f, 20.0f, 10.0f, 0.0f },
-	[ALIEN_TYPE_BOSS] = { 0.0f,  39.0f, 20.0f, 20.0f, 20.0f, 1.0f },
+	[ALIEN_TYPE_BOSS] = { 0.0f,  20.0f, 20.0f, 20.0f, 20.0f, 20.0f },
 };
 
 void item_init()
@@ -142,12 +142,14 @@ void item_use(ITEM_TYPE type)
 	switch (type)
 	{
 	case ITEM_TYPE_HEAL_POTION:
-		ship.curr_lifes = fminf(ship.max_lifes, ship.curr_lifes * 1.2f);
+		ship.curr_lifes = fminf(ship.max_lifes, ship.curr_lifes * 1.1f);
 		break;
 	case ITEM_TYPE_BOMB:
-		for (int i = 0; i < ALIENS_N; ++i)
+		for (int i = 0; i < 50; ++i)
 		{
 			if (!aliens[i].used) continue;
+			if (aliens[i].type == ALIEN_TYPE_BOSS) continue;
+
 			fx_add(false, aliens[i].cx, aliens[i].cy);
 			fx_add(false, aliens[i].cx - 10, aliens[i].cy - 4);
 			fx_add(false, aliens[i].cx + 4, aliens[i].cy + 10);
@@ -167,7 +169,7 @@ void item_use(ITEM_TYPE type)
 		break;
 	case ITEM_TYPE_RANDOM_STAT_CHANGE:
 		ship.damage = between(1, 100);
-		ship.shot_count = between(1, 19) / 2 + 1;
+		ship.shot_count = between(1, 10) / 2 + 1;
 		ship.fire_rate = between_f(0.1f, 10.0f);
 		ship.speed = between_f(0.2f, 10.0f);
 		ship.curr_lifes = between(1, ship.max_lifes);

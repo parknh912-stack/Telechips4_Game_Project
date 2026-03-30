@@ -17,7 +17,7 @@
 extern long frames;
 extern long score;
 extern int level;
-extern int stage_num; 
+extern int stage_num;
 
 void must_init(bool test, const char* description);
 int between(int lo, int hi);
@@ -41,7 +41,7 @@ typedef enum STATE {
     STATE_NEWGAME,           //7. 새로운 게임
     STATE_ABOUT,             //0328 김병헌 - 8. 게임 설명
     STATE_ENDING_SCENE,      // 0330 김병헌 - 엔딩씬
-    STATE_ENDING             // 0330 신제현 - 엔딩 선택
+    STATE_ENDING,           // 0330 김병헌 - 엔딩씬
 } STATE;
 
 //0327 김병헌 - rank함수 여기 없어도 됩니다.

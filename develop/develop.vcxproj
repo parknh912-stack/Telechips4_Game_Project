@@ -135,6 +135,7 @@
   <ItemGroup>
     <None Include="explode1.flac" />
     <None Include="explode2.flac" />
+    <None Include="laserSmall_000.ogg" />
     <None Include="packages.config" />
     <None Include="shot.flac" />
   </ItemGroup>
@@ -143,8 +144,20 @@
     <Image Include="blue.png" />
     <Image Include="darkPurple.png" />
     <Image Include="Ending_Scene.png" />
+    <Image Include="planet00.png" />
+    <Image Include="planet01.png" />
+    <Image Include="planet02.png" />
+    <Image Include="planet03.png" />
+    <Image Include="planet04.png" />
+    <Image Include="planet05.png" />
+    <Image Include="planet06.png" />
+    <Image Include="planet07.png" />
+    <Image Include="planet08.png" />
+    <Image Include="planet09.png" />
     <Image Include="purple.png" />
     <Image Include="sheet.png" />
+    <Image Include="spaceShips_005.png" />
+    <Image Include="spaceStation_026.png" />
     <Image Include="spritesheet.png" />
     <Image Include="ui_sheet.png" />
   </ItemGroup>
@@ -180,6 +193,10 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="PressStart2P.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Escape_Velocity.mp3" />
+    <Media Include="maplestory-lvl-up.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

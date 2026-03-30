@@ -59,8 +59,7 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 
 // 작성자 : 박남현
 /* --- 원형 충돌 --- */
-bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) 
-{
+bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
     long dx = cx2 - cx1;
     long dy = cy2 - cy1;
 
@@ -126,23 +125,23 @@ void game_state_update(STATE* state, bool* done)
     {
     case STATE_MENU:
         menu_input_update(5);
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
-            if (current_menu_selection == 0) 
+            if (current_menu_selection == 0)
             {
                 *state = STATE_NEWGAME;
             }
 
-            else if (current_menu_selection == 1) 
+            else if (current_menu_selection == 1)
             {
                 *state = STATE_ABOUT;//0328 김병헌 겜설명
             }
-            else if (current_menu_selection == 2) 
+            else if (current_menu_selection == 2)
             {
                 *state = STATE_RANK;
                 current_menu_selection = 0;
             }
-            else if (current_menu_selection == 3) 
+            else if (current_menu_selection == 3)
             {
                 *done = true;
             }
@@ -156,10 +155,10 @@ void game_state_update(STATE* state, bool* done)
     case STATE_PLAYING:
         stage_update(); //0329 박남현
 
-        // 0330 신제현 - 버그 수정
+		// 0330 신제현 - 버그 수정
         // 스테이지 클리어로 상태가 바뀌었으면 나머지를 스킵할 것
-        if (*state != STATE_PLAYING)
-            break;
+		if (*state != STATE_PLAYING)
+			break;
 
         fx_update();
         shots_update();
@@ -195,8 +194,7 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_PAUSE:
         menu_input_update(2);
-        if (is_select_pressed) 
-        {
+        if (is_select_pressed) {
             if (current_menu_selection == 0) 
             {
                 *state = STATE_PLAYING;
@@ -210,8 +208,7 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
-        if (is_select_pressed) 
-        {
+        if (is_select_pressed) {
             if (current_menu_selection == 0)
             {
                 *state = STATE_NEWGAME;
@@ -234,8 +231,7 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_RANK:
         menu_input_update(1);
-        if (is_select_pressed) 
-        {
+        if (is_select_pressed) {
             *state = STATE_MENU;
             current_menu_selection = 0;
         }
@@ -310,9 +306,7 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_ABOUT: //0328 김병헌 겜설명
         menu_input_update(1);//0328 김병헌 겜설명
-        if (is_select_pressed) 
-        {
-        
+        if (is_select_pressed) {//0328 김병헌 겜설명
             *state = STATE_MENU;//0328 김병헌 겜설명
             current_menu_selection = 0;//0328 김병헌 겜설명
         }
@@ -338,7 +332,7 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_ENDING:          // 0330 신제현 - 엔딩 화면
         menu_input_update(2);
-        
+
         if (is_select_pressed)
         {
             if (current_menu_selection == 0)
@@ -424,7 +418,6 @@ int main()
 
     al_start_timer(timer);
 
-   
     while (1)
     {
         al_wait_for_event(queue, &event);
@@ -444,7 +437,12 @@ int main()
             }
 
             redraw = true;
-            ++frames;
+
+            // 0330 신제현 - STATE_PLAYING 상태에 있을 때에만 프레임 수를 증가
+            // 그 외의 경우는 증가시키지 않음
+            if (current_state == STATE_PLAYING)
+                ++frames;
+
             break;
 
         case ALLEGRO_EVENT_KEY_CHAR: // 실시간 문자 입력 처리 : 김병헌
@@ -488,6 +486,7 @@ int main()
             {
             case STATE_MENU:
                 ui_draw_main_menu();
+                audio_stop_bgm();
                 break;
 
             case STATE_PLAYING:
@@ -553,19 +552,21 @@ int main()
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_level_up_menu();
                 break;
+
+            case STATE_ABOUT:
+                ui_draw_h2p_menu();
+                break;
+
             case STATE_ENDING_SCENE:
                 ui_draw_clear_menu();
                 break;
+
             case STATE_ENDING:
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_ending_menu();
                 break;
-            case STATE_ABOUT:
-                ui_draw_h2p_menu();
-                break;
             }
-           
 
             disp_post_draw();
             redraw = false;

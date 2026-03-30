@@ -3,17 +3,17 @@
 
 // 작성자: 신제현
 // 레벨 업에 필요한 점수의 양
-#define LV_UP           (1000)			////0329 박남현 - 수치 조정 (테스트용)
+#define LV_UP           (10000)			////0329 박남현 - 수치 조정 (테스트용)
 // 투사체 발사 최대 수(5개가 디폴트)
 #define SHOT_COUNT_MAX	(5)	
 // 이동 속도 상한선
-#define SPEED_MAX		(99)
+#define SPEED_MAX		(10)
 // 공격 속도 상한선
-#define FIRE_RATE_MAX	(49)
+#define FIRE_RATE_MAX	(20)
 // 체력 최대치 상한선
 #define MAX_LIFES_MAX	(250)
 // 레벨업 요구치 증가 상수
-#define LV_UP_REQ		(1.7)
+#define LV_UP_REQ		(2)
 
 // 작성자: 신제현
 void damage_up(void);

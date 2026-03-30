@@ -22,16 +22,6 @@ void shots_init()
 //작성자 : 박남현
 bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count)
 {
-    //sound 설정
-    al_play_sample(
-        sample_shot,
-        0.3,
-        0,
-        is_ship ? 1.0 : between_f(1.5, 1.6),
-        ALLEGRO_PLAYMODE_ONCE,
-        NULL
-    );
-
     // 공통 세팅
     float speed = is_ship ? 5.0f : 5.0f;
 
@@ -64,6 +54,16 @@ bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count)
 
     if (has_target)
     {
+        //sound 설정
+        al_play_sample(
+            sample_shot,
+            0.3,
+            0,
+            is_ship ? 1.0 : between_f(1.5, 1.6),
+            ALLEGRO_PLAYMODE_ONCE,
+            NULL
+        );
+
         float dx = target_x - x;
         float dy = target_y - y;
 
@@ -114,7 +114,6 @@ bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy)
     return false;
 }
 
-
 // 작성자 : 박남현
 /* --- 가장 가까운 적 식별 --- */
 int get_closet_enemy()
@@ -156,7 +155,6 @@ void shots_update()
 		shots[i].x += shots[i].dx;
 		shots[i].y += shots[i].dy;
 
-		// 작성자 : 박남현
 		// 무한맵 구현을 위하여, 사라지는거 삭제
 		if (shots[i].x > MAP_WIDTH)  shots[i].x = 0;
 		if (shots[i].x < 0)          shots[i].x = MAP_WIDTH;
@@ -164,11 +162,13 @@ void shots_update()
 		if (shots[i].y < 0)          shots[i].y = MAP_HEIGHT;
 
         shots[i].frame++;
+        if (shots[i].frame > SHOTS_LIFETIME)
+            shots[i].used = false;
     }
 }
 
 //작성자 : 박남현
-bool shots_collide(bool ship, float cx, float cy, float w, float h)
+bool shots_collide(bool ship, float cx, float cy, float w, float h, int idx)
 {
     for (int i = 0; i < SHOTS_N; i++)
     {
@@ -196,19 +196,17 @@ bool shots_collide(bool ship, float cx, float cy, float w, float h)
         }
         else
         {
-            sw = SHIP_SHOT_W;
-            sh = SHIP_SHOT_H;
-            /* 아군 -> 적인 경우는 AABB 충돌 (차후 원형 충돌로 바꿀 예정) */
-            if (collide(cx, cy, cx + w, cy + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
+			sw = SHIP_SHOT_W;
+			sh = SHIP_SHOT_H;
+			/* 아군 -> 적인 경우는 AABB 충돌 (차후 원형 충돌로 바꿀 예정) */
+			if (collide_circle(cx, cy, h, shots[i].x, shots[i].y, SHIP_SHOT_R))
             {
                 fx_add(true, shots[i].x + (sw / 2.0f), shots[i].y + (sh / 2.0f));
                 shots[i].used = false;
                 return true;
             }
         }
-
     }
-
     return false;
 }
 
@@ -313,7 +311,6 @@ void shots_draw()
 SHIP ship;
 
 // 작성자 : 박남현
-// 거의 전체적으로 변경되었음.
 void ship_init()
 {
     //0330
@@ -323,13 +320,13 @@ void ship_init()
     ship.cy = ship.y + (SHIP_H / 2);
 
     ship.speed = 4.0f;          //이동속도, 수정가능
-    ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
+    ship.fire_rate = 4.0f;      //초당 공격 횟수 (수정가능)
     ship.shot_timer = 60;       //shot_timer
-    ship.damage = 5;           //데미지, int      (수정가능)
-    ship.shot_count = 1;        //투사체 수 (홀수개만)
+    ship.damage = 10;            //데미지, int   (수정가능)
+    ship.shot_count = 1;        //투사체 수     (홀수개만)
     ship.max_lifes = 100;       //최대 체력
     ship.curr_lifes = 100;      //현재 체력
-    ship.barrier = false;
+    ship.barrier = false;       //배리어 여부
 
     ship.invincible_timer = 3;  //무적시간
 }
@@ -339,10 +336,11 @@ void ship_update()
     if (ship.curr_lifes < 0)
     {
         current_state = STATE_GAMEOVER;
+        score += 18000 - frames;
         ship_init();
         return;
     }
-
+    
     if (key[ALLEGRO_KEY_LEFT])
         ship.x -= ship.speed;
     if (key[ALLEGRO_KEY_RIGHT])
@@ -383,7 +381,7 @@ void ship_update()
         ship.invincible_timer--;
     else
     {
-        if (shots_collide(true, ship.cx, ship.cy, SHIP_W, SHIP_H))
+        if (shots_collide(true, ship.cx, ship.cy, SHIP_W, SHIP_H, 0))
         {
             fx_add(false, ship.cx, ship.cy);
             fx_add(false, ship.cx + 4, ship.cy + 2);
@@ -448,7 +446,7 @@ void ship_draw()
             0, 0,
             al_get_bitmap_width(sprites.barrier),
             al_get_bitmap_height(sprites.barrier),
-            ship.cx - (ITEMS_BARRIER_W / 2), ship.cy - (ITEMS_BARRIER_H / 2),
+            (BUFFER_W / 2) - (ITEMS_BARRIER_W / 2), (BUFFER_H / 2) - (ITEMS_BARRIER_H / 2),
             ITEMS_BARRIER_W, ITEMS_BARRIER_H,
             0);
     }
@@ -499,6 +497,9 @@ void aliens_update()
     int new_quota = (frames % spawn_frames) ? 0 : between(4, 6);
 
     int curr_alive_alien = 0;
+    for (int i = 0; i < ALIENS_N; i++) {
+        if (aliens[i].used) curr_alive_alien++;
+    }
 
     // 작성자 : 천원석 & 박남현
     /* --- 적 생성 및 초기화 --- */
@@ -525,7 +526,7 @@ void aliens_update()
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
                 aliens[i].used = true;
-
+                curr_alive_alien++;
                 new_quota--;
             }
             continue;
@@ -549,21 +550,11 @@ void aliens_update()
             break;
 
         case ALIEN_TYPE_BOSS:
+            boss_dash();
             aliens_move(i, aliens[i].speed);
         }
 
-        ///* 화면 범위 밖으로 나갈시, 제거*/
-        //if (aliens[i].x > BUFFER_W + 100 ||
-        //    aliens[i].x < -100 ||
-        //    aliens[i].y > BUFFER_H + 100 ||
-        //    aliens[i].y < -100)
-        //{
-        //    aliens[i].used = false;
-        //    continue;
-        //}
-        
         //0330
-
         /* 맵 범위 밖으로 나갈 시, 반대편으로 워프 (무한 맵 루프) */
         if (aliens[i].x > MAP_WIDTH)  aliens[i].x = 0;
         if (aliens[i].x < 0)          aliens[i].x = MAP_WIDTH;
@@ -585,7 +576,7 @@ void aliens_update()
         if (aliens[i].blink)
             aliens[i].blink--;
 
-        if (shots_collide(false, aliens[i].x, aliens[i].y, ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type]))
+        if (shots_collide(false, aliens[i].cx, aliens[i].cy, ALIEN_W[aliens[i].type] / 4.0f, ALIEN_H[aliens[i].type] / 4.0f, i))
         {
             aliens[i].life -= ship.damage;
             aliens[i].blink = 4;
@@ -632,12 +623,10 @@ void aliens_update()
             switch (aliens[i].type)
             {
             case ALIEN_TYPE_METEOR:    //메테오는 총을 쏘지 않는다.
-                /*shots_add(false, false, cx, cy);
-                aliens[i].shot_timer = 150;*/
                 break;
             case ALIEN_TYPE_FAST:
                 shots_add(false, true, aliens[i].cx, aliens[i].cy, aliens[i].shot_count);
-                aliens[i].shot_timer = 80;
+                aliens[i].shot_timer = 300;
                 break;
             case ALIEN_TYPE_SHOOTER:
                 shots_add(false, true, aliens[i].cx - 5, aliens[i].cy, aliens[i].shot_count);
@@ -647,8 +636,8 @@ void aliens_update()
                 aliens[i].shot_timer = 200;
                 break;
             case ALIEN_TYPE_BOSS:
-                shots_add(false, true, aliens[i].cx - 200, aliens[i].cy - 100, aliens[i].shot_count);
-                aliens[i].shot_timer = 50;
+                shots_add(false, true, aliens[i].cx, aliens[i].cy, aliens[i].shot_count);
+                aliens[i].shot_timer = 30;
                 aliens[i].shot_count = 5;
                 break;
             }
@@ -779,7 +768,7 @@ bool is_boss_alive()
          break;
      case ALIEN_TYPE_BOSS:
          aliens[i].life = ALIEN_LIFE_BOSS * life_mul;
-         //aliens[i].life = 10;
+         aliens[i].speed = 1.0f;
          aliens[i].shot_count = ALIEN_SHOT_BOSS;
          break;
      }
@@ -850,7 +839,7 @@ void aliens_collide()
     for (int i = 0; i < ALIENS_N; i++)
     {
         if (!aliens[i].used) continue;
-
+        
         for (int j = i + 1; j < ALIENS_N; j++)
         {
             if (!aliens[j].used) continue;
@@ -889,4 +878,43 @@ void aliens_collide()
             }
         }
     }
+}
+
+//0330 천원석, 보스 기믹 추가
+void boss_dash()
+{
+	for (int i = 0; i < ALIENS_N; ++i)
+	{
+		// 타입이 보스일 때만
+		if (aliens[i].used && aliens[i].type == ALIEN_TYPE_BOSS)
+		{
+			// 쿨타임 5초
+			static int dash_cooldown = 300;
+			// 돌진 시간
+			static int dash_duration = 0;
+			static float original_speed = 1.0f;
+
+			if (dash_duration > 0)
+			{
+				dash_duration--;
+				if (dash_duration <= 0)
+				{
+					aliens[i].speed = original_speed;
+					dash_cooldown = between(120, 300);
+				}
+			}
+			// 쿨타임 돌때
+			else if (dash_cooldown > 0)
+			{
+				dash_cooldown--;
+
+				if (dash_cooldown <= 0)
+				{
+					original_speed = aliens[i].speed;
+					aliens[i].speed += 7.0f;
+					dash_duration = 60;
+				}
+			}
+		}
+	}
 }

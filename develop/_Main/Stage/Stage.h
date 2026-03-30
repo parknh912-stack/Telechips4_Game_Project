@@ -27,6 +27,7 @@ typedef struct STAGE {
 }STAGE;
 
 extern STAGE stage_info[];
+extern int stage_frames;
 
 void stage_init();
 void stage_update();

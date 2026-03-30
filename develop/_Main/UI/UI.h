@@ -1,11 +1,6 @@
 #ifndef _UI_H_
 #define _UI_H_
 
-#include <allegro5/allegro5.h>
-#include "../Display.h"
-#include "../Core.h"
-
-//0328 김병헌 : 매직넘버 수정을 위한 작업이 있었습니다.
 /* -- Asset Location -- */
 #define UI_PANEL_BLUE_X            190 
 #define UI_PANEL_BLUE_Y            0
@@ -89,7 +84,7 @@
 #define STATUS_POS_X               850
 #define STATUS_POS_Y               300
 
-/* -- stars -- */
+/* --- stars --- */
 typedef struct STAR
 {
     float y;
@@ -103,7 +98,7 @@ void stars_init();
 void stars_update();
 void stars_draw();
 
-/* -- hud -- */
+/* --- hud --- */
 extern ALLEGRO_FONT* font;
 extern ALLEGRO_FONT* bold_font;//제목용
 extern ALLEGRO_FONT* compcolor_font;//보색용
@@ -113,13 +108,14 @@ void hud_deinit();
 void hud_update();
 void hud_draw();
 
-/* -- UI -- */
+/* --- UI --- */
 extern ALLEGRO_BITMAP* ui_sheet;
 extern int current_menu_selection;
 
-// 0330 신제현
+/* -- 실시간 TIMER -- */
 extern double stage_alert_timer;
 extern double boss_alert_timer;
+extern double survive_timer;
 
 // 작성자: 신제현
 typedef struct MENU {
@@ -139,7 +135,7 @@ void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float d
 void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height, ALLEGRO_FONT* fonto);
 void menu_input_update(int item_count);
 
-void draw_bold_text(ALLEGRO_FONT* font, ALLEGRO_COLOR main_color, ALLEGRO_COLOR outline_color, float x, float y, int flags,int thickness, const char* text); //0328 김병헌 볼드체 작성 함수
+void draw_bold_text(ALLEGRO_FONT* font, ALLEGRO_COLOR main_color, ALLEGRO_COLOR outline_color, float x, float y, int flags, int thickness, const char* text); //0328 김병헌 볼드체 작성 함수
 void ui_draw_main_menu();
 void ui_draw_pause_menu();
 void ui_draw_gameover_menu();
