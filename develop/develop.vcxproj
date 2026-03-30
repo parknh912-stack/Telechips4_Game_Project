@@ -139,6 +139,7 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="AI_assets.png" />
     <Image Include="black.png" />
     <Image Include="blue.png" />
     <Image Include="darkPurple.png" />

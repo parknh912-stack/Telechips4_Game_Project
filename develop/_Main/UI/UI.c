@@ -289,6 +289,25 @@ void ui_draw_h2p_menu() // 0330 김병헌
     static int frame_count = 0;
     frame_count++;
     
+    static ALLEGRO_BITMAP* bg_image = NULL;
+    if (!bg_image) {
+        bg_image = al_load_bitmap("AI_assets.png");
+    }
+
+
+    // 2. 배경 그리기 (화면의 (0,0) 위치부터 (BUFFER_W, BUFFER_H) 크기로 확장)
+    if (bg_image) {
+        al_draw_tinted_scaled_bitmap(
+            bg_image,            // 비트맵 포인터
+            al_map_rgb(50, 50, 50), // 틴트 컬러
+            0, 0,                // 원본 이미지의 시작점 (sx, sy)
+            al_get_bitmap_width(bg_image),  // 원본 너비 (sw)
+            al_get_bitmap_height(bg_image), // 원본 높이 (sh)
+            0, 0,                // 화면에 그려질 시작점 (dx, dy)
+            BUFFER_W, BUFFER_H,  // 화면에 그려질 크기 (dw, dh)
+            0                    // 플래그
+        );
+    }
     draw_bold_text(bold_font, COLOR_TITLE, COLOR_WHITE, BUFFER_W / 2, scroll_y - 40, ALLEGRO_ALIGN_CENTER, 2, "Congrats!");
     scroll_y -= 0.5;
     al_draw_multiline_text(
