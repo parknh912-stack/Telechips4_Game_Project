@@ -126,23 +126,23 @@ void game_state_update(STATE* state, bool* done)
     {
     case STATE_MENU:
         menu_input_update(5);
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
-            if (current_menu_selection == 0) 
+            if (current_menu_selection == 0)
             {
                 *state = STATE_NEWGAME;
             }
 
-            else if (current_menu_selection == 1) 
+            else if (current_menu_selection == 1)
             {
                 *state = STATE_ABOUT;//0328 김병헌 겜설명
             }
-            else if (current_menu_selection == 2) 
+            else if (current_menu_selection == 2)
             {
                 *state = STATE_RANK;
                 current_menu_selection = 0;
             }
-            else if (current_menu_selection == 3) 
+            else if (current_menu_selection == 3)
             {
                 *done = true;
             }
@@ -156,10 +156,10 @@ void game_state_update(STATE* state, bool* done)
     case STATE_PLAYING:
         stage_update(); //0329 박남현
 
-        // 0330 신제현 - 버그 수정
+		// 0330 신제현 - 버그 수정
         // 스테이지 클리어로 상태가 바뀌었으면 나머지를 스킵할 것
-        if (*state != STATE_PLAYING)
-            break;
+		if (*state != STATE_PLAYING)
+			break;
 
         fx_update();
         shots_update();
@@ -338,6 +338,51 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_ENDING:          // 0330 신제현 - 엔딩 화면
         menu_input_update(2);
+
+        if (is_select_pressed)
+        {
+            if (current_menu_selection == 0)
+            {
+                // 랭킹 진입 체크 후 이름 입력으로
+                if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
+                {
+                    *state = STATE_INPUT_NAME;
+                    name_len = 0;
+                    player_name[0] = '\0';
+                }
+                else
+                {
+                    *state = STATE_RANK;  // 랭킹권 아니면 보기만
+                }
+            }
+            else if (current_menu_selection == 1)
+            {
+                *state = STATE_MENU;
+                current_menu_selection = 0;
+            }
+        }
+        break;
+
+    case STATE_ENDING_SCENE: // 0330 김병헌 엔딩 씬
+    {
+        static int ending_frame_counter = 0;
+        if (ending_frame_counter < 800)ending_frame_counter++;
+
+        menu_input_update(1);
+        if (ending_frame_counter >= 800)
+        {
+            if (is_select_pressed)
+            {
+                *state = STATE_ENDING;
+                current_menu_selection = 0;
+                ending_frame_counter = 0;
+            }
+        }
+    }
+    break;
+
+    case STATE_ENDING:          // 0330 신제현 - 엔딩 화면
+        menu_input_update(2);
         
         if (is_select_pressed)
         {
@@ -444,7 +489,12 @@ int main()
             }
 
             redraw = true;
-            ++frames;
+
+            // 0330 신제현 - STATE_PLAYING 상태에 있을 때에만 프레임 수를 증가
+            // 그 외의 경우는 증가시키지 않음
+            if (current_state == STATE_PLAYING)
+                ++frames;
+
             break;
 
         case ALLEGRO_EVENT_KEY_CHAR: // 실시간 문자 입력 처리 : 김병헌
@@ -488,6 +538,7 @@ int main()
             {
             case STATE_MENU:
                 ui_draw_main_menu();
+                audio_stop_bgm();
                 break;
 
             case STATE_PLAYING:
@@ -553,16 +604,19 @@ int main()
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_level_up_menu();
                 break;
+
+            case STATE_ABOUT:
+                ui_draw_h2p_menu();
+                break;
+
             case STATE_ENDING_SCENE:
                 ui_draw_clear_menu();
                 break;
+
             case STATE_ENDING:
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_ending_menu();
-                break;
-            case STATE_ABOUT:
-                ui_draw_h2p_menu();
                 break;
             }
            

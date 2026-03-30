@@ -89,7 +89,7 @@
 #define STATUS_POS_X               850
 #define STATUS_POS_Y               300
 
-/* -- stars -- */
+/* --- stars --- */
 typedef struct STAR
 {
     float y;
@@ -117,9 +117,10 @@ void hud_draw();
 extern ALLEGRO_BITMAP* ui_sheet;
 extern int current_menu_selection;
 
-// 0330 신제현
+/* -- 실시간 TIMER -- */
 extern double stage_alert_timer;
 extern double boss_alert_timer;
+extern double survive_timer;
 
 // 작성자: 신제현
 typedef struct MENU {
