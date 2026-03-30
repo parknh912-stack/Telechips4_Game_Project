@@ -46,6 +46,8 @@ ALLEGRO_FONT* font;
 ALLEGRO_FONT* bold_font;//0327 김병헌 제목용 큰 폰트
 ALLEGRO_FONT* compcolor_font;//김병헌 보색용 폰트
 long score_display;
+double stage_alert_timer = -1.0;
+double boss_alert_timer = -1.0;
 
 void hud_init()//0328 김병헌
 {
@@ -88,12 +90,35 @@ void hud_draw()
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 120, 0, "stage: %02d", stage_num + 1);
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 150, 0, "x : %d", (int)ship.cx);
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 00, "y : %d", (int)ship.cy);
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 210, 00, "sec : %d", (frames/60));
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 210, 00, "sec : %d", (frames / 60));
 
     int spacing = LIFE_W + 1;
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W + 2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328김병헌
     for (int i = 0; i < ship.curr_lifes; i++)
         al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 김병헌
+
+    // 0330 신제현 - 보스 나타난다고 화면에 메시지 2초간 표시
+    if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
+        al_draw_text(
+            font,
+            al_map_rgb_f(1.0, 0.0, 0.0),
+            BUFFER_W / 2, BUFFER_H / 2,
+            ALLEGRO_ALIGN_CENTER,
+            "!!! A L E R T !!!"
+        );
+
+    // 0330 신제현 - 몇 번째 스테이지에 진입했다고 2초간 화면에 메시지 표시
+    if (stage_alert_timer >= 0.0 && (al_get_time() - stage_alert_timer < 2.0))
+    {
+        al_draw_textf(
+            bold_font,
+            al_map_rgb_f(1.0, 1.0, 0.0),
+            BUFFER_W / 2, BUFFER_H / 2,
+            ALLEGRO_ALIGN_CENTER,
+            "=== S T A G E   %02d ===",
+            stage_num + 1
+        );
+    }
 }
 
 
@@ -292,3 +317,4 @@ void ui_draw_h2p_menu()//0328 김병헌
 
 
 }
+

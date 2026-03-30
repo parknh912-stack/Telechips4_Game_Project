@@ -108,6 +108,10 @@ void hud_draw();
 extern ALLEGRO_BITMAP* ui_sheet;
 extern int current_menu_selection;
 
+// 0330 신제현
+extern double stage_alert_timer;
+extern double boss_alert_timer;
+
 // 작성자: 신제현
 typedef struct MENU {
     float x;

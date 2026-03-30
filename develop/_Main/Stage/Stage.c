@@ -4,6 +4,7 @@
 #include "../Display.h"
 #include "../Sprites.h"
 #include "../Item/Item.h"
+#include "../UI/UI.h"
 
 //0329 박남현
 /* --- Stage ---*/
@@ -49,6 +50,8 @@ void stage_update()
 		aliens_init();
 		spawn_boss();
 		boss_spawned = true;
+		// 0330 신제현 - 보스 출현 알리는 timer
+		boss_alert_timer = al_get_time();
 	}
 
 	if (boss_spawned && !is_boss_alive())
@@ -57,6 +60,10 @@ void stage_update()
 		{
 			stage_num++;
 			boss_spawned = false;
+
+			// 0330 신제현
+			stage_alert_timer = al_get_time();
+
 			for (int i = 0; i < ALIENS_N; ++i)
 			{
 				if (!aliens[i].used) continue;

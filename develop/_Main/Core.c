@@ -100,6 +100,7 @@ void game_state_init(void)
     score = 0;
     level = 1;
     score_display = 0;
+    stage_alert_timer = al_get_time();  // 0330 신제현 - 스테이지 1 진입 알림
 
     stage_init();   //0329 박남현
     ship_init();
@@ -356,6 +357,7 @@ int main()
 
     al_start_timer(timer);
 
+   
     while (1)
     {
         al_wait_for_event(queue, &event);
@@ -404,6 +406,8 @@ int main()
 
         keyboard_update(&event);
         ALLEGRO_TRANSFORM trans;
+
+        int time = al_get_time();
 
         // 작성자: 김병헌
         if (redraw && al_is_event_queue_empty(queue))

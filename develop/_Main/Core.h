@@ -17,7 +17,7 @@
 extern long frames;
 extern long score;
 extern int level;
-extern int stage_num;
+extern int stage_num; 
 
 void must_init(bool test, const char* description);
 int between(int lo, int hi);
