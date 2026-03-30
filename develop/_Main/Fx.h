@@ -3,7 +3,7 @@
 
 /* --- fx --- */
 
-#define FX_N 128
+#define FX_N 512
 
 typedef struct FX
 {

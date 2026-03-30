@@ -80,6 +80,10 @@
 #define COLOR_YELLOW               al_map_rgb(255, 255, 0)
 #define COLOR_TITLE                al_map_rgb(230, 230, 0)
 
+/* -- STATUS -- */
+#define STATUS_POS_X               850
+#define STATUS_POS_Y               300
+
 /* --- stars --- */
 typedef struct STAR
 {
@@ -108,6 +112,11 @@ void hud_draw();
 extern ALLEGRO_BITMAP* ui_sheet;
 extern int current_menu_selection;
 
+/* -- 실시간 TIMER -- */
+extern double stage_alert_timer;
+extern double boss_alert_timer;
+extern double survive_timer;
+
 // 작성자: 신제현
 typedef struct MENU {
     float x;
@@ -133,7 +142,10 @@ void ui_draw_gameover_menu();
 void ui_draw_rank_menu();
 void ui_draw_input_name_menu();
 void ui_draw_h2p_menu();//0328 김병헌
+void ui_draw_clear_menu();//0330 김병헌
 
 // 작성자: 신제현
 void ui_draw_level_up_menu(void);
+void ui_draw_ending_menu(void);
+
 #endif

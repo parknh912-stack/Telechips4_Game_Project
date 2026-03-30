@@ -13,17 +13,16 @@ typedef struct SHOT
 } SHOT;
 
 #define SHOTS_N 512
+#define SHOTS_LIFETIME 600
 
 extern SHOT shots[SHOTS_N];
 void shots_init();
 bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count);
 bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy);
-void shots_update();
-bool shots_collide(bool ship, float cx, float cy, float w, float h);
-void shots_draw();
-
-// 작성자 : 박남현
 int get_closet_enemy();     //최단거리 적 idx 반환하는 함수
+void shots_update();
+bool shots_collide(bool ship, float cx, float cy, float w, float h, int idx);
+void shots_draw();
 
 /* --- Player --- */
 
@@ -31,8 +30,6 @@ int get_closet_enemy();     //최단거리 적 idx 반환하는 함수
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000
 
-#define SHIP_MAX_X (BUFFER_W - SHIP_W)
-#define SHIP_MAX_Y (BUFFER_H - SHIP_H)
 
 // 작성자 : 박남현
 typedef struct SHIP
@@ -94,7 +91,7 @@ typedef enum ALIEN_LIFE
     ALIEN_LIFE_METEOR   = 10,
     ALIEN_LIFE_FAST     = 10,
     ALIEN_LIFE_SHOOTER  = 20,
-    ALIEN_LIFE_BOSS     = 300,
+    ALIEN_LIFE_BOSS     = 500,
     ALIEN_LIFE_N
 } ALIEN_LIFE;
 
@@ -102,7 +99,7 @@ typedef enum ALIEN_LIFE
 typedef enum ALIEN_SHOT
 {
     ALIEN_SHOT_METEOR   = 0,
-    ALIEN_SHOT_FAST     = 0,
+    ALIEN_SHOT_FAST     = 1,
     ALIEN_SHOT_SHOOTER  = 1,
     ALIEN_SHOT_BOSS     = 5,
     ALIEN_SHOT_N
@@ -143,6 +140,6 @@ void aliens_move(int i, float speed);
 void aliens_draw();
 void aliens_single_draw(float between_angle, int i, float cx, float cy);
 void aliens_collide();
-
+void boss_dash();
 
 #endif // 

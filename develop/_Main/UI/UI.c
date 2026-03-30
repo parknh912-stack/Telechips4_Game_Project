@@ -47,6 +47,10 @@ ALLEGRO_FONT* bold_font;//0327 김병헌 제목용 큰 폰트
 ALLEGRO_FONT* compcolor_font;//김병헌 보색용 폰트
 long score_display;
 
+double stage_alert_timer = -1.0;        // 0330 신제현
+double boss_alert_timer = -1.0;         // 0330 신제현
+double survive_timer = -1.0;            // 0330 신제현
+
 void hud_init()//0328 김병헌
 {
     al_init_font_addon();//0327 김병헌 수정사항 : 글씨 크기를 키웠습니다.
@@ -94,6 +98,40 @@ void hud_draw()
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W + 2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328김병헌
     for (int i = 0; i < ship.curr_lifes; i++)
         al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 김병헌
+    
+    // 0330 신제현 - 보스 나타난다고 화면에 메시지 2초간 표시
+    if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
+        al_draw_text(
+            bold_font,
+            al_map_rgb_f(1.0, 0.0, 0.0),
+            BUFFER_W / 2, BUFFER_H / 2 - 120,
+            ALLEGRO_ALIGN_CENTER,
+            "!!! A L E R T !!!"
+        );
+	// 0330 신제현 - 몇 번째 스테이지에 진입했다고 2초간 화면에 메시지 표시
+    if (stage_alert_timer >= 0.0 && (al_get_time() - stage_alert_timer < 2.0))
+    {
+        al_draw_textf(
+            bold_font,
+            al_map_rgb_f(1.0, 1.0, 1.0),
+            BUFFER_W / 2, BUFFER_H / 2 - 120,
+            ALLEGRO_ALIGN_CENTER,
+            "=== S T A G E   %02d ===",
+            stage_num + 1
+		);
+	}
+	// 0330 신제현 - 중간 상단에 생존 시간 보여주기
+	int total_second = frames / 60;
+	int min = total_second / 60;
+	int sec = total_second % 60;
+	int milli_sec = (frames % 60) * 1000 / 60;
+
+	al_draw_textf(
+		bold_font,
+		al_map_rgb_f(1.0, 1.0, 1.0),
+		BUFFER_W / 2, 15,
+		ALLEGRO_ALIGN_CENTER,
+		"TIME   %02d:%02d:%03d", min, sec, milli_sec);
 }
 
 
@@ -205,6 +243,22 @@ void ui_draw_pause_menu()
 {
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 180, 200, {"Resume", "Main Menu"}, 2, current_menu_selection };
     draw_menu_ui(&m, "PAUSED", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
+
+    draw_bold_text(bold_font, COLOR_WHITE, COLOR_GOLD, STATUS_POS_X, STATUS_POS_Y, 0, 2, "STATUS");
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 1, 0,
+        "HP : %d / %d", ship.curr_lifes, ship.max_lifes);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 2, 0,
+        "DAMAGE : %d", ship.damage);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 3, 0,
+        "SPEED : %.1f", ship.speed);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 4, 0,
+        "FIRE RATE : %.1f", ship.fire_rate);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 5, 0,
+        "SHOTS : %d", ship.shot_count);
 }
 
 void ui_draw_gameover_menu()
@@ -251,7 +305,7 @@ void ui_draw_input_name_menu()
 {
     // 1. 배경 판 그리기
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
+    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 
     float input_w = 320.0f; //0328 김병헌 입력창 너비
     float input_h = 50.0f; //0328 김병헌 입력창 높이
@@ -270,7 +324,7 @@ void ui_draw_input_name_menu()
 // 작성자: 신제현
 void ui_draw_level_up_menu()
 {
-    MENU m =  { BUFFER_W / 2,BUFFER_H / 2,200,400,{ "ATK + 2 ", "BULLET + 1", "ATK SPD + 20%", "SPD + 10%", "MAX LIFE + 10%", "HEAL"}, 6,current_menu_selection};
+    MENU m =  { BUFFER_W / 2,BUFFER_H / 2,300,400,{ "ATK + 2 ", "BULLET + 1", "ATK SPD + 20%", "SPD + 10%", "MAX LIFE + 10%", "HEAL"}, 6,current_menu_selection};
     
     draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
     
@@ -281,14 +335,88 @@ void ui_draw_h2p_menu()//0328 김병헌
     int extra_y = 50;
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L + 100, bold_font);
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 김병헌
-    al_draw_bitmap(sprites.item[1], m.x / 2, m.y - 6, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[2], m.x / 2, m.y - 6 + 25, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[3], m.x / 2, m.y - 6 + 50, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[4], m.x / 2, m.y - 6 + 75, ALLEGRO_ALIGN_LEFT);
+    for (int i = 1; i < 6; i++)
+    {
+        al_draw_scaled_bitmap(
+            sprites.item[i],           // 1. 비트맵
+            0, 0,                      // 2, 3. 소스 시작 (sx, sy)
+            al_get_bitmap_width(sprites.item[i]),  // 4. 소스 가로 (sw)
+            al_get_bitmap_height(sprites.item[i]), // 5. 소스 세로 (sh)
+            m.x / 2 + 120, m.y - 6 + (i - 1) * 25,          // 6, 7. 대상 위치 (dx, dy)
+            20,  // 8. 대상 가로 (dw) - 누락되었던 부분
+            20, // 9. 대상 세로 (dh) - 누락되었던 부분
+            0                          // 10. 플래그
+        );
+    }
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0328 김병헌
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonud");//0328 김병헌
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2 * 25, ALLEGRO_ALIGN_CENTER, 1, "i ballad seusung zzz");//0328 김병헌
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0328 김병헌
 
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS RED PILL");//0328 김병헌
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2 * 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS BLUE PILL");//0328 김병헌
+}
+
+void ui_draw_clear_menu() // 0330 김병헌
+{
+
+    static float scroll_y = 200;
+    static int frame_count = 0;
+    frame_count++;
+
+    static ALLEGRO_BITMAP* bg_image = NULL;
+    if (!bg_image)
+    {
+        bg_image = al_load_bitmap("Ending_Scene.png");
+    }
 
 
+    // 2. 배경 그리기
+    if (bg_image)
+    {
+        al_draw_tinted_scaled_bitmap
+        (
+            bg_image,            // 비트맵 포인터
+            al_map_rgb(100, 100, 100), // 틴트 컬러
+            0, 0,                // 원본 이미지의 시작점 (sx, sy)
+            al_get_bitmap_width(bg_image),  // 원본 너비 (sw)
+            al_get_bitmap_height(bg_image), // 원본 높이 (sh)
+            0, 0,                // 화면에 그려질 시작점 (dx, dy)
+            BUFFER_W, BUFFER_H,  // 화면에 그려질 크기 (dw, dh)
+            0                    // 플래그
+        );
+    }
+    draw_bold_text(bold_font, COLOR_TITLE, COLOR_WHITE, BUFFER_W / 2, scroll_y - 40, ALLEGRO_ALIGN_CENTER, 2, "Congrats!");
+    scroll_y -= 0.5;
+    al_draw_multiline_text(
+        font,
+        COLOR_WHITE,
+        BUFFER_W / 2,
+        scroll_y,
+        500,
+        20,
+        ALLEGRO_ALIGN_CENTER,
+        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : PAK NAMHYEON\n\nPlayer Logic : CHEON WONSEOK\n\nGame Logic : SHIN JEHYEON\n\nUI : KIM BYEONGHEON"
+    );
+    if (scroll_y < -200)
+    {
+        if ((frame_count / 25) % 2 == 0)
+        {
+            draw_bold_text(bold_font, COLOR_BLACK, COLOR_WHITE, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
+        }
+
+    }
+
+}
+
+// 작성자: 0330 신제현 - 엔딩 메뉴
+void ui_draw_ending_menu(void)
+{
+    MENU m = {
+        BUFFER_W / 2, BUFFER_H / 2,
+        300, 400,
+        { "Record Your Score", "Return To Menu" },
+        2,
+        current_menu_selection
+    };
+
+    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 }

@@ -14,7 +14,7 @@ void fx_init()
 void fx_add(bool spark, int x, int y)
 {
     if (!spark)
-        al_play_sample(sample_explode[between(0, 2)], 0.75, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_explode[between(0, 2)], 0.5, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
 
     for (int i = 0; i < FX_N; i++)
     {
