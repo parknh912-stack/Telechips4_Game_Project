@@ -227,7 +227,7 @@ void menu_input_update(int item_count)
 
 void ui_draw_main_menu()
 {
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 250, 300, {"Start Game", "How to play", "Ranking", "Exit"}, 4, current_menu_selection };//0328 김병헌 howtoplay 추가
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 350, 300, {"Start Game", "How to play", "Ranking", "Exit"}, 4, current_menu_selection };//0328 김병헌 howtoplay 추가
     draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 }
 
@@ -340,7 +340,7 @@ void ui_draw_h2p_menu()//0328 김병헌
             0, 0,                      // 2, 3. 소스 시작 (sx, sy)
             al_get_bitmap_width(sprites.item[i]),  // 4. 소스 가로 (sw)
             al_get_bitmap_height(sprites.item[i]), // 5. 소스 세로 (sh)
-            m.x / 2, m.y - 6 + (i-1)*25,          // 6, 7. 대상 위치 (dx, dy)
+            m.x / 2 + 120, m.y - 6 + (i-1)*25,          // 6, 7. 대상 위치 (dx, dy)
             20,  // 8. 대상 가로 (dw) - 누락되었던 부분
             20, // 9. 대상 세로 (dh) - 누락되었던 부분
             0                          // 10. 플래그
@@ -396,7 +396,7 @@ void ui_draw_clear_menu() // 0330 김병헌
         500,
         20,
         ALLEGRO_ALIGN_CENTER,
-        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : PAK NAMHYEON\n\nPlayer Logic : CHEON WONSEOK\n\nGame Logic : SHIN JEHYEON\n\nUI : KIM BYEONGHEON"
+        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : PARK NAMHYEON\n\nPlayer Logic : CHEON WONSEOK\n\nGame Logic : SHIN JEHYEON\n\nUI : KIM BYEONGHEON"
     );
     if (scroll_y < -200)
     {
