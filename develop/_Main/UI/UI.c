@@ -253,7 +253,7 @@ void ui_draw_input_name_menu()
 {
     // 1. ¹è°æ ÆÇ ±×¸®±â
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
+    draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 
     float input_w = 320.0f; //0328 ±èº´Çå ÀÔ·ÂÃ¢ ³Êºñ
     float input_h = 50.0f; //0328 ±èº´Çå ÀÔ·ÂÃ¢ ³ôÀÌ
@@ -272,7 +272,7 @@ void ui_draw_input_name_menu()
 // ÀÛ¼ºÀÚ: ½ÅÁ¦Çö
 void ui_draw_level_up_menu()
 {
-    MENU m =  { BUFFER_W / 2,BUFFER_H / 2,200,400,{ "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"}, 6,current_menu_selection};
+    MENU m =  { BUFFER_W /2,BUFFER_H / 2,300,400,{ "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"}, 6,current_menu_selection};
     
     draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
     
@@ -284,14 +284,25 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
     int extra_y = 50;
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y-6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 ±èº´Çå
-    al_draw_bitmap(sprites.item[1], m.x/2, m.y - 6, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[2], m.x/2, m.y - 6+25, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[3], m.x/2, m.y - 6+50, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[4], m.x/2, m.y - 6+75, ALLEGRO_ALIGN_LEFT);
+    for (int i = 1; i < 5; i++)
+    {
+        al_draw_scaled_bitmap(
+            sprites.item[i],           // 1. ºñÆ®¸Ê
+            0, 0,                      // 2, 3. ¼Ò½º ½ÃÀÛ (sx, sy)
+            al_get_bitmap_width(sprites.item[i]),  // 4. ¼Ò½º °¡·Î (sw)
+            al_get_bitmap_height(sprites.item[i]), // 5. ¼Ò½º ¼¼·Î (sh)
+            m.x / 2, m.y - 6 + (i-1)*25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
+            20,  // 8. ´ë»ó °¡·Î (dw) - ´©¶ôµÇ¾ú´ø ºÎºÐ
+            20, // 9. ´ë»ó ¼¼·Î (dh) - ´©¶ôµÇ¾ú´ø ºÎºÐ
+            0                          // 10. ÇÃ·¡±× (flags)
+        );
+    }
     
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS RED PILL");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS BLUE PILL");//0328 ±èº´Çå
+    
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0328 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonud");//0328 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "i ballad seusung zzz");//0328 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0328 ±èº´Çå
     
     
 }
