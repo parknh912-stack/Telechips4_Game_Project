@@ -302,11 +302,6 @@ void ui_draw_input_name_menu()
     float input_x = m.x - (input_w / 2); //0328 김병헌 입력창 너비에 따른 위치
     float input_y = m.y - (input_h / 2); //0328 김병헌 입력창 높이에 따른 위치
 
-    float input_w = 320.0f; //0328 김병헌 입력창 너비
-    float input_h = 50.0f; //0328 김병헌 입력창 높이
-    float input_x = m.x - (input_w / 2); //0328 김병헌 입력창 너비에 따른 위치
-    float input_y = m.y - (input_h / 2); //0328 김병헌 입력창 높이에 따른 위치
-
     // 2. 입력 박스 영역 (버튼 위 빈 공간)
     draw_ui_element(0,0,INPUT_BOX_SRC_W, INPUT_BOX_SRC_H, input_x, input_y, input_w, input_h);//0328 김병헌
 
@@ -367,16 +362,19 @@ void ui_draw_clear_menu() // 0330 김병헌
     frame_count++;
 
     static ALLEGRO_BITMAP* bg_image = NULL;
-    if (!bg_image) {
+    if (!bg_image) 
+    {
         bg_image = al_load_bitmap("Ending_Scene.png");
     }
 
 
-    // 2. 배경 그리기 (화면의 (0,0) 위치부터 (BUFFER_W, BUFFER_H) 크기로 확장)
-    if (bg_image) {
-        al_draw_tinted_scaled_bitmap(
+    // 2. 배경 그리기
+    if (bg_image) 
+    {
+        al_draw_tinted_scaled_bitmap
+        (
             bg_image,            // 비트맵 포인터
-            al_map_rgb(150, 150, 150), // 틴트 컬러
+            al_map_rgb(100, 100, 100), // 틴트 컬러
             0, 0,                // 원본 이미지의 시작점 (sx, sy)
             al_get_bitmap_width(bg_image),  // 원본 너비 (sw)
             al_get_bitmap_height(bg_image), // 원본 높이 (sh)
@@ -395,7 +393,7 @@ void ui_draw_clear_menu() // 0330 김병헌
         500,
         20,
         ALLEGRO_ALIGN_CENTER,
-        "You saved our land\nThank you for playing our game\nVisit www.gamelandTC2024.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
+        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
     );
     if (scroll_y < -200)
     {
@@ -407,34 +405,19 @@ void ui_draw_clear_menu() // 0330 김병헌
     }
 
 }
-}
-
-void ui_draw_h2p_menu()//0328 김병헌
-{
-    int extra_y = 50;
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L + 100, bold_font);
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 김병헌
-    al_draw_bitmap(sprites.item[1], m.x / 2, m.y - 6, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[2], m.x / 2, m.y - 6 + 25, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[3], m.x / 2, m.y - 6 + 50, ALLEGRO_ALIGN_LEFT);
-    al_draw_bitmap(sprites.item[4], m.x / 2, m.y - 6 + 75, ALLEGRO_ALIGN_LEFT);
-
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS RED PILL");//0328 김병헌
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2 * 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS BLUE PILL");//0328 김병헌
-}
 
 // 작성자: 0330 신제현 - 엔딩 메뉴
 void ui_draw_ending_menu(void)
 {
-    MENU m = {
+    MENU m = 
+    {
         BUFFER_W / 2, BUFFER_H / 2,
-        300, 500,
+        300, 400,
         { "Record Your Score", "Return To Menu" },
         2,
         current_menu_selection
     };
     
-    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
+    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 }
 

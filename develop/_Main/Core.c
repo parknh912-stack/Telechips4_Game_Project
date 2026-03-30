@@ -124,7 +124,7 @@ void game_state_update(STATE* state, bool* done)
     switch (*state)
     {
     case STATE_MENU:
-        menu_input_update(4);
+        menu_input_update(5);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
                 *state = STATE_NEWGAME;
@@ -138,6 +138,10 @@ void game_state_update(STATE* state, bool* done)
             }
             else if (current_menu_selection == 3) {
                 *done = true;
+            }
+            else if (current_menu_selection == 4)//0330 ±èº´Çå Àß ³ª¿À´ÂÁö Å×½ºÆ®
+            {
+                *state = STATE_ENDING_SCENE;
             }
         }
         break;
@@ -301,6 +305,25 @@ void game_state_update(STATE* state, bool* done)
             current_menu_selection = 0;//0328 ±èº´Çå °×¼³¸í
         }
         break;
+
+    case STATE_ENDING_SCENE: // 0330 ±èº´Çå ¿£µù ¾À
+    {
+        static int ending_frame_counter = 0;
+        if (ending_frame_counter < 700)ending_frame_counter++;
+
+        menu_input_update(1);
+        if (ending_frame_counter >= 800)
+        {
+            if (is_select_pressed)
+            {
+                *state = STATE_ENDING;
+                current_menu_selection = 0;
+                ending_frame_counter = 0;
+            }
+        }
+    }
+    break;
+
     case STATE_ENDING:          // 0330 ½ÅÁ¦Çö - ¿£µù È­¸é
         menu_input_update(2);
         
@@ -517,6 +540,9 @@ int main()
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_level_up_menu();
+                break;
+            case STATE_ENDING_SCENE:
+                ui_draw_clear_menu();
                 break;
             case STATE_ENDING:
                 hud_draw();
