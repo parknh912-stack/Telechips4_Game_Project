@@ -142,6 +142,7 @@
     <Image Include="black.png" />
     <Image Include="blue.png" />
     <Image Include="darkPurple.png" />
+    <Image Include="Ending_Scene.png" />
     <Image Include="purple.png" />
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
