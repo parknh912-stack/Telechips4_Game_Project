@@ -309,7 +309,7 @@ void game_state_update(STATE* state, bool* done)
     case STATE_ENDING_SCENE: // 0330 ±èº´Çå ¿£µù ¾À
     {
         static int ending_frame_counter = 0;
-        if (ending_frame_counter < 700)ending_frame_counter++;
+        if (ending_frame_counter < 800)ending_frame_counter++;
 
         menu_input_update(1);
         if (ending_frame_counter >= 800)
