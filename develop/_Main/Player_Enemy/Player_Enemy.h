@@ -125,8 +125,7 @@ typedef struct BOSS
     /* 스텟*/
     float speed;        //이동 속도
     float fire_rate;    //초당 공격 속도
-    int shot_timer;     //공격 타이머
-    float boss_curr_angle;
+    unsigned int shot_timer;     //공격 타이머
 
     int blink;
     int life;

@@ -270,10 +270,10 @@ void ship_init()
     ship.cy = ship.y + (SHIP_H / 2);
 
     ship.speed = 3.0f;          //이동속도, 수정가능
-    ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
+    ship.fire_rate = 10.0f;      //초당 공격 횟수 (수정가능)
     ship.shot_timer = 600000;       //shot_timer
     ship.damage = 10;           //데미지, int      (수정가능)
-    ship.shot_count = 1;        //투사체 수 (홀수개만)
+    ship.shot_count = 5;        //투사체 수 (홀수개만)
     ship.max_lifes = 10000;       //최대 체력
     ship.curr_lifes = 10000;      //현재 체력
 
@@ -688,7 +688,7 @@ void aliens_collide()
 // --- boss --- 
 
 BOSS boss;
-
+unsigned int cooldown = 300;
 bool boss_stop = false;
 
 void boss_init()
@@ -759,22 +759,24 @@ void boss_update(void)
             boss.used = false;
             continue;
         }
-
+        
         boss.shot_timer--;
-
-        if (boss.shot_timer == 0)
+        cooldown--;
+        printf("shot_timer : %d\n", boss.shot_timer);
+        printf("cooldown : %d\n", cooldown);
+        if (cooldown <= 0)
         {
-            for (int i = 0; i < 7; ++i)
+            if (boss.shot_timer <= 0)
             {
                 boss_shot(boss.cx + 200, boss.cy + 300);
                 boss_shot(boss.cx + 400, boss.cy + 300);
                 boss_shot(boss.cx + 600, boss.cy + 300);
                 boss_shot(boss.cx + 800, boss.cy + 300);
+                boss.shot_timer = 15;
+                
             }
-            boss.shot_timer = 500;
         }
     }
-
     aliens_collide();        // 여기는 좀 생각해봐야 함.
 }
 // 작성자 : 0329 천원석
@@ -790,10 +792,9 @@ void boss_draw()
         if (boss.blink > 2)
             continue;
 
-        //al_draw_bitmap(sprites.boss, 640, 320, 0);
 
         al_draw_scaled_bitmap(sprites.boss,
-            0, 0,
+            0, 0,   
             800, 552,
             boss.cx, boss.cy,
             1200, 552,
@@ -819,24 +820,33 @@ void boss_shot(float x, float y)
         ALLEGRO_PLAYMODE_ONCE,
         NULL
     );
-
     float speed = 2.0f;
 
     float spread_gap = 0.2f;
+    float target_x, target_y;
+    bool has_target = false;
     bool has_shot_created_success = false;
-        float base_angle = ALLEGRO_PI / 2.0f;
+    target_x = ship.cx;
+    target_y = ship.cy;
+    has_target = true;
+    float base_angle = ALLEGRO_PI / 2.0f;
+    float start_angle = base_angle - (5 / 2.0f) * spread_gap;
+    if (has_target)
+    {
+        float base_angle = atan2f(target_y - y, target_x - x);
         float start_angle = base_angle - (5 / 2.0f) * spread_gap;
 
         for (int i = 0; i < 5; ++i)
         {
             float curr_angle = start_angle + i * spread_gap;
-            float dx = cos(curr_angle) * speed+0.1f;
-            float dy = sin(curr_angle) * speed+0.1f; 
-            if (shots_create_instance(false, x, y, dx,dy))
+            float dx = cos(curr_angle) * speed;
+            float dy = sin(curr_angle) * speed;
+            if (shots_create_instance(false, x, y, dx, dy))
                 has_shot_created_success = true;
-            /*if (shots_create_instance(false, x, y, between_f(-2.0f, 2.0f), between_f(-2.0f, 2.0f)))
-                has_shot_created_success = true;*/
+          /*  if (shots_create_instance(false, x, y, between_f(-2.0f, 2.0f), between_f(-2.0f, 2.0f)))
+            has_shot_created_success = true;*/
         }
+    }
     return has_shot_created_success;
 }
 
