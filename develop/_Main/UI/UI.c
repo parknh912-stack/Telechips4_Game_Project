@@ -281,8 +281,13 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y-6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "Will change this into a decent function");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "But Later");//0328 ±èº´Çå
+    al_draw_bitmap(sprites.item[1], m.x/2, m.y - 6, ALLEGRO_ALIGN_LEFT);
+    al_draw_bitmap(sprites.item[2], m.x/2, m.y - 6+25, ALLEGRO_ALIGN_LEFT);
+    al_draw_bitmap(sprites.item[3], m.x/2, m.y - 6+50, ALLEGRO_ALIGN_LEFT);
+    al_draw_bitmap(sprites.item[4], m.x/2, m.y - 6+75, ALLEGRO_ALIGN_LEFT);
+    
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS RED PILL");//0328 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS BLUE PILL");//0328 ±èº´Çå
     
     
 }
