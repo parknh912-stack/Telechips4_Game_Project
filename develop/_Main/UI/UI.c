@@ -274,6 +274,7 @@ void ui_draw_level_up_menu()
     
 }
 
+
 void ui_draw_h2p_menu()//0328 ±èº´Çå
 {
     int extra_y = 50;
@@ -282,4 +283,6 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y-6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 ±èº´Çå
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "Will change this into a decent function");//0328 ±èº´Çå
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "But Later");//0328 ±èº´Çå
+    
+    
 }
