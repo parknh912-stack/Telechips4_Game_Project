@@ -37,7 +37,7 @@ void stars_draw()
     for (int i = 0; i < STARS_N; i++)//0328 ±èº´Çå
     {
         float l = stars[i].speed;//0328 ±èº´Çå
-        al_draw_pixel(star_x, stars[i].y, al_map_rgb_f(l, l, l));//0328 ±èº´Çå
+        al_draw_pixel(star_x, stars[i].y, al_map_rgb_f(rand()%255, rand()%255, rand() % 255));//0328 ±èº´Çå
         star_x += STAR_SPACING;//0328 ±èº´Çå
     }
 }
