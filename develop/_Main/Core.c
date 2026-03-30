@@ -144,6 +144,12 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_PLAYING:
         stage_update(); //0329 박남현
+
+        // 0330 신제현 - 버그 수정
+        // 스테이지 클리어로 상태가 바뀌었으면 나머지를 스킵할 것
+        if (*state != STATE_PLAYING)
+            break;
+
         fx_update();
         shots_update();
         stars_update();
@@ -293,6 +299,32 @@ void game_state_update(STATE* state, bool* done)
         if (is_select_pressed) {//0328 김병헌 겜설명
             *state = STATE_MENU;//0328 김병헌 겜설명
             current_menu_selection = 0;//0328 김병헌 겜설명
+        }
+        break;
+    case STATE_ENDING:          // 0330 신제현 - 엔딩 화면
+        menu_input_update(2);
+        
+        if (is_select_pressed)
+        {
+            if (current_menu_selection == 0)
+            {
+                // 랭킹 진입 체크 후 이름 입력으로
+                if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
+                {
+                    *state = STATE_INPUT_NAME;
+                    name_len = 0;
+                    player_name[0] = '\0';
+                }
+                else
+                {
+                    *state = STATE_RANK;  // 랭킹권 아니면 보기만
+                }
+            }
+            else if (current_menu_selection == 1)
+            {
+                *state = STATE_MENU;
+                current_menu_selection = 0;
+            }
         }
         break;
     }
@@ -485,6 +517,11 @@ int main()
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_level_up_menu();
+                break;
+            case STATE_ENDING:
+                hud_draw();
+                al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
+                ui_draw_ending_menu();
                 break;
             }
 

@@ -140,4 +140,6 @@ void ui_draw_h2p_menu();//0328 김병헌
 
 // 작성자: 신제현
 void ui_draw_level_up_menu(void);
+void ui_draw_ending_menu(void);
+
 #endif

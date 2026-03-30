@@ -100,7 +100,7 @@ void hud_draw()
     // 0330 신제현 - 보스 나타난다고 화면에 메시지 2초간 표시
     if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
         al_draw_text(
-            font,
+            bold_font,
             al_map_rgb_f(1.0, 0.0, 0.0),
             BUFFER_W / 2, BUFFER_H / 2,
             ALLEGRO_ALIGN_CENTER,
@@ -295,7 +295,11 @@ void ui_draw_input_name_menu()
 // 작성자: 신제현
 void ui_draw_level_up_menu()
 {
-    MENU m =  { BUFFER_W / 2,BUFFER_H / 2,200,400,{ "ATK + 2 ", "BULLET + 1", "ATK SPD + 20%", "SPD + 10%", "MAX LIFE + 10%", "HEAL"}, 6,current_menu_selection};
+    MENU m =  { BUFFER_W / 2, BUFFER_H / 2,
+                300, 500,
+                { "ATK + 2 ", "BULLET + 1", "ATK SPD + 20%", "SPD + 10%", "MAX LIFE + 10%", "HEAL"}, 
+                6,
+                current_menu_selection};
     
     draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
     
@@ -314,7 +318,19 @@ void ui_draw_h2p_menu()//0328 김병헌
 
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS RED PILL");//0328 김병헌
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2 * 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS BLUE PILL");//0328 김병헌
+}
 
-
+// 작성자: 0330 신제현 - 엔딩 메뉴
+void ui_draw_ending_menu(void)
+{
+    MENU m = {
+        BUFFER_W / 2, BUFFER_H / 2,
+        300, 500,
+        { "Record Your Score", "Return To Menu" },
+        2,
+        current_menu_selection
+    };
+    
+    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 }
 

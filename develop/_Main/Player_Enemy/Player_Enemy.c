@@ -779,6 +779,7 @@ bool is_boss_alive()
          break;
      case ALIEN_TYPE_BOSS:
          aliens[i].life = ALIEN_LIFE_BOSS * life_mul;
+         //aliens[i].life = 10;
          aliens[i].shot_count = ALIEN_SHOT_BOSS;
          break;
      }
