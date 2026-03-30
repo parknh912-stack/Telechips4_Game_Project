@@ -8,11 +8,11 @@
 /* --- Stage ---*/
 
 STAGE stage_info[3] = {
-	// 적 숫자, {스폰 가중치 METEOR, FAST, SHOOTER, BOSS}, 스폰간격, 점수배수, 체력배수
+	// 적 숫자, {스폰 가중치 METEOR, FAST, SHOOTER, BOSS}, 스폰 간격, 점수 배수, 체력배수
 	{
 		.max_enemies = 20,
 		.spawn_weight = {80, 20, 0 ,0},
-		.target_score = 5000,
+		.target_score = 1000,
 		.spawn_interval = 3.0f, 
 		.score_multiplier = 1.0f, 
 		.life_multiplier = 1.0f
@@ -21,14 +21,14 @@ STAGE stage_info[3] = {
 		.max_enemies = 30,
 		.spawn_weight = {20, 40, 40 ,0},
 		.spawn_interval = 2.0f,
-		.target_score = 15000,
+		.target_score = 2000,
 		.score_multiplier = 1.5f,
 		.life_multiplier = 2.0f
 	},
 		{
 		.max_enemies = 40,
 		.spawn_weight = {20, 40, 40 ,0},
-		.target_score = 50000,
+		.target_score = 3000,
 		.spawn_interval = 1.0f,
 		.score_multiplier = 2.0f,
 		.life_multiplier = 4.0f
@@ -51,7 +51,7 @@ void stage_update()
 
 	if (boss_spawned && !is_boss_alive())
 	{
-		if (stage_num < 2)	//3스테이지 이전
+		if (stage_num < (sizeof(stage_info) / sizeof(stage_info[0]) - 1))	//3 스테이지 이전
 		{
 			stage_num++;
 			boss_spawned = false;
@@ -65,6 +65,7 @@ void stage_update()
 		else
 		{
 			//클리어 UI 실행하는 코드를 삽입
+			game_state_update(STATE_ENDING, true);
 		}
 	}
 }

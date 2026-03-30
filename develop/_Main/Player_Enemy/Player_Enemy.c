@@ -685,6 +685,8 @@ bool is_boss_alive()
     }
     return false;
 }
+
+
 //0329 ¹Ú³²Çö
  int decide_enemy_type()
 {

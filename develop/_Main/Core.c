@@ -123,16 +123,19 @@ void game_state_update(STATE* state, bool* done)
     switch (*state)
     {
     case STATE_MENU:
-        menu_input_update(3);
+        menu_input_update(4);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
                 *state = STATE_NEWGAME;
             }
-            else if (current_menu_selection == 1) {
+            else if (current_menu_selection == 1) {//0328 ±èº´Çå °×¼³¸í
+                *state = STATE_ABOUT;//0328 ±èº´Çå °×¼³¸í
+            }
+            else if (current_menu_selection == 2) {
                 *state = STATE_RANK;
                 current_menu_selection = 0;
             }
-            else if (current_menu_selection == 2) {
+            else if (current_menu_selection == 3) {
                 *done = true;
             }
         }
@@ -283,9 +286,32 @@ void game_state_update(STATE* state, bool* done)
             current_menu_selection = 0;
         }
         break;
+
+    case STATE_ABOUT: //0328 ±èº´Çå °×¼³¸í
+        menu_input_update(1);//0328 ±èº´Çå °×¼³¸í
+        if (is_select_pressed) {//0328 ±èº´Çå °×¼³¸í
+            *state = STATE_MENU;//0328 ±èº´Çå °×¼³¸í
+            current_menu_selection = 0;//0328 ±èº´Çå °×¼³¸í
+        }
+        break;
+    case STATE_ENDING:                  // 0330 ½ÅÁ¦Çö
+        menu_input_update(2);
+        if (is_select_pressed)
+        {
+            if (current_menu_selection == 0)
+            {
+                *state = STATE_RANK;
+            }
+            else if (current_menu_selection == 1)
+            {
+                *state = STATE_MENU;
+                current_menu_selection = 0;
+            }
+        }
     }
 }
 
+// 0329 ¹Ú³²Çö
 void camera_apply(ALLEGRO_TRANSFORM* trans)
 {
     float camera_x = ship.cx - 640;
@@ -471,6 +497,12 @@ int main()
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_level_up_menu();
+                break;
+            case STATE_ABOUT:
+                ui_draw_h2p_menu();
+                break;
+            case STATE_ENDING:
+                ui_draw_game_clear_menu();      // 0330 ½ÅÁ¦Çö
                 break;
             }
 
