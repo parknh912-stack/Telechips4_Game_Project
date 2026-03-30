@@ -19,12 +19,14 @@
 #include "Rank.h"
 #include "Item/Item.h"
 #include "Level_UP/Level_up.h"			// 레벨 업(스탯 강화) / 0327 신제현
-
+#include "Stage/Stage.h"                // 스테이지 /0329 박남현
+#include "Backgrounds/Background.h"     // 배경
 
 /* --- General --- */
 long frames = 0;
 long score = 0;
 int level = 1;
+int stage_num = 0;                      //0329 박남현
 STATE current_state = STATE_MENU;
 
 void must_init(bool test, const char* description)
@@ -99,7 +101,9 @@ void game_state_init(void)
     level = 1;
     score_display = 0;
 
+    stage_init();   //0329 박남현
     ship_init();
+    backgound_init();
     hud_init();
     keyboard_init();
     fx_init();
@@ -138,6 +142,7 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_PLAYING:
+        stage_update(); //0329 박남현
         fx_update();
         shots_update();
         stars_update();
@@ -295,6 +300,16 @@ void game_state_update(STATE* state, bool* done)
     
 }
 
+void camera_apply(ALLEGRO_TRANSFORM* trans)
+{
+    float camera_x = ship.cx - 640;
+    float camera_y = ship.cy - 360;
+
+    al_identity_transform(trans);
+    al_translate_transform(trans, -camera_x, -camera_y);
+    al_use_transform(trans);
+
+}
 
 /* --- Main --- */
 int main()
@@ -314,6 +329,7 @@ int main()
     must_init(al_init_image_addon(), "image");
     sprites_init();
     ui_init(); // UI 시트 로드
+    backgound_init();
     hud_init();
 
     must_init(al_init_primitives_addon(), "primitives");
@@ -326,6 +342,7 @@ int main()
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
     keyboard_init();
+    stage_init();               //0329
     fx_init();
     shots_init();
     ship_init();
@@ -390,6 +407,7 @@ int main()
             break;
 
         keyboard_update(&event);
+        ALLEGRO_TRANSFORM trans;
 
         // 작성자: 김병헌
         if (redraw && al_is_event_queue_empty(queue))
@@ -406,19 +424,33 @@ int main()
                 break;
 
             case STATE_PLAYING:
+                camera_apply(&trans);
+
+                background_draw();  //0329
                 aliens_draw();
                 item_draw(); //0327
                 shots_draw();
                 fx_draw();
+
+                al_identity_transform(&trans);
+                al_use_transform(&trans);
+
                 ship_draw();
                 hud_draw();
                 break;
 
             case STATE_PAUSE:
+                camera_apply(&trans);
+
+                background_draw();  //0329
                 aliens_draw();
                 item_draw();
                 shots_draw();
                 fx_draw();
+
+                al_identity_transform(&trans);
+                al_use_transform(&trans);
+
                 ship_draw();
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
@@ -438,10 +470,17 @@ int main()
                 break;
 
             case STATE_LEVEL_UP:
+                camera_apply(&trans);
+
+                background_draw();  //0329
                 aliens_draw();
                 item_draw();    //0327
                 shots_draw();
                 fx_draw();
+
+                al_identity_transform(&trans);
+                al_use_transform(&trans);
+
                 ship_draw();
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
@@ -458,6 +497,7 @@ int main()
         }
     }
 
+    background_deinit();
     ui_deinit();
     sprites_deinit();
     hud_deinit();

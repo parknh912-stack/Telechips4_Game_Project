@@ -139,12 +139,17 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="black.png" />
+    <Image Include="blue.png" />
+    <Image Include="darkPurple.png" />
+    <Image Include="purple.png" />
     <Image Include="sheet.png" />
     <Image Include="spritesheet.png" />
     <Image Include="ui_sheet.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c" />
+    <ClCompile Include="_Main\Backgrounds\Background.c" />
     <ClCompile Include="_Main\Core.c" />
     <ClCompile Include="_Main\Display.c" />
     <ClCompile Include="_Main\Fx.c" />
@@ -154,10 +159,12 @@
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c" />
     <ClCompile Include="_Main\Rank.c" />
     <ClCompile Include="_Main\Sprites.c" />
+    <ClCompile Include="_Main\Stage\Stage.c" />
     <ClCompile Include="_Main\UI\UI.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Main\Audio.h" />
+    <ClInclude Include="_Main\Backgrounds\Background.h" />
     <ClInclude Include="_Main\Core.h" />
     <ClInclude Include="_Main\Display.h" />
     <ClInclude Include="_Main\Fx.h" />
@@ -167,6 +174,7 @@
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h" />
     <ClInclude Include="_Main\Rank.h" />
     <ClInclude Include="_Main\Sprites.h" />
+    <ClInclude Include="_Main\Stage\Stage.h" />
     <ClInclude Include="_Main\UI\UI.h" />
   </ItemGroup>
   <ItemGroup>

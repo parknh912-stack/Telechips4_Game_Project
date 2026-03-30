@@ -28,6 +28,9 @@ int get_closet_enemy();     //최단거리 적 idx 반환하는 함수
 /* --- Player --- */
 
 //#define SHIP_SPEED 3 삭제
+#define MAP_WIDTH 5000
+#define MAP_HEIGHT 5000
+
 #define SHIP_MAX_X (BUFFER_W - SHIP_W)
 #define SHIP_MAX_Y (BUFFER_H - SHIP_H)
 
@@ -59,7 +62,10 @@ void ship_draw();
 bool ship_collide(int cx, int cy);
 
 
+
+
 /* --- Enemy --- */
+#define ALIENS_N 50 //물리적 한계
 
 typedef enum ALIEN_TYPE
 {
@@ -69,6 +75,29 @@ typedef enum ALIEN_TYPE
     ALIEN_TYPE_BOSS,        //3
     ALIEN_TYPE_N
 } ALIEN_TYPE;
+
+
+//0329 박남현 - 적 점수
+typedef enum ALIEN_SCORE
+{
+    ALIEN_SCORE_METEOR  = 200,
+    ALIEN_SCORE_FAST    = 300,    
+    ALIEN_SCORE_SHOOTER = 800,  
+    ALIEN_SCORE_BOSS    = 2000,     
+    ALIEN_SCORE_N
+} ALIEN_SCORE;
+
+
+//0329 박남현 - 적 체력
+typedef enum ALIEN_LIFE
+{
+    ALIEN_LIFE_METEOR   = 10,
+    ALIEN_LIFE_FAST     = 10,
+    ALIEN_LIFE_SHOOTER  = 20,
+    ALIEN_LIFE_BOSS     = 300,
+    ALIEN_LIFE_N
+} ALIEN_LIFE;
+
 
 // 작성자 : 박남현
 typedef struct ALIEN
@@ -82,28 +111,28 @@ typedef struct ALIEN
     float fire_rate;    //초당 공격 속도
     int shot_timer;     //공격 타이머
     int shot_count;
+
     ALIEN_TYPE type;
     int blink;
     int life;
     bool used;
 } ALIEN;
 
-#define ALIENS_N 16  //나오는 적 숫자
-
-#define ALIEN_LIFE_METEOR      ALIEN_LIFE[0]
-#define ALIEN_LIFE_FAST    ALIEN_LIFE[1]
-#define ALIEN_LIFE_SHOOTER ALIEN_LIFE[2]
-#define ALIEN_LIFE_BOSS     ALIEN_LIFE[3]
-
-
-extern ALIEN aliens[ALIENS_N];
-extern const int ALIEN_LIFE[];
-extern const float ALIEN_SPEED[];
+extern ALIEN aliens[];
 
 void aliens_init();
 void aliens_update();   //생성
-void aliens_draw();
+
+//0329 박남현 - 스테이지 구현을 위하여 적 생성 관련 함수들 개별 분리
+void spawn_enemy(float* new_x, float* new_y, int i);
+void spawn_boss();
+bool is_boss_alive();
+int decide_enemy_type();
+void set_aliens_info(int i, float life_mul);
+
 void aliens_move(int i, float speed);
+void aliens_draw();
 void aliens_collide();
+
 
 #endif // 

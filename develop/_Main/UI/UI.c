@@ -1,11 +1,10 @@
 #include "../Core.h"
-#include "../UI/UI.h"
 #include "../Display.h"
+#include "../UI/UI.h"
 #include "../Keyboard.h"
 #include "../Sprites.h"
 #include "../Player_Enemy/Player_Enemy.h"
 #include "../Rank.h"
-
 
 // --- stars ---
 STAR stars[STARS_N];
@@ -87,6 +86,11 @@ void hud_draw()
     if (hp_ratio < 0) hp_ratio = 0;
 
     al_draw_textf(font,al_map_rgb_f(1, 1, 1), HUD_LEVEL_X, HUD_LEVEL_Y, 0,"Level: %02d",level);//0328 ±èº´Çå
+
+    //ÇöÀç ½ºÅ×ÀÌÁö Ãâ·Â
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 120, 0, "stage: %02d", stage_num + 1);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 150, 0, "x : %d", (int)ship.cx);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 00, "y : %d", (int)ship.cy);
 
     int spacing = LIFE_W + 1;
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W+2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328±èº´Çå

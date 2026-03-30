@@ -93,7 +93,7 @@ typedef struct STAR
 } STAR;
 
 #define STARS_N ((BUFFER_W / 2) - 1)
-extern STAR stars[STARS_N];
+extern STAR stars[];
 
 void stars_init();
 void stars_update();

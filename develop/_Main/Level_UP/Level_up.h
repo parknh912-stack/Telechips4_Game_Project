@@ -3,14 +3,11 @@
 
 // 작성자: 신제현
 // 레벨 업에 필요한 점수의 양
-#define LV_UP           (5000)
+#define LV_UP           (1000)			////0329 박남현 - 수치 조정 (테스트용)
 // 투사체 발사 최대 수(5개가 디폴트)
 #define SHOT_COUNT_MAX	(5)	
 // 레벨업 요구치 증가 상수
 #define LV_UP_REQ		(1.7)
-
-#include "../Core.h"
-#include "../Player_Enemy/Player_Enemy.h"
 
 // 작성자: 신제현
 void damage_up(void);

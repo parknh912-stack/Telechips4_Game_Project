@@ -1,7 +1,6 @@
 #ifndef _SPRITES_H_
 #define _SPRITES_H_
-#include <stdio.h>
-#include "Item/Item.h"
+
 /* --- Sprites --- */
 
 #define SHIP_W 32
@@ -21,10 +20,10 @@ extern const int ALIEN_R[];
 
 #define ALIEN_METEOR_W   ALIEN_W[0]
 #define ALIEN_METEOR_H   ALIEN_H[0]
-#define ALIEN_FAST_W    ALIEN_W[1]
-#define ALIEN_FAST_H    ALIEN_H[1]
-#define ALIEN_SHOOTER_W ALIEN_W[2]
-#define ALIEN_SHOOTER_H ALIEN_H[2]
+#define ALIEN_FAST_W     ALIEN_W[1]
+#define ALIEN_FAST_H     ALIEN_H[1]
+#define ALIEN_SHOOTER_W  ALIEN_W[2]
+#define ALIEN_SHOOTER_H  ALIEN_H[2]
 #define ALIEN_BOSS_W     ALIEN_W[3]
 #define ALIEN_BOSS_H     ALIEN_H[3]
 
