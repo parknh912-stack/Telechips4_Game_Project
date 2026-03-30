@@ -459,8 +459,8 @@ void aliens_update()
                 aliens[i].cx = new_x + (ALIEN_W[aliens[i].type] / 2.0f);
                 aliens[i].cy = new_y + (ALIEN_H[aliens[i].type] / 2.0f);
 
-                aliens[i].type = between(0, ALIEN_TYPE_N - 1);
-                //aliens[i].type = 3; // boss aliens type
+                //aliens[i].type = between(0, ALIEN_TYPE_N - 1);
+                aliens[i].type = 0; // boss aliens type
                 aliens[i].shot_timer = between(1, 99);
                 aliens[i].blink = 0;
                 aliens[i].used = true;
@@ -764,10 +764,13 @@ void boss_update(void)
 
         if (boss.shot_timer == 0)
         {
-            boss_shot(boss.x + 800, boss.y+400);
-            boss_shot(boss.x - 200, boss.y+400);
-            boss_shot(boss.x + 200, boss.y+400);
-            boss_shot(boss.x + 1200, boss.y+400);
+            for (int i = 0; i < 7; ++i)
+            {
+                boss_shot(boss.cx + 200, boss.cy + 300);
+                boss_shot(boss.cx + 400, boss.cy + 300);
+                boss_shot(boss.cx + 600, boss.cy + 300);
+                boss_shot(boss.cx + 800, boss.cy + 300);
+            }
             boss.shot_timer = 500;
         }
     }
@@ -827,10 +830,12 @@ void boss_shot(float x, float y)
         for (int i = 0; i < 5; ++i)
         {
             float curr_angle = start_angle + i * spread_gap;
-            float dx = cos(curr_angle) * speed;
-            float dy = sin(curr_angle) * speed;
-            if (shots_create_instance(false, x, y, between_f(-2.0f, 2.0f), between_f(-2.0f, 2.0f)))
+            float dx = cos(curr_angle) * speed+0.1f;
+            float dy = sin(curr_angle) * speed+0.1f; 
+            if (shots_create_instance(false, x, y, dx,dy))
                 has_shot_created_success = true;
+            /*if (shots_create_instance(false, x, y, between_f(-2.0f, 2.0f), between_f(-2.0f, 2.0f)))
+                has_shot_created_success = true;*/
         }
     return has_shot_created_success;
 }
@@ -841,6 +846,8 @@ void boss_move(int i, float speed)
 {
     if (boss.cy < 0)
     {
+        boss.y += speed;
+        boss.y += speed;
         boss.y += speed;
     }
     if (boss.cy >= 0)  boss_stop = true;
