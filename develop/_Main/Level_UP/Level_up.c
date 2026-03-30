@@ -43,13 +43,13 @@ void shot_count_up(void)
 // 공격 속도 증가
 void fire_rate_up(void)
 {
-	ship.fire_rate += 1;
+	ship.fire_rate += 0.2f;
 }
 
 // 이동 속도 증가
 void speed_up(void)
 {
-	ship.speed += 1;
+	ship.speed += 0.1f;
 }
 
 // 체력 최대치 증가

@@ -16,7 +16,7 @@ typedef struct SHOT
 
 extern SHOT shots[SHOTS_N];
 void shots_init();
-bool shots_add(bool is_ship, bool straight, float x, float y);
+bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count);
 bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy);
 void shots_update();
 bool shots_collide(bool ship, float cx, float cy, float w, float h);
@@ -98,6 +98,15 @@ typedef enum ALIEN_LIFE
     ALIEN_LIFE_N
 } ALIEN_LIFE;
 
+//0330 박남현 - 적 투사체 수
+typedef enum ALIEN_SHOT
+{
+    ALIEN_SHOT_METEOR   = 0,
+    ALIEN_SHOT_FAST     = 0,
+    ALIEN_SHOT_SHOOTER  = 1,
+    ALIEN_SHOT_BOSS     = 5,
+    ALIEN_SHOT_N
+} ALIEN_SHOT;
 
 // 작성자 : 박남현
 typedef struct ALIEN
@@ -132,6 +141,7 @@ void set_aliens_info(int i, float life_mul);
 
 void aliens_move(int i, float speed);
 void aliens_draw();
+void aliens_single_draw(float between_angle, int i, float cx, float cy);
 void aliens_collide();
 
 

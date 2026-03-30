@@ -100,6 +100,7 @@ void item_update()
 }
 
 //아이템의 sprite를 그리는 함수
+//0330
 void item_draw()
 {
 	for (int i = 0; i < ITEMS_N; ++i)
@@ -109,17 +110,32 @@ void item_draw()
 		if (!(items[i].blink % 60))
 			continue;
 
-		al_draw_scaled_bitmap(
-			sprites.item[items[i].type],
-			0, 0,
-			al_get_bitmap_width(sprites.item[items[i].type]),
-			al_get_bitmap_height(sprites.item[items[i].type]),
-			items[i].x, items[i].y,
-			ITEMS_W, ITEMS_H,
-			0
-		);
+		item_single_draw(i, items[i].x, items[i].y);
+
+		if (items[i].cx > MAP_WIDTH - 640)
+			item_single_draw(i, items[i].x - MAP_WIDTH, items[i].y);
+		if (items[i].cx < 640)
+			item_single_draw(i, items[i].x + MAP_WIDTH, items[i].y);
+		if (items[i].cy > MAP_HEIGHT - 640)
+			item_single_draw(i, items[i].x, items[i].y - MAP_HEIGHT);
+		if (items[i].cy < 640)
+			item_single_draw(i, items[i].x, items[i].y + MAP_HEIGHT);
 	}
 }
+
+//0330
+void item_single_draw(int i, float x, float y)
+{
+	al_draw_scaled_bitmap(
+		sprites.item[items[i].type],
+		0, 0,
+		al_get_bitmap_width(sprites.item[items[i].type]),
+		al_get_bitmap_height(sprites.item[items[i].type]),
+		x, y,
+		ITEMS_W, ITEMS_H,
+		0);
+}
+
 
 void item_use(ITEM_TYPE type)
 {

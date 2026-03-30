@@ -9,35 +9,35 @@
 // --- stars ---
 STAR stars[STARS_N];
 
-void stars_init()
+void stars_init()//0328 ±Ë∫¥«Â
 {
     for (int i = 0; i < STARS_N; i++)
     {
         stars[i].y = between_f(0, BUFFER_H);
-        stars[i].speed = between_f(0.1, 1);
+        stars[i].speed = between_f(STAR_SPEED_MIN, STAR_SPEED_MAX);//0328 ±Ë∫¥«Â
     }
 }
-void stars_update()
+void stars_update()//0328 ±Ë∫¥«Â
 {
-    for (int i = 0; i < STARS_N; i++)
+    for (int i = 0; i < STARS_N; i++)//0328 ±Ë∫¥«Â
     {
-        stars[i].y += stars[i].speed;
-        if (stars[i].y >= BUFFER_H)
+        stars[i].y += stars[i].speed;//0328 ±Ë∫¥«Â
+        if (stars[i].y >= BUFFER_H)//0328 ±Ë∫¥«Â
         {
-            stars[i].y = 0;
-            stars[i].speed = between_f(0.1, 1);
+            stars[i].y = 0;//0328 ±Ë∫¥«Â
+            stars[i].speed = between_f(STAR_SPEED_MIN, STAR_SPEED_MAX);//0328 ±Ë∫¥«Â
         }
     }
 }
 
 void stars_draw()
 {
-    float star_x = 1.5;
-    for (int i = 0; i < STARS_N; i++)
+    float star_x = STAR_START;//0328 ±Ë∫¥«Â
+    for (int i = 0; i < STARS_N; i++)//0328 ±Ë∫¥«Â
     {
-        float l = stars[i].speed * 0.8;
-        al_draw_pixel(star_x, stars[i].y, al_map_rgb_f(l, l, l));
-        star_x += 2;
+        float l = stars[i].speed;//0328 ±Ë∫¥«Â
+        al_draw_pixel(star_x, stars[i].y, al_map_rgb_f(rand() % 255, rand() % 255, rand() % 255));//0328 ±Ë∫¥«Â
+        star_x += STAR_SPACING;//0328 ±Ë∫¥«Â
     }
 }
 
@@ -47,13 +47,13 @@ ALLEGRO_FONT* bold_font;//0327 ±Ë∫¥«Â ¡¶∏ÒøÎ ≈´ ∆˘∆Æ
 ALLEGRO_FONT* compcolor_font;//±Ë∫¥«Â ∫∏ªˆøÎ ∆˘∆Æ
 long score_display;
 
-void hud_init()//0327 ±Ë∫¥«Â
+void hud_init()//0328 ±Ë∫¥«Â
 {
     al_init_font_addon();//0327 ±Ë∫¥«Â ºˆ¡§ªÁ«◊ : ±€ææ ≈©±‚∏¶ ≈∞ø¸Ω¿¥œ¥Ÿ.
-    al_init_ttf_addon();//0327±Ë
-    font = al_load_ttf_font("PressStart2P.ttf", 15, 0);//«ÿ¥Á «◊∏Ò µŒ π¯¬∞∞° size¿‘¥œ¥Ÿ.
-    bold_font = al_load_ttf_font("PressStart2P.ttf", 22, 0);//¡¶∏ÒøÎ¿‘¥œ¥Ÿ.
-    compcolor_font = al_load_ttf_font("PressStart2P.ttf", 22, 0);//¡¶∏ÒøÎ¿‘¥œ¥Ÿ. compcolor = ∫∏ªˆ ¡Ÿ¿”∏ª
+    al_init_ttf_addon();//0328 ±Ë∫¥«Â
+    font = al_load_ttf_font("PressStart2P.ttf", FONT_SIZE_NORMAL, 0);//0328 ±Ë∫¥«Â
+    bold_font = al_load_ttf_font("PressStart2P.ttf", FONT_SIZE_TITLE, 0);//0328 ±Ë∫¥«Â
+    compcolor_font = al_load_ttf_font("PressStart2P.ttf", FONT_SIZE_TITLE, 0);//0328 ±Ë∫¥«Â
     must_init(font, "font");
     score_display = 0;
 }
@@ -78,24 +78,24 @@ void hud_update()
 
 void hud_draw()
 {
-    // 1. ¡°ºˆ √‚∑¬
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 15, 0, "%06ld", score_display);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), HUD_SCORE_X, HUD_SCORE_Y, 0, "%06ld", score_display);//0328 ±Ë∫¥«Â
 
-    float hp_ratio = (float)ship.curr_lifes / 5.0f;
+    float hp_ratio = (float)ship.curr_lifes / PLAYER_MAX_HP_BASE;//0328 ±Ë∫¥«Â
     if (hp_ratio < 0) hp_ratio = 0;
 
-    al_draw_textf(font,al_map_rgb_f(1, 1, 1),5, 90, 0,"Level: %02d",level);
-
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), HUD_LEVEL_X, HUD_LEVEL_Y, 0, "Level: %02d", level);//0328 ±Ë∫¥«Â
     //«ˆ¿Á Ω∫≈◊¿Ã¡ˆ √‚∑¬
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 120, 0, "stage: %02d", stage_num + 1);
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 150, 0, "x : %d", (int)ship.cx);
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 00, "y : %d", (int)ship.cy);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 210, 00, "sec : %d", (frames/60));
 
     int spacing = LIFE_W + 1;
-    al_draw_bitmap(sprites.life_bar, spacing, 35, 0);
+    al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W + 2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328±Ë∫¥«Â
     for (int i = 0; i < ship.curr_lifes; i++)
-        al_draw_bitmap(sprites.life, 9 + (i * spacing), 35, 0);
+        al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 ±Ë∫¥«Â
 }
+
 
 // --- UI ---
 
@@ -123,17 +123,24 @@ void draw_ui_element(int sx, int sy, int sw, int sh, float dx, float dy, float r
     al_draw_scaled_bitmap(ui_sheet, sx, sy, sw, sh, dx, dy, real_width, real_height, 0);
 }
 
+void draw_bold_text(ALLEGRO_FONT* font, ALLEGRO_COLOR main_color, ALLEGRO_COLOR outline_color, float x, float y, int flags, int thickness, const char* text)//0328 ±Ë∫¥«Â ∫ºµÂ√º ∏∏µÈ±‚ µ˚∑Œ «‘ºˆ∑Œ ∏∏µÍ
+{
+    //≈◊µŒ∏Æ
+    al_draw_text(font, outline_color, x + thickness, y, flags, text);//0328 ±Ë∫¥«Â
+    al_draw_text(font, outline_color, x - thickness, y, flags, text);//0328 ±Ë∫¥«Â
+    al_draw_text(font, outline_color, x, y + thickness, flags, text);//0328 ±Ë∫¥«Â
+    al_draw_text(font, outline_color, x, y - thickness, flags, text);//0328 ±Ë∫¥«Â
+    //∫ªπÆ
+    al_draw_text(font, main_color, x, y, flags, text);//0328 ±Ë∫¥«Â
+}
+
 void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height, ALLEGRO_FONT* fonto)
 {
-    draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H, m->x - wanted_width/2, m->y - wanted_height/2, wanted_width, wanted_height);
+    draw_ui_element(UI_PANEL_BLUE_X, UI_PANEL_BLUE_Y, UI_PANEL_W, UI_PANEL_H, m->x - wanted_width / 2, m->y - wanted_height / 2, wanted_width, wanted_height);
 
     if (title)
     {
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x+2, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x-2, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y+2 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(compcolor_font, al_map_rgb(0, 0, 0), m->x, m->y-2 - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫∏ªˆ ±∏«ˆ
-        al_draw_text(fonto, al_map_rgb(180, 180, 0), m->x, m->y - (m->height / 2) + 20, ALLEGRO_ALIGN_CENTER, title);//0327 ±Ë∫¥«Â ∫ºµÂ√º ±∏«ˆ
+        draw_bold_text(fonto, COLOR_TITLE, COLOR_BLACK, m->x, (m->y) / 1.7, ALLEGRO_ALIGN_CENTER, 2, title);//0328 ±Ë∫¥«Â
     }
 
     for (int i = 0; i < m->item_count; i++)
@@ -147,7 +154,13 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         if (m->selected == i)
         {
             sx = UI_BTN_BLUE_P_X; sy = UI_BTN_BLUE_P_Y; sh = UI_BTN_P_H;
-            btn_y += 4;
+            btn_y += MENU_BTN_PRESSED_OFFSET;
+
+            float cursor_w = MENU_CUR_SIZE;//0328 ±Ë∫¥«Â - ∏ﬁ¥∫º±≈√ ƒøº≠
+            float cursor_h = MENU_CUR_SIZE;//0328 ±Ë∫¥«Â - ∏ﬁ¥∫º±≈√ ƒøº≠
+            float cursor_x = btn_x - cursor_w - 15.0f;//0328 ±Ë∫¥«Â - ∏ﬁ¥∫º±≈√ ƒøº≠
+            float cursor_y = btn_y + (btn_h / 2.0f) - (cursor_h / 2.0f);//0328 ±Ë∫¥«Â - ∏ﬁ¥∫º±≈√ ƒøº≠
+            draw_ui_element(MENU_SEL_POS_X, MENU_SEL_POS_Y, MENU_SEL_WIDTH, MENU_SEL_HEIGHT, cursor_x, cursor_y, cursor_w, cursor_h);//0328 ±Ë∫¥«Â - ∏ﬁ¥∫º±≈√ ƒøº≠
         }
         else
         {
@@ -155,13 +168,10 @@ void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, 
         }
 
         draw_ui_element(sx, sy, UI_BTN_W, sh, btn_x, btn_y, btn_w, btn_h);
-        //«ÿ¥Á 4¡Ÿ √ﬂ∞°µµ ∫∏ªˆ
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x+1, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x-1, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x, btn_y + 13, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(0, 0, 0), m->x, btn_y + 11, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        al_draw_text(font, al_map_rgb(255, 255, 255), m->x, btn_y + 12, ALLEGRO_ALIGN_CENTER, m->items[i]);
-        //«ÿ¥Á 4¡Ÿ √ﬂ∞°µµ ∫∏ªˆ22
+
+
+        draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m->x, btn_y + 12, ALLEGRO_ALIGN_CENTER, 1, m->items[i]);//0328 ±Ë∫¥«Â
+
     }
 }
 
@@ -187,10 +197,9 @@ void menu_input_update(int item_count)
 
 void ui_draw_main_menu()
 {
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 200, 250, {"Start Game", "Ranking", "Exit"}, 3, current_menu_selection };
-    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 250, 300, {"Start Game", "How to play", "Ranking", "Exit"}, 4, current_menu_selection };//0328 ±Ë∫¥«Â howtoplay √ﬂ∞°
+    draw_menu_ui(&m, "- SPACE SURVIVOR -", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
 }
-
 
 void ui_draw_pause_menu()
 {
@@ -211,27 +220,30 @@ void ui_draw_rank_menu()
     draw_menu_ui(&m, "LEADERBOARD", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W_L, UI_PANEL_SIZE_H_L, bold_font);
 
     // 2. ∑©≈∑ µ•¿Ã≈Õ √‚∑¬ (ªÛ¿ß 5∞≥)
-    float start_y = m.y - (m.height / 2) + 60; // ≈∏¿Ã∆≤ æ∆∑° ¡ˆ¡°
+    float start_y = m.y - (m.height / 2) + RANK_TITLE_OFFSET_Y; // 0328 ±Ë∫¥«Â
     for (int i = 0; i < MAX_RANKING; i++)
     {
-        // º¯¿ß π◊ ¿Ã∏ß (øﬁ¬  ¡§∑ƒ ¥¿≥¶)
-        //0327 ±Ë∫¥«Â √ﬂ∞° ±› ¿∫ µø ∏ﬁ¥ﬁ ¥¿≥¶ ±∏«ˆ
+        // º¯¿ß π◊ ¿Ã∏ß (øﬁ¬  ¡§∑ƒ)
+        //0328 ±Ë∫¥«Â ±› ¿∫ µø ∏ﬁ¥ﬁ π◊ ∫Øºˆ ¡§∏Æ
+        float left_x = m.x - RANK_POS_X_OFFSET; //0328 ±Ë∫¥«Â
+        float right_x = m.x + RANK_POS_X_OFFSET; //0328 ±Ë∫¥«Â
+        float line_y = start_y + (i * RANK_LINE_SPACING); //0328 ±Ë∫¥«Â
+
         if (i == 0)
         {
-            al_draw_textf(font, al_map_rgb(255, 215, 0), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+            al_draw_textf(font, COLOR_GOLD, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
         }
         else if (i == 1)
         {
-            al_draw_textf(font, al_map_rgb(192, 192, 192), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+            al_draw_textf(font, COLOR_SILVER, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
         }
         else if (i == 2)
         {
-            al_draw_textf(font, al_map_rgb(205, 127, 50), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+            al_draw_textf(font, COLOR_BRONZE, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
         }
-        else al_draw_textf(font, al_map_rgb(1, 1, 1), m.x - 160, start_y + (i * 25), ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);
+        else al_draw_textf(font, COLOR_BLACK, left_x, line_y, ALLEGRO_ALIGN_LEFT, "%d. %-10s", i + 1, ranking[i].username);//0328 ±Ë∫¥«Â
 
-        // ¡°ºˆ (ø¿∏•¬  ¡§∑ƒ ¥¿≥¶)
-        al_draw_textf(font, al_map_rgb(255, 255, 0), m.x + 160, start_y + (i * 25),ALLEGRO_ALIGN_RIGHT, "%ld", ranking[i].score);
+        al_draw_textf(font, COLOR_YELLOW, right_x, line_y, ALLEGRO_ALIGN_RIGHT, "%ld", ranking[i].score);//0328 ±Ë∫¥«Â
     }
 }
 
@@ -241,12 +253,16 @@ void ui_draw_input_name_menu()
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 160, {"Save (Enter)"}, 1, current_menu_selection };
     draw_menu_ui(&m, "NEW HIGH SCORE!", UI_BTN_POS_Y_LOW, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
 
+    float input_w = 320.0f; //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥ ∫Ò
+    float input_h = 50.0f; //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥Ù¿Ã
+    float input_x = m.x - (input_w / 2); //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥ ∫Òø° µ˚∏• ¿ßƒ°
+    float input_y = m.y - (input_h / 2); //0328 ±Ë∫¥«Â ¿‘∑¬√¢ ≥Ù¿Ãø° µ˚∏• ¿ßƒ°
+
     // 2. ¿‘∑¬ π⁄Ω∫ øµø™ (πˆ∆∞ ¿ß ∫Û ∞¯∞£)
-    draw_ui_element(0,0,190,49,480,350,320,50);
-    float input_y = m.y;
+    draw_ui_element(0, 0, INPUT_BOX_SRC_W, INPUT_BOX_SRC_H, input_x, input_y, input_w, input_h);//0328 ±Ë∫¥«Â
 
     // «ˆ¿Á ¿‘∑¬ ¡ﬂ¿Œ ¿Ã∏ß √‚∑¬
-    al_draw_text(font, al_map_rgb(0, 0, 0), m.x, input_y + 10,ALLEGRO_ALIGN_CENTER, player_name);
+    al_draw_text(font, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, player_name);//0328 ±Ë∫¥«Â
 
 
 }
@@ -254,8 +270,25 @@ void ui_draw_input_name_menu()
 // ¿€º∫¿⁄: Ω≈¡¶«ˆ
 void ui_draw_level_up_menu()
 {
-    MENU m =  { BUFFER_W / 2,BUFFER_H / 2,200,400,{ "option 1", "option 2", "option 3", "option 4", "option 5", "option 6"}, 6,current_menu_selection};
+    MENU m =  { BUFFER_W / 2,BUFFER_H / 2,200,400,{ "ATK + 2 ", "BULLET + 1", "ATK SPD + 20%", "SPD + 10%", "MAX LIFE + 10%", "HEAL"}, 6,current_menu_selection};
     
     draw_menu_ui(&m, "LEVEL UP!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
     
+}
+
+void ui_draw_h2p_menu()//0328 ±Ë∫¥«Â
+{
+    int extra_y = 50;
+    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
+    draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L + 100, bold_font);
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is game");//0328 ±Ë∫¥«Â
+    al_draw_bitmap(sprites.item[1], m.x / 2, m.y - 6, ALLEGRO_ALIGN_LEFT);
+    al_draw_bitmap(sprites.item[2], m.x / 2, m.y - 6 + 25, ALLEGRO_ALIGN_LEFT);
+    al_draw_bitmap(sprites.item[3], m.x / 2, m.y - 6 + 50, ALLEGRO_ALIGN_LEFT);
+    al_draw_bitmap(sprites.item[4], m.x / 2, m.y - 6 + 75, ALLEGRO_ALIGN_LEFT);
+
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS RED PILL");//0328 ±Ë∫¥«Â
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2 * 25, ALLEGRO_ALIGN_CENTER, 1, "THIS IS BLUE PILL");//0328 ±Ë∫¥«Â
+
+
 }

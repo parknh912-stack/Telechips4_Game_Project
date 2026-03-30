@@ -3,6 +3,7 @@
 #include "../Player_Enemy/Player_Enemy.h"
 #include "../Display.h"
 #include "../Sprites.h"
+#include "../Item/Item.h"
 
 //0329 ¹Ú³²Çö
 /* --- Stage ---*/
@@ -12,7 +13,7 @@ STAGE stage_info[3] = {
 	{
 		.max_enemies = 20,
 		.spawn_weight = {80, 20, 0 ,0},
-		.target_score = 5000,
+		.target_time = 3600,
 		.spawn_interval = 3.0f, 
 		.score_multiplier = 1.0f, 
 		.life_multiplier = 1.0f
@@ -21,14 +22,14 @@ STAGE stage_info[3] = {
 		.max_enemies = 30,
 		.spawn_weight = {20, 40, 40 ,0},
 		.spawn_interval = 2.0f,
-		.target_score = 15000,
+		.target_time = 7200,
 		.score_multiplier = 1.5f,
 		.life_multiplier = 2.0f
 	},
 		{
 		.max_enemies = 40,
 		.spawn_weight = {20, 40, 40 ,0},
-		.target_score = 50000,
+		.target_time = 9600,
 		.spawn_interval = 1.0f,
 		.score_multiplier = 2.0f,
 		.life_multiplier = 4.0f
@@ -43,8 +44,9 @@ void stage_init()
 
 void stage_update()
 {
-	if (!boss_spawned && score >= (CURR_STAGE->target_score))
+	if (!boss_spawned && frames >= (CURR_STAGE->target_time))
 	{
+		aliens_init();
 		spawn_boss();
 		boss_spawned = true;
 	}

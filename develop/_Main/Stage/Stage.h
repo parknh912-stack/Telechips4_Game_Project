@@ -17,7 +17,7 @@ static bool boss_spawned = false;
 typedef struct STAGE {
 	int max_enemies;
 	int spawn_weight[4];
-	long target_score;
+	long target_time;
 	float spawn_interval;
 	float score_multiplier;
 	float life_multiplier;

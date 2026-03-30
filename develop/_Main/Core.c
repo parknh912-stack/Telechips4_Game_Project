@@ -123,16 +123,19 @@ void game_state_update(STATE* state, bool* done)
     switch (*state)
     {
     case STATE_MENU:
-        menu_input_update(3);
+        menu_input_update(4);
         if (is_select_pressed) {
             if (current_menu_selection == 0) {
                 *state = STATE_NEWGAME;
             }
-            else if (current_menu_selection == 1) {
+            else if (current_menu_selection == 1) {//0328 ±èº´Çå °×¼³¸í
+                *state = STATE_ABOUT;//0328 ±èº´Çå °×¼³¸í
+            }
+            else if (current_menu_selection == 2) {
                 *state = STATE_RANK;
                 current_menu_selection = 0;
             }
-            else if (current_menu_selection == 2) {
+            else if (current_menu_selection == 3) {
                 *done = true;
             }
         }
@@ -283,6 +286,14 @@ void game_state_update(STATE* state, bool* done)
             current_menu_selection = 0;
         }
         break;
+
+    case STATE_ABOUT: //0328 ±èº´Çå °×¼³¸í
+        menu_input_update(1);//0328 ±èº´Çå °×¼³¸í
+        if (is_select_pressed) {//0328 ±èº´Çå °×¼³¸í
+            *state = STATE_MENU;//0328 ±èº´Çå °×¼³¸í
+            current_menu_selection = 0;//0328 ±èº´Çå °×¼³¸í
+        }
+        break;
     }
 }
 
@@ -294,7 +305,6 @@ void camera_apply(ALLEGRO_TRANSFORM* trans)
     al_identity_transform(trans);
     al_translate_transform(trans, -camera_x, -camera_y);
     al_use_transform(trans);
-
 }
 
 /* --- Main --- */

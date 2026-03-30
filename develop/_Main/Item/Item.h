@@ -32,6 +32,6 @@ bool item_create_instance(int type, float cx, float cy);
 bool item_collide(float cx, float cy);
 void item_update();
 void item_draw();
-
+void item_single_draw(int i, float cx, float cy);   //0330
 void item_use(ITEM_TYPE type);
 #endif // !_ITEM_H_
