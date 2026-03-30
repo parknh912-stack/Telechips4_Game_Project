@@ -396,7 +396,7 @@ void ui_draw_clear_menu() // 0330 ±èº´Çå
         500,
         20,
         ALLEGRO_ALIGN_CENTER,
-        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
+        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : PAK NAMHYEON\n\nPlayer Logic : CHEON WONSEOK\n\nGame Logic : SHIN JEHYEON\n\nUI : KIM BYEONGHEON"
     );
     if (scroll_y < -200)
     {
