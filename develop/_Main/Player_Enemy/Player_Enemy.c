@@ -120,7 +120,7 @@ bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy)
 int get_closet_enemy()
 {
     int target_idx = -1;
-    float min_distance = FLT_MAX;
+    float min_distance = 1e10f;
 
     for (int i = 0; i < ALIENS_N; ++i)
     {
