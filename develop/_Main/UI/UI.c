@@ -207,6 +207,22 @@ void ui_draw_pause_menu()
 {
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 180, 200, {"Resume", "Main Menu"}, 2, current_menu_selection };
     draw_menu_ui(&m, "PAUSED", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
+
+    draw_bold_text(bold_font,COLOR_WHITE,COLOR_GOLD,STATUS_POS_X, STATUS_POS_Y,0,2,"STATUS");
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 1, 0,
+        "HP : %d / %d", ship.curr_lifes, ship.max_lifes);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 2, 0,
+        "DAMAGE : %d", ship.damage);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 3, 0,
+        "SPEED : %.1f", ship.speed);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 4, 0,
+        "FIRE RATE : %.1f", ship.fire_rate);
+
+    al_draw_textf(font, COLOR_WHITE, STATUS_POS_X, STATUS_POS_Y + RANK_LINE_SPACING * 5, 0,
+        "SHOTS : %d", ship.shot_count);
 }
 
 void ui_draw_gameover_menu()
@@ -294,7 +310,7 @@ void ui_draw_h2p_menu()//0328 김병헌
             m.x / 2, m.y - 6 + (i-1)*25,          // 6, 7. 대상 위치 (dx, dy)
             20,  // 8. 대상 가로 (dw) - 누락되었던 부분
             20, // 9. 대상 세로 (dh) - 누락되었던 부분
-            0                          // 10. 플래그 (flags)
+            0                          // 10. 플래그
         );
     }
     
@@ -323,9 +339,13 @@ void ui_draw_clear_menu() // 0330 김병헌
         ALLEGRO_ALIGN_CENTER,
         "You saved our land\nThank you for playing our game\nVisit www.gamelandTC2024.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
     );
-    if (scroll_y > 650)
+    if (scroll_y > 700)
     {
-        draw_bold_text(bold_font, COLOR_BLACK, COLOR_WHITE, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
+        while (1)
+        {
+            draw_bold_text(bold_font, COLOR_BLACK, COLOR_WHITE, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
+            draw_bold_text(bold_font, COLOR_BLACK, COLOR_BLACK, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
+        }
 
     }
 

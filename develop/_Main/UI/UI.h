@@ -85,6 +85,10 @@
 #define COLOR_YELLOW               al_map_rgb(255, 255, 0)
 #define COLOR_TITLE                al_map_rgb(230, 230, 0)
 
+/* -- STATUS -- */
+#define STATUS_POS_X               850
+#define STATUS_POS_Y               300
+
 /* -- stars -- */
 typedef struct STAR
 {
