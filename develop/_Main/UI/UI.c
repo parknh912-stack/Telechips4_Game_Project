@@ -282,14 +282,15 @@ char* intro_message[] = {"health potion","attack speed bonus","random box","prot
 
 char* outro_message[] = { "You saved our land", "thank you for playing our game", "visit www.gamelandTC2024.com"};
 
-void ui_draw_h2p_menu() // 0328 ±èº´Çå
+void ui_draw_h2p_menu() // 0330 ±èº´Çå
 {
     
-    static float scroll_y = 100;
-    int timer = 0;
-    timer++;
+    static float scroll_y = 200;
+    static int frame_count = 0;
+    frame_count++;
+    
     draw_bold_text(bold_font, COLOR_TITLE, COLOR_WHITE, BUFFER_W / 2, scroll_y - 40, ALLEGRO_ALIGN_CENTER, 2, "Congrats!");
-    scroll_y += 1.0;
+    scroll_y -= 0.5;
     al_draw_multiline_text(
         font,
         COLOR_WHITE,
@@ -300,9 +301,13 @@ void ui_draw_h2p_menu() // 0328 ±èº´Çå
         ALLEGRO_ALIGN_CENTER,
         "You saved our land\nThank you for playing our game\nVisit www.gamelandTC2024.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
     );
-    if (scroll_y > 650 & timer%40 == 0)
+    if (scroll_y < -200)
     {
+        if((frame_count / 25)%2 == 0)
+        {
             draw_bold_text(bold_font, COLOR_BLACK, COLOR_WHITE, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
+        }
+
     }
 
 }
