@@ -278,6 +278,7 @@ void ui_draw_level_up_menu()
     
 }
 
+char* intro_message[] = {"health potion","attack speed bonus","random box","protect shield"};
 
 void ui_draw_h2p_menu()//0328 ±èº´Çå
 {
@@ -296,13 +297,6 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
             20, // 9. ´ë»ó ¼¼·Î (dh) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             0                          // 10. ÇÃ·¡±× (flags)
         );
+        draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + (i - 1) * 25, ALLEGRO_ALIGN_CENTER, 1, intro_message[i-1]);//0328 ±èº´Çå
     }
-    
-    
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonud");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "i ballad seusung zzz");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0328 ±èº´Çå
-    
-    
 }
