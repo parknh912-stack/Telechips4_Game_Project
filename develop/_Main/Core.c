@@ -409,7 +409,12 @@ int main()
             }
 
             redraw = true;
-            ++frames;
+            
+            // 0330 신제현 - STATE_PLAYING 상태에 있을 때에만 프레임 수를 증가
+            // 그 외의 경우는 증가시키지 않음
+            if (current_state == STATE_PLAYING)
+                ++frames;
+
             break;
 
         case ALLEGRO_EVENT_KEY_CHAR: // 실시간 문자 입력 처리 : 김병헌

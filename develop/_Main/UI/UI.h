@@ -111,6 +111,7 @@ extern int current_menu_selection;
 // 0330 신제현
 extern double stage_alert_timer;
 extern double boss_alert_timer;
+extern double survive_timer;
 
 // 작성자: 신제현
 typedef struct MENU {

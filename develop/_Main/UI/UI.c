@@ -46,8 +46,11 @@ ALLEGRO_FONT* font;
 ALLEGRO_FONT* bold_font;//0327 김병헌 제목용 큰 폰트
 ALLEGRO_FONT* compcolor_font;//김병헌 보색용 폰트
 long score_display;
-double stage_alert_timer = -1.0;
-double boss_alert_timer = -1.0;
+double stage_alert_timer = -1.0;        // 0330 신제현
+double boss_alert_timer = -1.0;         // 0330 신제현
+
+double survive_timer = -1.0;            // 0330 신제현
+
 
 void hud_init()//0328 김병헌
 {
@@ -119,6 +122,19 @@ void hud_draw()
             stage_num + 1
         );
     }
+
+    // 0330 신제현 - 중간 상단에 생존 시간 보여주기
+    int total_second = frames / 60;
+    int min = total_second / 60;
+    int sec = total_second % 60;
+    int milli_sec = (frames % 60) * 1000 / 60;
+
+    al_draw_textf(
+        bold_font,
+        al_map_rgb_f(1.0, 1.0, 1.0),
+        BUFFER_W / 2, 15,
+        ALLEGRO_ALIGN_CENTER,
+        "TIME   %02d:%02d:%03d", min, sec, milli_sec);
 }
 
 

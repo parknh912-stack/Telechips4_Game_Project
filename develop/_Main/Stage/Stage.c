@@ -79,6 +79,7 @@ void stage_update()
 		}
 		else
 		{
+			score += 18000 - frames;
 			current_state = STATE_ENDING;
 		}
 	}
