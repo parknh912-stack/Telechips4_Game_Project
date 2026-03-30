@@ -48,8 +48,6 @@ ALLEGRO_FONT* font;
 ALLEGRO_FONT* bold_font;//0327 ±èº´Çå Á¦¸ñ¿ë Å« ÆùÆ®
 ALLEGRO_FONT* compcolor_font;//±èº´Çå º¸»ö¿ë ÆùÆ®
 long score_display;
-double stage_alert_timer = -1.0;
-double boss_alert_timer = -1.0;
 
 double stage_alert_timer = -1.0;        // 0330 ½ÅÁ¦Çö
 double boss_alert_timer = -1.0;         // 0330 ½ÅÁ¦Çö
@@ -101,8 +99,9 @@ void hud_draw()
 
     int spacing = LIFE_W + 1;
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W+2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328±èº´Çå
-    for (int i = 0; i < ship.curr_lifes; i++)
-        al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 ±èº´Çå
+    //for (int i = 0; i < ship.curr_lifes; i++)
+    //    al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 ±èº´Çå
+    al_draw_filled_rectangle(10, HUD_LIFE_BAR_Y, 10 + (1280 * hp_ratio), HUD_LIFE_BAR_Y + 15, al_map_rgb(255, 0, 0));
     
     // 0330 ½ÅÁ¦Çö - º¸½º ³ªÅ¸³­´Ù°í È­¸é¿¡ ¸Þ½ÃÁö 2ÃÊ°£ Ç¥½Ã
     if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
@@ -340,25 +339,30 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
 {
     int extra_y = 50;
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L + 100, bold_font);
-    for (int i = 1; i < 6; i++)
+    draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
+    for (int i = 1; i <= 5; i++)
     {
-        al_draw_scaled_bitmap(
+        al_draw_scaled_bitmap
+        (
             sprites.item[i],           // 1. ºñÆ®¸Ê
             0, 0,                      // 2, 3. ¼Ò½º ½ÃÀÛ (sx, sy)
             al_get_bitmap_width(sprites.item[i]),  // 4. ¼Ò½º °¡·Î (sw)
             al_get_bitmap_height(sprites.item[i]), // 5. ¼Ò½º ¼¼·Î (sh)
-            m.x / 2 + 120, m.y - 6 + (i - 1) * 25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
+            m.x / 2 + 120, m.y - 6 + (i-1)*25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
             20,  // 8. ´ë»ó °¡·Î (dw) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             20, // 9. ´ë»ó ¼¼·Î (dh) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             0                          // 10. ÇÃ·¡±×
         );
     }
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonud");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2 * 25, ALLEGRO_ALIGN_CENTER, 1, "i ballad seusung zzz");//0328 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0328 ±èº´Çå
-
+    
+    
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonus");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "random box");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 4 * 25, ALLEGRO_ALIGN_CENTER, 1, "ufo");//0330 ±èº´Çå
+    
+    
 }
 
 void ui_draw_clear_menu() // 0330 ±èº´Çå
@@ -368,20 +372,22 @@ void ui_draw_clear_menu() // 0330 ±èº´Çå
     static int frame_count = 0;
     frame_count++;
 
+    float intensity = 240 * (1.0f / (1.0f + expf(-(frame_count - 500) * 0.005f)));//ÃµÃµÈ÷ ¹à¾ÆÁö´Â
+
     static ALLEGRO_BITMAP* bg_image = NULL;
-    if (!bg_image)
+    if (!bg_image) 
     {
         bg_image = al_load_bitmap("Ending_Scene.png");
     }
 
 
     // 2. ¹è°æ ±×¸®±â
-    if (bg_image)
+    if (bg_image) 
     {
         al_draw_tinted_scaled_bitmap
         (
             bg_image,            // ºñÆ®¸Ê Æ÷ÀÎÅÍ
-            al_map_rgb(100, 100, 100), // Æ¾Æ® ÄÃ·¯
+            al_map_rgb(intensity, intensity, intensity), // Æ¾Æ® ÄÃ·¯
             0, 0,                // ¿øº» ÀÌ¹ÌÁöÀÇ ½ÃÀÛÁ¡ (sx, sy)
             al_get_bitmap_width(bg_image),  // ¿øº» ³Êºñ (sw)
             al_get_bitmap_height(bg_image), // ¿øº» ³ôÀÌ (sh)
@@ -400,7 +406,7 @@ void ui_draw_clear_menu() // 0330 ±èº´Çå
         500,
         20,
         ALLEGRO_ALIGN_CENTER,
-        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : PAK NAMHYEON\n\nPlayer Logic : CHEON WONSEOK\n\nGame Logic : SHIN JEHYEON\n\nUI : KIM BYEONGHEON"
+        "You saved our land\nThank you for playing our game\nVisit www.TeleChips2026.com\n\n\ncredit\n\nPM : PARK NAMHYEON\n\nPlayer Logic : CHEON WONSEOK\n\nGame Logic : SHIN JEHYEON\n\nUI : KIM BYEONGHEON"
     );
     if (scroll_y < -200)
     {
@@ -416,7 +422,8 @@ void ui_draw_clear_menu() // 0330 ±èº´Çå
 // ÀÛ¼ºÀÚ: 0330 ½ÅÁ¦Çö - ¿£µù ¸Þ´º
 void ui_draw_ending_menu(void)
 {
-    MENU m = {
+    MENU m = 
+    {
         BUFFER_W / 2, BUFFER_H / 2,
         300, 400,
         { "Record Your Score", "Return To Menu" },
@@ -424,5 +431,5 @@ void ui_draw_ending_menu(void)
         current_menu_selection
     };
 
-    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
+    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
 }
