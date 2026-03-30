@@ -67,6 +67,7 @@ void stage_update()
 		else
 		{
 			//클리어 UI 실행하는 코드를 삽입
+			//추후 추가
 		}
 	}
 }
