@@ -112,7 +112,7 @@ void hud_draw()
     {
         al_draw_textf(
             bold_font,
-            al_map_rgb_f(1.0, 1.0, 0.0),
+            al_map_rgb_f(1.0, 1.0, 1.0),
             BUFFER_W / 2, BUFFER_H / 2,
             ALLEGRO_ALIGN_CENTER,
             "=== S T A G E   %02d ===",
