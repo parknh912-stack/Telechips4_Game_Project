@@ -138,6 +138,7 @@ void ui_draw_gameover_menu();
 void ui_draw_rank_menu();
 void ui_draw_input_name_menu();
 void ui_draw_h2p_menu();//0328 ±èº´Çå
+void ui_draw_clear_menu();//0330 ±èº´Çå
 
 // ÀÛ¼ºÀÚ: ½ÅÁ¦Çö
 void ui_draw_level_up_menu(void);
