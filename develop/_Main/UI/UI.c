@@ -280,23 +280,27 @@ void ui_draw_level_up_menu()
 
 char* intro_message[] = {"health potion","attack speed bonus","random box","protect shield"};
 
-void ui_draw_h2p_menu()//0328 김병헌
+char* outro_message[] = { "You saved our land", "thank you for playing our game", "visit www.gamelandTC2024.com"};
+
+void ui_draw_h2p_menu() // 0328 김병헌
 {
-    int extra_y = 50;
-    MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
-    draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
-    for (int i = 1; i < 5; i++)
+    
+    static float scroll_y = 100;
+    draw_bold_text(bold_font, COLOR_TITLE, COLOR_WHITE, BUFFER_W / 2, scroll_y - 40, ALLEGRO_ALIGN_CENTER, 2, "Congrats!");
+    scroll_y += 1.0;
+    al_draw_multiline_text(
+        font,
+        COLOR_WHITE,
+        BUFFER_W / 2,
+        scroll_y,
+        500,
+        20,
+        ALLEGRO_ALIGN_CENTER,
+        "You saved our land\nThank you for playing our game\nVisit www.gamelandTC2024.com\n\n\ncredit\n\nPM : Park Nam Hyun\n\nPlayer Logic : Cheon Won Seok\n\nGame Logic : Shin Je Hyeon\n\nUI : Kim Byeong Heon"
+    );
+    if (scroll_y > 650)
     {
-        al_draw_scaled_bitmap(
-            sprites.item[i],           // 1. 비트맵
-            0, 0,                      // 2, 3. 소스 시작 (sx, sy)
-            al_get_bitmap_width(sprites.item[i]),  // 4. 소스 가로 (sw)
-            al_get_bitmap_height(sprites.item[i]), // 5. 소스 세로 (sh)
-            m.x / 2, m.y - 6 + (i-1)*25,          // 6, 7. 대상 위치 (dx, dy)
-            20,  // 8. 대상 가로 (dw) - 누락되었던 부분
-            20, // 9. 대상 세로 (dh) - 누락되었던 부분
-            0                          // 10. 플래그 (flags)
-        );
-        draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + (i - 1) * 25, ALLEGRO_ALIGN_CENTER, 1, intro_message[i-1]);//0328 김병헌
+        draw_bold_text(bold_font, COLOR_BLACK, COLOR_WHITE, BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, 2, "Press ENTER to Continue");
     }
+
 }
