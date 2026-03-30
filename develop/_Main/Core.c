@@ -156,10 +156,10 @@ void game_state_update(STATE* state, bool* done)
     case STATE_PLAYING:
         stage_update(); //0329 박남현
 
-		// 0330 신제현 - 버그 수정
+        // 0330 신제현 - 버그 수정
         // 스테이지 클리어로 상태가 바뀌었으면 나머지를 스킵할 것
-		if (*state != STATE_PLAYING)
-			break;
+        if (*state != STATE_PLAYING)
+            break;
 
         fx_update();
         shots_update();
@@ -195,13 +195,13 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_PAUSE:
         menu_input_update(2);
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
-            if (current_menu_selection == 0) 
+            if (current_menu_selection == 0)
             {
                 *state = STATE_PLAYING;
             }
-            else if (current_menu_selection == 1) 
+            else if (current_menu_selection == 1)
             {
                 *state = STATE_MENU;
                 current_menu_selection = 0;
@@ -210,17 +210,17 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
             if (current_menu_selection == 0)
             {
                 *state = STATE_NEWGAME;
             }
-            else if (current_menu_selection == 1) 
+            else if (current_menu_selection == 1)
             {
                 *state = STATE_RANK;
             }
-            else if (current_menu_selection == 2) 
+            else if (current_menu_selection == 2)
             {
                 *state = STATE_MENU;
                 current_menu_selection = 0;
@@ -234,7 +234,7 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_RANK:
         menu_input_update(1);
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
             *state = STATE_MENU;
             current_menu_selection = 0;
@@ -243,9 +243,9 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_INPUT_NAME:
         menu_input_update(1);
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
-            if (name_len > 0) 
+            if (name_len > 0)
             { // 이름이 한 글자라도 있을 때만
                 rank_add(player_name, score); // 삽입정렬
                 rank_save();                  // 파일에 기록
@@ -310,9 +310,9 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_ABOUT: //0328 김병헌 겜설명
         menu_input_update(1);//0328 김병헌 겜설명
-        if (is_select_pressed) 
+        if (is_select_pressed)
         {
-        
+
             *state = STATE_MENU;//0328 김병헌 겜설명
             current_menu_selection = 0;//0328 김병헌 겜설명
         }
@@ -363,50 +363,6 @@ void game_state_update(STATE* state, bool* done)
         }
         break;
 
-    case STATE_ENDING_SCENE: // 0330 김병헌 엔딩 씬
-    {
-        static int ending_frame_counter = 0;
-        if (ending_frame_counter < 800)ending_frame_counter++;
-
-        menu_input_update(1);
-        if (ending_frame_counter >= 800)
-        {
-            if (is_select_pressed)
-            {
-                *state = STATE_ENDING;
-                current_menu_selection = 0;
-                ending_frame_counter = 0;
-            }
-        }
-    }
-    break;
-
-    case STATE_ENDING:          // 0330 신제현 - 엔딩 화면
-        menu_input_update(2);
-        
-        if (is_select_pressed)
-        {
-            if (current_menu_selection == 0)
-            {
-                // 랭킹 진입 체크 후 이름 입력으로
-                if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
-                {
-                    *state = STATE_INPUT_NAME;
-                    name_len = 0;
-                    player_name[0] = '\0';
-                }
-                else
-                {
-                    *state = STATE_RANK;  // 랭킹권 아니면 보기만
-                }
-            }
-            else if (current_menu_selection == 1)
-            {
-                *state = STATE_MENU;
-                current_menu_selection = 0;
-            }
-        }
-        break;
     }
 }
 

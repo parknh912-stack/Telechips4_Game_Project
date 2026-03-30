@@ -48,8 +48,6 @@ ALLEGRO_FONT* font;
 ALLEGRO_FONT* bold_font;//0327 김병헌 제목용 큰 폰트
 ALLEGRO_FONT* compcolor_font;//김병헌 보색용 폰트
 long score_display;
-double stage_alert_timer = -1.0;
-double boss_alert_timer = -1.0;
 
 double stage_alert_timer = -1.0;        // 0330 신제현
 double boss_alert_timer = -1.0;         // 0330 신제현
@@ -101,8 +99,9 @@ void hud_draw()
 
     int spacing = LIFE_W + 1;
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W+2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328김병헌
-    for (int i = 0; i < ship.curr_lifes; i++)
-        al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 김병헌
+    //for (int i = 0; i < ship.curr_lifes; i++)
+    //    al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 김병헌
+    al_draw_filled_rectangle(10, HUD_LIFE_BAR_Y, 10 + (1280 * hp_ratio), HUD_LIFE_BAR_Y + 15, al_map_rgb(255, 0, 0));
     
     // 0330 신제현 - 보스 나타난다고 화면에 메시지 2초간 표시
     if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
@@ -341,7 +340,7 @@ void ui_draw_h2p_menu()//0328 김병헌
     int extra_y = 50;
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
-    for (int i = 1; i <= 6; i++)
+    for (int i = 1; i <= 5; i++)
     {
         al_draw_scaled_bitmap
         (
@@ -373,6 +372,8 @@ void ui_draw_clear_menu() // 0330 김병헌
     static int frame_count = 0;
     frame_count++;
 
+    float intensity = 240 * (1.0f / (1.0f + expf(-(frame_count - 500) * 0.005f)));//천천히 밝아지는
+
     static ALLEGRO_BITMAP* bg_image = NULL;
     if (!bg_image) 
     {
@@ -386,7 +387,7 @@ void ui_draw_clear_menu() // 0330 김병헌
         al_draw_tinted_scaled_bitmap
         (
             bg_image,            // 비트맵 포인터
-            al_map_rgb(100, 100, 100), // 틴트 컬러
+            al_map_rgb(intensity, intensity, intensity), // 틴트 컬러
             0, 0,                // 원본 이미지의 시작점 (sx, sy)
             al_get_bitmap_width(bg_image),  // 원본 너비 (sw)
             al_get_bitmap_height(bg_image), // 원본 높이 (sh)
@@ -421,7 +422,8 @@ void ui_draw_clear_menu() // 0330 김병헌
 // 작성자: 0330 신제현 - 엔딩 메뉴
 void ui_draw_ending_menu(void)
 {
-    MENU m = {
+    MENU m = 
+    {
         BUFFER_W / 2, BUFFER_H / 2,
         300, 400,
         { "Record Your Score", "Return To Menu" },
@@ -429,5 +431,5 @@ void ui_draw_ending_menu(void)
         current_menu_selection
     };
 
-    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_HI, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_L, bold_font);
+    draw_menu_ui(&m, "GAME CLEAR!!!", UI_BTN_POS_Y_MID, UI_PANEL_SIZE_W, UI_PANEL_SIZE_H_M, bold_font);
 }
