@@ -647,7 +647,7 @@ void aliens_update()
                 aliens[i].shot_timer = 200;
                 break;
             case ALIEN_TYPE_BOSS:
-                shots_add(false, true, aliens[i].cx, aliens[i].cy, aliens[i].shot_count);
+                shots_add(false, true, aliens[i].cx-200, aliens[i].cy-100, aliens[i].shot_count);
                 aliens[i].shot_timer = 50;
                 aliens[i].shot_count = 5;
                 break;

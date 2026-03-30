@@ -51,6 +51,9 @@
     <Image Include="purple.png">
       <Filter>리소스 파일\Background</Filter>
     </Image>
+    <Image Include="..\..\..\Users\한국전파진흥협회\Desktop\예제_게임_실행_정리\이미지파일 2\PNG\Sprites X2\Station\spaceStation_026.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_Main\Audio.c">

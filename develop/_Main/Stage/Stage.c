@@ -44,7 +44,8 @@ void stage_init()
 
 void stage_update()
 {
-	if (!boss_spawned && frames >= (CURR_STAGE->target_time))
+	// if (!boss_spawned && frames >= (CURR_STAGE->target_time))
+	if (!boss_spawned && frames >= 100)
 	{
 		aliens_init();
 		spawn_boss();

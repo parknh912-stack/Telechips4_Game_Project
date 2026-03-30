@@ -139,6 +139,7 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Users\한국전파진흥협회\Desktop\예제_게임_실행_정리\이미지파일 2\PNG\Sprites X2\Station\spaceStation_026.png" />
     <Image Include="black.png" />
     <Image Include="blue.png" />
     <Image Include="darkPurple.png" />
