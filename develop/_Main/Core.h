@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <limits.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
@@ -16,7 +17,7 @@
 extern long frames;
 extern long score;
 extern int level;
-extern int stage_num;
+extern int stage_num; 
 
 void must_init(bool test, const char* description);
 int between(int lo, int hi);
@@ -39,7 +40,7 @@ typedef enum STATE {
     STATE_LEVEL_UP,          // 6. 레벨 업햇을때 뜨는 창
     STATE_NEWGAME,           //7. 새로운 게임
     STATE_ABOUT,             //0328 김병헌 - 8. 게임 설명
-    STATE_ENDING            //0330 김병헌 - 9. 게임 엔딩
+    STATE_ENDING,           // 0330 김병헌 - 엔딩씬
 } STATE;
 
 //0327 김병헌 - rank함수 여기 없어도 됩니다.

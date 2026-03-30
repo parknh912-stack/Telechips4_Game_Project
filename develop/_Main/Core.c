@@ -100,6 +100,7 @@ void game_state_init(void)
     score = 0;
     level = 1;
     score_display = 0;
+    stage_alert_timer = al_get_time();  // 0330 신제현 - 스테이지 1 진입 알림
 
     stage_init();   //0329 박남현
     ship_init();
@@ -143,6 +144,12 @@ void game_state_update(STATE* state, bool* done)
 
     case STATE_PLAYING:
         stage_update(); //0329 박남현
+
+        // 0330 신제현 - 버그 수정
+        // 스테이지 클리어로 상태가 바뀌었으면 나머지를 스킵할 것
+        if (*state != STATE_PLAYING)
+            break;
+
         fx_update();
         shots_update();
         stars_update();
@@ -286,8 +293,7 @@ void game_state_update(STATE* state, bool* done)
             current_menu_selection = 0;
         }
         break;
-    
-    
+
     case STATE_ABOUT: //0328 김병헌 겜설명
         menu_input_update(1);//0328 김병헌 겜설명
         if (is_select_pressed) {//0328 김병헌 겜설명
@@ -295,9 +301,33 @@ void game_state_update(STATE* state, bool* done)
             current_menu_selection = 0;//0328 김병헌 겜설명
         }
         break;
+    case STATE_ENDING:          // 0330 신제현 - 엔딩 화면
+        menu_input_update(2);
+        
+        if (is_select_pressed)
+        {
+            if (current_menu_selection == 0)
+            {
+                // 랭킹 진입 체크 후 이름 입력으로
+                if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
+                {
+                    *state = STATE_INPUT_NAME;
+                    name_len = 0;
+                    player_name[0] = '\0';
+                }
+                else
+                {
+                    *state = STATE_RANK;  // 랭킹권 아니면 보기만
+                }
+            }
+            else if (current_menu_selection == 1)
+            {
+                *state = STATE_MENU;
+                current_menu_selection = 0;
+            }
+        }
+        break;
     }
-
-    
 }
 
 void camera_apply(ALLEGRO_TRANSFORM* trans)
@@ -308,7 +338,6 @@ void camera_apply(ALLEGRO_TRANSFORM* trans)
     al_identity_transform(trans);
     al_translate_transform(trans, -camera_x, -camera_y);
     al_use_transform(trans);
-
 }
 
 /* --- Main --- */
@@ -360,6 +389,7 @@ int main()
 
     al_start_timer(timer);
 
+   
     while (1)
     {
         al_wait_for_event(queue, &event);
@@ -408,6 +438,8 @@ int main()
 
         keyboard_update(&event);
         ALLEGRO_TRANSFORM trans;
+
+        int time = al_get_time();
 
         // 작성자: 김병헌
         if (redraw && al_is_event_queue_empty(queue))
@@ -485,6 +517,11 @@ int main()
                 hud_draw();
                 al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
                 ui_draw_level_up_menu();
+                break;
+            case STATE_ENDING:
+                hud_draw();
+                al_draw_filled_rectangle(0, 0, BUFFER_W, BUFFER_H, al_map_rgba_f(0, 0, 0, 0.5));
+                ui_draw_ending_menu();
                 break;
             case STATE_ABOUT:
                 ui_draw_h2p_menu();

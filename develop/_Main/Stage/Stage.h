@@ -7,6 +7,9 @@
 
 static bool boss_spawned = false;
 
+// 0330 신제현 - 스테이지 시작 프레임 관리 변수 추가
+static long stage_start_frame = 0;
+
 // 스테이지 정보
 // 1. 최대 적 숫자
 // 2. 적의 스폰 가중치
@@ -17,7 +20,7 @@ static bool boss_spawned = false;
 typedef struct STAGE {
 	int max_enemies;
 	int spawn_weight[4];
-	long target_score;
+	long target_time;
 	float spawn_interval;
 	float score_multiplier;
 	float life_multiplier;

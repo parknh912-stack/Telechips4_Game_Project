@@ -20,7 +20,7 @@ void shots_init()
 }
 
 //작성자 : 박남현
-bool shots_add(bool is_ship, bool straight, float x, float y)
+bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count)
 {
     //sound 설정
     al_play_sample(
@@ -33,8 +33,7 @@ bool shots_add(bool is_ship, bool straight, float x, float y)
     );
 
     // 공통 세팅
-    float speed = is_ship ? 4.0f : 3.0f;
-    int count = is_ship ? ship.shot_count : 1;
+    float speed = is_ship ? 5.0f : 5.0f;
 
     float spread_gap = 0.2f;
     float target_x, target_y;
@@ -43,7 +42,6 @@ bool shots_add(bool is_ship, bool straight, float x, float y)
     //shot이 아군것인지 적군것인지 확인 후 target 좌표 설정
     if (is_ship)
     {
-        int count = ship.shot_count;
         int target_idx = get_closet_enemy();    //가장 가까운 적을 조준하는 함수 및 기능
         if (target_idx != -1)
         {
@@ -66,10 +64,19 @@ bool shots_add(bool is_ship, bool straight, float x, float y)
 
     if (has_target)
     {
-        float base_angle = atan2f(target_y - y, target_x - x);
-        float start_angle = base_angle - ((count - 1) / 2.0f) * spread_gap;
+        float dx = target_x - x;
+        float dy = target_y - y;
 
-        for (int i = 0; i < count; ++i)
+        if (dx > (MAP_WIDTH / 2)) dx -= MAP_WIDTH;
+        else if (dx < -(MAP_WIDTH / 2)) dx += MAP_WIDTH;
+
+        if (dy > (MAP_HEIGHT / 2)) dy -= MAP_HEIGHT;
+        else if (dy < -(MAP_HEIGHT / 2)) dy += MAP_HEIGHT;
+
+        float base_angle = atan2f(dy, dx);
+        float start_angle = base_angle - ((shot_count - 1) / 2.0f) * spread_gap;
+
+        for (int i = 0; i < shot_count; ++i)
         {
             float curr_angle = start_angle + i * spread_gap;
             float dx = cos(curr_angle) * speed;
@@ -113,7 +120,7 @@ bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy)
 int get_closet_enemy()
 {
     int target_idx = -1;
-    float min_distance = 999999.0f;
+    float min_distance = 1e10f;
 
     for (int i = 0; i < ALIENS_N; ++i)
     {
@@ -121,6 +128,13 @@ int get_closet_enemy()
 
         float dx = aliens[i].cx - ship.cx;
         float dy = aliens[i].cy - ship.cy;
+
+        if (dx > (MAP_WIDTH / 2)) dx -= MAP_WIDTH;
+        else if (dx < -(MAP_WIDTH / 2)) dx += MAP_WIDTH;
+
+        if (dy > (MAP_HEIGHT / 2)) dy -= MAP_HEIGHT;
+        else if (dy < -(MAP_HEIGHT / 2)) dy += MAP_HEIGHT;
+
         float square_distance = (dx * dx) + (dy * dy);
         if (min_distance > square_distance)
         {
@@ -137,36 +151,17 @@ void shots_update()
     for (int i = 0; i < SHOTS_N; i++)
     {
         if (!shots[i].used)
-            continue;
+			continue;
 
-        if (shots[i].ship)
-        {
-            shots[i].x += shots[i].dx;
-            shots[i].y += shots[i].dy;
+		shots[i].x += shots[i].dx;
+		shots[i].y += shots[i].dy;
 
-            // 작성자 : 박남현
-            // 외곽 범위 수정
-            if (shots[i].x < -SHIP_SHOT_H || shots[i].y < -SHIP_SHOT_H ||
-                shots[i].x > BUFFER_W + SHIP_SHOT_W || shots[i].y > BUFFER_W + SHIP_SHOT_W)
-            {
-                shots[i].used = false;
-                continue;
-            }
-        }
-        else // alien
-        {
-            shots[i].x += shots[i].dx;
-            shots[i].y += shots[i].dy;
-
-            if ((shots[i].x < -ALIEN_SHOT_W)
-                || (shots[i].x > BUFFER_W)
-                || (shots[i].y < -ALIEN_SHOT_H)
-                || (shots[i].y > BUFFER_H))
-            {
-                shots[i].used = false;
-                continue;
-            }
-        }
+		// 작성자 : 박남현
+		// 무한맵 구현을 위하여, 사라지는거 삭제
+		if (shots[i].x > MAP_WIDTH)  shots[i].x = 0;
+		if (shots[i].x < 0)          shots[i].x = MAP_WIDTH;
+		if (shots[i].y > MAP_HEIGHT) shots[i].y = 0;
+		if (shots[i].y < 0)          shots[i].y = MAP_HEIGHT;
 
         shots[i].frame++;
     }
@@ -232,12 +227,43 @@ void shots_draw()
         int sh = al_get_bitmap_height(current_shot);
 
         if (shots[i].ship)
+        {
             al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
                 0, 0, sw, sh,
                 shots[i].x - (SHIP_SHOT_W / 2),
                 shots[i].y - (SHIP_SHOT_H / 2),
                 SHIP_SHOT_W, SHIP_SHOT_H,
                 0);
+
+            if (shots[i].y > MAP_WIDTH - 640)
+                al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
+                    0, 0, sw, sh,
+                    shots[i].x - (SHIP_SHOT_W / 2) - MAP_WIDTH,
+                    shots[i].y - (SHIP_SHOT_H / 2),
+                    SHIP_SHOT_W, SHIP_SHOT_H,
+                    0);
+            if (shots[i].x < 640)
+                al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
+                    0, 0, sw, sh,
+                    shots[i].x - (SHIP_SHOT_W / 2) + MAP_WIDTH,
+                    shots[i].y - (SHIP_SHOT_H / 2),
+                    SHIP_SHOT_W, SHIP_SHOT_H,
+                    0);
+            if (shots[i].y > MAP_HEIGHT - 640)
+                al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
+                    0, 0, sw, sh,
+                    shots[i].x - (SHIP_SHOT_W / 2),
+                    shots[i].y - (SHIP_SHOT_H / 2) - MAP_HEIGHT,
+                    SHIP_SHOT_W, SHIP_SHOT_H,
+                    0);
+            if (shots[i].y < 640)
+                al_draw_scaled_bitmap(sprites.ship_shot[frame_display],
+                    0, 0, sw, sh,
+                    shots[i].x - (SHIP_SHOT_W / 2),
+                    shots[i].y - (SHIP_SHOT_H / 2) + MAP_HEIGHT,
+                    SHIP_SHOT_W, SHIP_SHOT_H,
+                    0);
+        }
 
         else // alien
         {
@@ -253,11 +279,34 @@ void shots_draw()
                 shots[i].x, shots[i].y,
                 ALIEN_SHOT_W, ALIEN_SHOT_H,
                 0);
-            //al_draw_tinted_bitmap(sprites.alien_shot, tint, shots[i].x, shots[i].y, 0);
+
+            if (shots[i].y > MAP_WIDTH - 640)
+                al_draw_tinted_scaled_bitmap(sprites.alien_shot, tint,
+                    0, 0, 41, 41,
+                    shots[i].x - MAP_WIDTH, shots[i].y,
+                    ALIEN_SHOT_W, ALIEN_SHOT_H,
+                    0);
+            if (shots[i].x < 640)
+                al_draw_tinted_scaled_bitmap(sprites.alien_shot, tint,
+                    0, 0, 41, 41,
+                    shots[i].x + MAP_WIDTH, shots[i].y,
+                    ALIEN_SHOT_W, ALIEN_SHOT_H,
+                    0);
+            if (shots[i].y > MAP_HEIGHT - 640)
+                al_draw_tinted_scaled_bitmap(sprites.alien_shot, tint,
+                    0, 0, 41, 41,
+                    shots[i].x, shots[i].y - MAP_WIDTH,
+                    ALIEN_SHOT_W, ALIEN_SHOT_H,
+                    0);
+            if (shots[i].y < 640)
+                al_draw_tinted_scaled_bitmap(sprites.alien_shot, tint,
+                    0, 0, 41, 41,
+                    shots[i].x, shots[i].y + MAP_WIDTH,
+                    ALIEN_SHOT_W, ALIEN_SHOT_H,
+                    0);
         }
     }
 }
-
 
 /* --- Player --- */
 
@@ -267,12 +316,13 @@ SHIP ship;
 // 거의 전체적으로 변경되었음.
 void ship_init()
 {
-    ship.x = (BUFFER_W / 2) - (SHIP_W / 2);
-    ship.y = (BUFFER_H / 2) - (SHIP_H / 2);
+    //0330
+    ship.x = (MAP_WIDTH / 2) - (SHIP_W / 2);
+    ship.y = (MAP_HEIGHT / 2) - (SHIP_H / 2);
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
 
-    ship.speed = 3.0f;          //이동속도, 수정가능
+    ship.speed = 4.0f;          //이동속도, 수정가능
     ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
     ship.shot_timer = 60;       //shot_timer
     ship.damage = 5;           //데미지, int      (수정가능)
@@ -302,27 +352,28 @@ void ship_update()
     if (key[ALLEGRO_KEY_DOWN])
         ship.y += ship.speed;
 
-	if (ship.x < 0)
-	    ship.x = 0;
-	if (ship.y < 0)
-	    ship.y = 0;
+	//if (ship.x < 0)
+	//    ship.x = 0;
+	//if (ship.y < 0)
+	//    ship.y = 0;
 
-	if (ship.x > SHIP_MAX_X)
-	    ship.x = SHIP_MAX_X;
-	if (ship.y > SHIP_MAX_Y)
-	    ship.y = SHIP_MAX_Y;
+	//if (ship.x > SHIP_MAX_X)
+	//    ship.x = SHIP_MAX_X;
+	//if (ship.y > SHIP_MAX_Y)
+	//    ship.y = SHIP_MAX_Y;
 
-    //// 가로 좌표 워프
-    //if (ship.x < 0)
-    //    ship.x = MAP_WIDTH;
-    //else if (ship.x > MAP_WIDTH)
-    //    ship.x = 0;
+    //0330
+    // 가로 좌표 워프
+    if (ship.x < 0)
+        ship.x = MAP_WIDTH;
+    else if (ship.x > MAP_WIDTH)
+        ship.x = 0;
 
-    //// 세로 좌표 워프
-    //if (ship.y < 0)
-    //    ship.y = MAP_HEIGHT;
-    //else if (ship.y > MAP_HEIGHT)
-    //    ship.y = 0;
+    // 세로 좌표 워프
+    if (ship.y < 0)
+        ship.y = MAP_HEIGHT;
+    else if (ship.y > MAP_HEIGHT)
+        ship.y = 0;
 
 
     ship.cx = ship.x + (SHIP_W / 2);
@@ -378,7 +429,7 @@ void ship_update()
         ship.shot_timer--;
     if (ship.shot_timer <= 0) {
 
-        shots_add(true, false, ship.cx, ship.cy);
+        shots_add(true, false, ship.cx, ship.cy, ship.shot_count);
         ship.shot_timer = 60.0 / ship.fire_rate;
     }
     item_collide(ship.cx, ship.cy);
@@ -475,8 +526,6 @@ void aliens_update()
                 aliens[i].blink = 0;
                 aliens[i].used = true;
 
-                
-
                 new_quota--;
             }
             continue;
@@ -503,22 +552,23 @@ void aliens_update()
             aliens_move(i, aliens[i].speed);
         }
 
-        /* 화면 범위 밖으로 나갈시, 제거*/
-        if (aliens[i].x > BUFFER_W + 100 ||
-            aliens[i].x < -100 ||
-            aliens[i].y > BUFFER_H + 100 ||
-            aliens[i].y < -100)
-        {
-            aliens[i].used = false;
-            continue;
-        }
+        ///* 화면 범위 밖으로 나갈시, 제거*/
+        //if (aliens[i].x > BUFFER_W + 100 ||
+        //    aliens[i].x < -100 ||
+        //    aliens[i].y > BUFFER_H + 100 ||
+        //    aliens[i].y < -100)
+        //{
+        //    aliens[i].used = false;
+        //    continue;
+        //}
+        
+        //0330
 
-
-        ///* 맵 범위 밖으로 나갈 시, 반대편으로 워프 (무한 맵 루프) */
-        //if (aliens[i].x > MAP_WIDTH)  aliens[i].x = 0;
-        //if (aliens[i].x < 0)          aliens[i].x = MAP_WIDTH;
-        //if (aliens[i].y > MAP_HEIGHT) aliens[i].y = 0;
-        //if (aliens[i].y < 0)          aliens[i].y = MAP_HEIGHT;
+        /* 맵 범위 밖으로 나갈 시, 반대편으로 워프 (무한 맵 루프) */
+        if (aliens[i].x > MAP_WIDTH)  aliens[i].x = 0;
+        if (aliens[i].x < 0)          aliens[i].x = MAP_WIDTH;
+        if (aliens[i].y > MAP_HEIGHT) aliens[i].y = 0;
+        if (aliens[i].y < 0)          aliens[i].y = MAP_HEIGHT;
 
 
         ///* 우주선과 너무 멀어지면 삭제 (예: 2000 픽셀 이상) */
@@ -586,19 +636,19 @@ void aliens_update()
                 aliens[i].shot_timer = 150;*/
                 break;
             case ALIEN_TYPE_FAST:
-                shots_add(false, true, aliens[i].cx, aliens[i].cy);
+                shots_add(false, true, aliens[i].cx, aliens[i].cy, aliens[i].shot_count);
                 aliens[i].shot_timer = 80;
                 break;
             case ALIEN_TYPE_SHOOTER:
-                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy);
-                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy);
-                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy + 8);
-                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy + 8);
+                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy, aliens[i].shot_count);
+                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy, aliens[i].shot_count);
+                shots_add(false, true, aliens[i].cx - 5, aliens[i].cy + 8, aliens[i].shot_count);
+                shots_add(false, true, aliens[i].cx + 5, aliens[i].cy + 8, aliens[i].shot_count);
                 aliens[i].shot_timer = 200;
                 break;
             case ALIEN_TYPE_BOSS:
-                shots_add(false, true, aliens[i].cx, aliens[i].cy);
-                aliens[i].shot_timer = 1000;
+                shots_add(false, true, aliens[i].cx - 200, aliens[i].cy - 100, aliens[i].shot_count);
+                aliens[i].shot_timer = 50;
                 aliens[i].shot_count = 5;
                 break;
             }
@@ -616,21 +666,26 @@ void spawn_enemy(float* new_x, float* new_y, int i)
         int side = between(0, 4);
         switch (side)
         {
-        case 0: //상
-            *new_x = between(10, BUFFER_W - 10);
-            *new_y = between(-40, -30);
-            break;
-        case 1: //하
-            *new_x = between(10, BUFFER_W - 10);
-            *new_y = between(BUFFER_H + 30, BUFFER_H + 60);
-            break;
-        case 2: //좌
-			*new_x = between(-40, -30);
-            *new_y = between(10, BUFFER_H - 10);
-            break;
+            //0330x
+		case 0: //상
+			/**new_x = between(10, BUFFER_W - 10);
+			*new_y = between(-40, -30);*/
+			*new_x = between(ship.cx - 640, ship.cx + 640);
+			*new_y = between(ship.cy - 360 - 30, ship.cy - 360);
+			break;
+		case 1: //하
+			//*new_x = between(10, BUFFER_W - 10);
+			//*new_y = between(BUFFER_H + 30, BUFFER_H + 60);
+			*new_x = between(ship.cx - 640, ship.cx + 640);
+			*new_y = between(ship.cy + 360, ship.cy + 360 + 30);
+			break;
+		case 2: //좌
+			*new_x = between(ship.cx - 640 - 40, ship.cx - 640);
+			*new_y = between(ship.cy - 360, ship.cy + 360);
+			break;
         case 3: //우
-            *new_x = between(BUFFER_W + 30, BUFFER_W + 60);
-            *new_y = between(10, BUFFER_H - 10);
+            *new_x = between(ship.cx + 640, ship.cx + 640 + 40);
+            *new_y = between(ship.cy - 360, ship.cy + 360);
             break;
         }
         spawn_dup_check = 1;
@@ -709,35 +764,54 @@ bool is_boss_alive()
      {
      case ALIEN_TYPE_METEOR:
          aliens[i].life = ALIEN_LIFE_METEOR * life_mul;
-         aliens[i].speed = 1.5f;
+         aliens[i].speed = 2.0f;
+         aliens[i].shot_count = ALIEN_SHOT_METEOR;
          break;
      case ALIEN_TYPE_FAST:
          aliens[i].life = ALIEN_LIFE_FAST * life_mul;
-         aliens[i].speed = 2.0f;
+         aliens[i].speed = 2.5f;
+         aliens[i].shot_count = ALIEN_SHOT_FAST;
          break;
      case ALIEN_TYPE_SHOOTER:
          aliens[i].life = ALIEN_LIFE_SHOOTER * life_mul;
-         aliens[i].speed = 0.9f;
+         aliens[i].speed = 2.0f;
+         aliens[i].shot_count = ALIEN_SHOT_SHOOTER;
          break;
      case ALIEN_TYPE_BOSS:
          aliens[i].life = ALIEN_LIFE_BOSS * life_mul;
-         aliens[i].speed = 0.9f;
+         //aliens[i].life = 10;
+         aliens[i].shot_count = ALIEN_SHOT_BOSS;
          break;
      }
  }
 // 작성자 : 박남현
 void aliens_move(int i, float speed)
 {
-    if (aliens[i].cx > ship.cx) aliens[i].x -= speed;
-    if (aliens[i].cx < ship.cx) aliens[i].x += speed;
-    if (aliens[i].cy > ship.cy) aliens[i].y -= speed;
-    if (aliens[i].cy < ship.cy) aliens[i].y += speed;
+    float dx = ship.cx - aliens[i].cx;
+    float dy = ship.cy - aliens[i].cy;
+
+	if (dx > (MAP_WIDTH / 2)) dx -= MAP_WIDTH;
+	else if (dx < -(MAP_WIDTH / 2)) dx += MAP_WIDTH;
+
+	if (dy > (MAP_HEIGHT / 2)) dy -= MAP_HEIGHT;
+	else if (dy < -(MAP_HEIGHT / 2)) dy += MAP_HEIGHT;
+
+    if (dx < 0) aliens[i].x -= speed;
+    if (dx > 0) aliens[i].x += speed;
+    if (dy < 0) aliens[i].y -= speed;
+    if (dy > 0) aliens[i].y += speed;
+
+	if (aliens[i].x < 0) aliens[i].x += MAP_WIDTH;
+	if (aliens[i].x > MAP_WIDTH) aliens[i].x -= MAP_WIDTH;
+	if (aliens[i].y < 0) aliens[i].y += MAP_HEIGHT;
+	if (aliens[i].y > MAP_HEIGHT) aliens[i].y -= MAP_HEIGHT;
 
     aliens[i].cx = aliens[i].x + (ALIEN_W[aliens[i].type] / 2.0f);
     aliens[i].cy = aliens[i].y + (ALIEN_H[aliens[i].type] / 2.0f);
 
 }
 
+//0330
 void aliens_draw()
 {
     for (int i = 0; i < ALIENS_N; i++)
@@ -749,23 +823,28 @@ void aliens_draw()
 
         float between_angle = atan2(ship.y - aliens[i].y, ship.x - aliens[i].x) + (ALLEGRO_PI / 2.0);
 
-        al_draw_scaled_rotated_bitmap(sprites.alien[aliens[i].type],
-            (float)ALIEN_W[aliens[i].type] / 2.0f, (float)ALIEN_H[aliens[i].type] / 2.0f,
-            aliens[i].cx, aliens[i].cy,
-            0.5, 0.5,
-            between_angle,
-            0);
+        aliens_single_draw(between_angle, i, aliens[i].cx, aliens[i].cy);
 
-        //al_draw_scaled_bitmap(sprites.alien[aliens[i].type],
-        //    0, 0,
-        //    101, 84,
-        //    aliens[i].x, aliens[i].y,
-        //    ALIEN_W[aliens[i].type], ALIEN_H[aliens[i].type],
-        //    0);
-        //al_draw_bitmap(sprites.alien[aliens[i].type], aliens[i].x, aliens[i].y, 0);
+        if(aliens[i].cx > MAP_WIDTH - 640)
+            aliens_single_draw(between_angle, i, aliens[i].cx - MAP_WIDTH, aliens[i].cy);
+        if(aliens[i].cx < 640)
+            aliens_single_draw(between_angle, i, aliens[i].cx + MAP_WIDTH, aliens[i].cy);
+        if (aliens[i].cy > MAP_HEIGHT - 640)
+            aliens_single_draw(between_angle, i, aliens[i].cx, aliens[i].cy - MAP_HEIGHT);
+        if (aliens[i].cy < 640)
+            aliens_single_draw(between_angle, i, aliens[i].cx, aliens[i].cy + MAP_HEIGHT);
     }
 }
-
+//0330
+void aliens_single_draw(float between_angle, int i, float cx, float cy)
+{
+    al_draw_scaled_rotated_bitmap(sprites.alien[aliens[i].type],
+        (float)ALIEN_W[aliens[i].type] / 2.0f, (float)ALIEN_H[aliens[i].type] / 2.0f,
+        cx, cy,
+        0.5, 0.5,
+        between_angle,
+        0);
+}
 void aliens_collide()
 {
     for (int i = 0; i < ALIENS_N; i++)
