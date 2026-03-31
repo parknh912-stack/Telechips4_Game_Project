@@ -125,6 +125,7 @@ void game_state_update(STATE* state, bool* done)
     {
     case STATE_MENU:
         menu_input_update(4);
+        rank_load();
         if (is_select_pressed)
         {
             if (current_menu_selection == 0)

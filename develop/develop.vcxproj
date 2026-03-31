@@ -138,6 +138,7 @@
     <None Include="explode2.flac" />
     <None Include="laserSmall_000.ogg" />
     <None Include="packages.config" />
+    <None Include="ranking.dat" />
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>

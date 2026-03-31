@@ -31,6 +31,9 @@
     <None Include="laserSmall_000.ogg">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="ranking.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="sheet.png">

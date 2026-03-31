@@ -320,9 +320,9 @@ void ship_init()
     ship.cy = ship.y + (SHIP_H / 2);
 
     ship.speed = 4.0f;          //이동속도, 수정가능
-    ship.fire_rate = 2.0f;      //초당 공격 횟수 (수정가능)
+    ship.fire_rate = 1.0f;      //초당 공격 횟수 (수정가능)
     ship.shot_timer = 60;       //shot_timer
-    ship.damage = 10;            //데미지, int   (수정가능)
+    ship.damage = 9;            //데미지, int   (수정가능)
     ship.shot_count = 1;        //투사체 수     (홀수개만)
     ship.max_lifes = 100;       //최대 체력
     ship.curr_lifes = 100;      //현재 체력

@@ -13,7 +13,7 @@ typedef struct SHOT
 } SHOT;
 
 #define SHOTS_N 512
-#define SHOTS_LIFETIME 600
+#define SHOTS_LIFETIME 360
 
 extern SHOT shots[SHOTS_N];
 void shots_init();
