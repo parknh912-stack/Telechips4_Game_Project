@@ -97,7 +97,7 @@ void hud_draw()
 
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, HUD_LIFE_BAR_X, HUD_LIFE_BAR_Y, 4*(HUD_LIFE_BAR_X + ship.max_lifes - 6), HUD_LIFE_BAR_Y, 0);
     al_draw_filled_rectangle(HUD_LIFE_BAR_X, HUD_LIFE_BAR_Y + 2, 4*(ship.curr_lifes), HUD_LIFE_BAR_Y + HUD_LIFE_WIDTH + 1, al_map_rgb(255, 0, 0));
-    al_draw_textf(font, COLOR_YELLOW, 4 * (HUD_LIFE_BAR_X + ship.max_lifes - 2), HUD_LIFE_BAR_Y*1.5, 0, "%.1f", (float)100* ship.curr_lifes / ship.max_lifes);
+    al_draw_textf(font, COLOR_YELLOW, 4 * (HUD_LIFE_BAR_X + ship.max_lifes - 2), HUD_LIFE_BAR_Y*1.5, 0, "%.1f%%", (float)100* ship.curr_lifes / ship.max_lifes);
     
     // 0330 신제현 - 보스 나타난다고 화면에 메시지 2초간 표시
     if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
