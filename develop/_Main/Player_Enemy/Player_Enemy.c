@@ -19,20 +19,20 @@ void shots_init()
         shots[i].used = false;
 }
 
-//ÀÛ¼ºÀÚ : ¹Ú³²Çö
+//ì‘ì„±ì : ë°•ë‚¨í˜„
 bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count)
 {
-    // °øÅë ¼¼ÆÃ
+    // ê³µí†µ ì„¸íŒ…
     float speed = is_ship ? 5.0f : 5.0f;
 
     float spread_gap = 0.2f;
     float target_x, target_y;
     bool has_target = false;
     bool has_shot_created_success = false;
-    //shotÀÌ ¾Æ±º°ÍÀÎÁö Àû±º°ÍÀÎÁö È®ÀÎ ÈÄ target ÁÂÇ¥ ¼³Á¤
+    //shotì´ ì•„êµ°ê²ƒì¸ì§€ ì êµ°ê²ƒì¸ì§€ í™•ì¸ í›„ target ì¢Œí‘œ ì„¤ì •
     if (is_ship)
     {
-        int target_idx = get_closet_enemy();    //°¡Àå °¡±î¿î ÀûÀ» Á¶ÁØÇÏ´Â ÇÔ¼ö ¹× ±â´É
+        int target_idx = get_closet_enemy();    //ê°€ì¥ ê°€ê¹Œìš´ ì ì„ ì¡°ì¤€í•˜ëŠ” í•¨ìˆ˜ ë° ê¸°ëŠ¥
         if (target_idx != -1)
         {
             target_x = aliens[target_idx].cx;
@@ -54,7 +54,7 @@ bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count)
 
     if (has_target)
     {
-        //sound ¼³Á¤
+        //sound ì„¤ì •
         al_play_sample(
             sample_shot,
             0.3,
@@ -114,8 +114,8 @@ bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy)
     return false;
 }
 
-// ÀÛ¼ºÀÚ : ¹Ú³²Çö
-/* --- °¡Àå °¡±î¿î Àû ½Äº° --- */
+// ì‘ì„±ì : ë°•ë‚¨í˜„
+/* --- ê°€ì¥ ê°€ê¹Œìš´ ì  ì‹ë³„ --- */
 int get_closet_enemy()
 {
     int target_idx = -1;
@@ -144,7 +144,7 @@ int get_closet_enemy()
     return target_idx;
 }
 
-//ÀÛ¼ºÀÚ : ¹Ú³²Çö
+//ì‘ì„±ì : ë°•ë‚¨í˜„
 void shots_update()
 {
     for (int i = 0; i < SHOTS_N; i++)
@@ -155,7 +155,7 @@ void shots_update()
 		shots[i].x += shots[i].dx;
 		shots[i].y += shots[i].dy;
 
-		// ¹«ÇÑ¸Ê ±¸ÇöÀ» À§ÇÏ¿©, »ç¶óÁö´Â°Å »èÁ¦
+		// ë¬´í•œë§µ êµ¬í˜„ì„ ìœ„í•˜ì—¬, ì‚¬ë¼ì§€ëŠ”ê±° ì‚­ì œ
 		if (shots[i].x > MAP_WIDTH)  shots[i].x = 0;
 		if (shots[i].x < 0)          shots[i].x = MAP_WIDTH;
 		if (shots[i].y > MAP_HEIGHT) shots[i].y = 0;
@@ -167,7 +167,7 @@ void shots_update()
     }
 }
 
-//ÀÛ¼ºÀÚ : ¹Ú³²Çö
+//ì‘ì„±ì : ë°•ë‚¨í˜„
 bool shots_collide(bool ship, float cx, float cy, float w, float h, int idx)
 {
     for (int i = 0; i < SHOTS_N; i++)
@@ -184,8 +184,8 @@ bool shots_collide(bool ship, float cx, float cy, float w, float h, int idx)
         {
             sw = ALIEN_SHOT_W;
             sh = ALIEN_SHOT_H;
-            // ÀÛ¼ºÀÚ : ¹Ú³²Çö
-            /* Àû -> ¾Æ±ºÀÎ °æ¿ì´Â ¿øÇü Ãæµ¹ */
+            // ì‘ì„±ì : ë°•ë‚¨í˜„
+            /* ì  -> ì•„êµ°ì¸ ê²½ìš°ëŠ” ì›í˜• ì¶©ëŒ */
             if (collide_circle(cx, cy, SHIP_R, shots[i].x, shots[i].y, ALIEN_SHOT_R))
             {
                 fx_add(true, shots[i].x + (sw / 2.0f), shots[i].y + (sh / 2.0f));
@@ -198,7 +198,7 @@ bool shots_collide(bool ship, float cx, float cy, float w, float h, int idx)
         {
 			sw = SHIP_SHOT_W;
 			sh = SHIP_SHOT_H;
-			/* ¾Æ±º -> ÀûÀÎ °æ¿ì´Â AABB Ãæµ¹ (Â÷ÈÄ ¿øÇü Ãæµ¹·Î ¹Ù²Ü ¿¹Á¤) */
+			/* ì•„êµ° -> ì ì¸ ê²½ìš°ëŠ” AABB ì¶©ëŒ (ì°¨í›„ ì›í˜• ì¶©ëŒë¡œ ë°”ê¿€ ì˜ˆì •) */
 			if (collide_circle(cx, cy, h, shots[i].x, shots[i].y, SHIP_SHOT_R))
             {
                 fx_add(true, shots[i].x + (sw / 2.0f), shots[i].y + (sh / 2.0f));
@@ -218,8 +218,8 @@ void shots_draw()
             continue;
 
         int frame_display = (shots[i].frame / 2) % 2;
-        // ÀÛ¼ºÀÚ : ¹Ú³²Çö
-        /*¼öÁ¤; ÃÑ¾Ë Å©±â ¼öÁ¤*/
+        // ì‘ì„±ì : ë°•ë‚¨í˜„
+        /*ìˆ˜ì •; ì´ì•Œ í¬ê¸° ìˆ˜ì •*/
         ALLEGRO_BITMAP* current_shot = sprites.ship_shot[frame_display];
         int sw = al_get_bitmap_width(current_shot);
         int sh = al_get_bitmap_height(current_shot);
@@ -270,8 +270,8 @@ void shots_draw()
                 ? al_map_rgb_f(1, 0, 0)
                 : al_map_rgb_f(0.9, 0, 0)
                 ;
-            // ÀÛ¼ºÀÚ : ¹Ú³²Çö
-            // ÀÛ°Ô ¹Ù²Ş
+            // ì‘ì„±ì : ë°•ë‚¨í˜„
+            // ì‘ê²Œ ë°”ê¿ˆ
             al_draw_tinted_scaled_bitmap(sprites.alien_shot, tint,
                 0, 0, 41, 41,
                 shots[i].x, shots[i].y,
@@ -310,7 +310,7 @@ void shots_draw()
 
 SHIP ship;
 
-// ÀÛ¼ºÀÚ : ¹Ú³²Çö
+// ì‘ì„±ì : ë°•ë‚¨í˜„
 void ship_init()
 {
     //0330
@@ -319,16 +319,16 @@ void ship_init()
     ship.cx = ship.x + (SHIP_W / 2);
     ship.cy = ship.y + (SHIP_H / 2);
 
-    ship.speed = 4.0f;          //ÀÌµ¿¼Óµµ, ¼öÁ¤°¡´É
-    ship.fire_rate = 4.0f;      //ÃÊ´ç °ø°İ È½¼ö (¼öÁ¤°¡´É)
+    ship.speed = 4.0f;          //ì´ë™ì†ë„, ìˆ˜ì •ê°€ëŠ¥
+    ship.fire_rate = 2.0f;      //ì´ˆë‹¹ ê³µê²© íšŸìˆ˜ (ìˆ˜ì •ê°€ëŠ¥)
     ship.shot_timer = 60;       //shot_timer
-    ship.damage = 10;            //µ¥¹ÌÁö, int   (¼öÁ¤°¡´É)
-    ship.shot_count = 1;        //Åõ»çÃ¼ ¼ö     (È¦¼ö°³¸¸)
-    ship.max_lifes = 100;       //ÃÖ´ë Ã¼·Â
-    ship.curr_lifes = 100;      //ÇöÀç Ã¼·Â
-    ship.barrier = false;       //¹è¸®¾î ¿©ºÎ
+    ship.damage = 10;            //ë°ë¯¸ì§€, int   (ìˆ˜ì •ê°€ëŠ¥)
+    ship.shot_count = 1;        //íˆ¬ì‚¬ì²´ ìˆ˜     (í™€ìˆ˜ê°œë§Œ)
+    ship.max_lifes = 100;       //ìµœëŒ€ ì²´ë ¥
+    ship.curr_lifes = 100;      //í˜„ì¬ ì²´ë ¥
+    ship.barrier = false;       //ë°°ë¦¬ì–´ ì—¬ë¶€
 
-    ship.invincible_timer = 3;  //¹«Àû½Ã°£
+    ship.invincible_timer = 3;  //ë¬´ì ì‹œê°„
 }
 
 void ship_update()
@@ -361,13 +361,13 @@ void ship_update()
 	//    ship.y = SHIP_MAX_Y;
 
     //0330
-    // °¡·Î ÁÂÇ¥ ¿öÇÁ
+    // ê°€ë¡œ ì¢Œí‘œ ì›Œí”„
     if (ship.x < 0)
         ship.x = MAP_WIDTH;
     else if (ship.x > MAP_WIDTH)
         ship.x = 0;
 
-    // ¼¼·Î ÁÂÇ¥ ¿öÇÁ
+    // ì„¸ë¡œ ì¢Œí‘œ ì›Œí”„
     if (ship.y < 0)
         ship.y = MAP_HEIGHT;
     else if (ship.y > MAP_HEIGHT)
@@ -399,7 +399,7 @@ void ship_update()
             }
         }
 
-        /* Àû°ú Á÷Á¢ Ãæµ¹ ½Ã¿¡µµ */
+        /* ì ê³¼ ì§ì ‘ ì¶©ëŒ ì‹œì—ë„ */
         if (ship_collide(ship.cx, ship.cy))
         {
             //fx_add(false, ship.cx, ship.cy);
@@ -421,8 +421,8 @@ void ship_update()
 
 
 
-    // ÀÛ¼ºÀÚ : ¹Ú³²Çö
-    // ÀÏÁ¤ ½Ã°£¸¶´Ù ÀÚµ¿ °ø°İ
+    // ì‘ì„±ì : ë°•ë‚¨í˜„
+    // ì¼ì • ì‹œê°„ë§ˆë‹¤ ìë™ ê³µê²©
     if (ship.shot_timer)
         ship.shot_timer--;
     if (ship.shot_timer <= 0) {
@@ -439,8 +439,8 @@ void ship_draw()
         return;
     if (((ship.invincible_timer / 2) % 3) == 1)
         return;
-    // ÀÛ¼ºÀÚ : ¹Ú³²Çö
-    // Å©±â ´Ù¸£°Ô ¹Ù²Ş
+    // ì‘ì„±ì : ë°•ë‚¨í˜„
+    // í¬ê¸° ë‹¤ë¥´ê²Œ ë°”ê¿ˆ
     if (ship.barrier) {
         al_draw_scaled_bitmap(sprites.barrier,
             0, 0,
@@ -458,11 +458,11 @@ void ship_draw()
     //    0);
 
     al_draw_scaled_bitmap(sprites.ship,
-        0, 0,                                // ¿øº» ÀÌ¹ÌÁö ½ÃÀÛÁ¡
-        91, 91,                              // ¿øº» ÀÌ¹ÌÁö Å©±â
-        (BUFFER_W / 2) - (SHIP_W / 2),           // [¼öÁ¤] È­¸é °¡·Î Áß¾Ó
-        (BUFFER_H / 2) - (SHIP_H / 2),            // [¼öÁ¤] È­¸é ¼¼·Î Áß¾Ó
-        SHIP_W, SHIP_H,                      // È­¸é¿¡ ±×·ÁÁú Å©±â
+        0, 0,                                // ì›ë³¸ ì´ë¯¸ì§€ ì‹œì‘ì 
+        91, 91,                              // ì›ë³¸ ì´ë¯¸ì§€ í¬ê¸°
+        (BUFFER_W / 2) - (SHIP_W / 2),           // [ìˆ˜ì •] í™”ë©´ ê°€ë¡œ ì¤‘ì•™
+        (BUFFER_H / 2) - (SHIP_H / 2),            // [ìˆ˜ì •] í™”ë©´ ì„¸ë¡œ ì¤‘ì•™
+        SHIP_W, SHIP_H,                      // í™”ë©´ì— ê·¸ë ¤ì§ˆ í¬ê¸°
         0);
     //al_draw_bitmap(sprites.ship, ship.x, ship.y, 0);
 }
@@ -481,8 +481,8 @@ bool ship_collide(int cx, int cy)
 /* --- Enemy --- */
 
 ALIEN aliens[ALIENS_N];
-// ÀÛ¼ºÀÚ : ¹Ú³²Çö
-/* Å¸ÀÔº° Ã¼·Â ¹× ¼Óµµ °íÁ¤ */
+// ì‘ì„±ì : ë°•ë‚¨í˜„
+/* íƒ€ì…ë³„ ì²´ë ¥ ë° ì†ë„ ê³ ì • */
 
 void aliens_init()
 {
@@ -490,7 +490,7 @@ void aliens_init()
         aliens[i].used = false;
 }
 
-//0329 ¹Ú³²Çö - stage °ü·Ã ±â´É ¾÷µ¥ÀÌÆ®
+//0329 ë°•ë‚¨í˜„ - stage ê´€ë ¨ ê¸°ëŠ¥ ì—…ë°ì´íŠ¸
 void aliens_update()
 {
     int spawn_frames = (int)(60 * CURR_STAGE->spawn_interval);
@@ -501,8 +501,8 @@ void aliens_update()
         if (aliens[i].used) curr_alive_alien++;
     }
 
-    // ÀÛ¼ºÀÚ : Ãµ¿ø¼® & ¹Ú³²Çö
-    /* --- Àû »ı¼º ¹× ÃÊ±âÈ­ --- */
+    // ì‘ì„±ì : ì²œì›ì„ & ë°•ë‚¨í˜„
+    /* --- ì  ìƒì„± ë° ì´ˆê¸°í™” --- */
     for (int i = 0; i < ALIENS_N; i++)
     {
         if (!aliens[i].used)
@@ -533,8 +533,8 @@ void aliens_update()
         }
 
 
-        // ÀÛ¼ºÀÚ : Ãµ¿ø¼®
-        // Àû-> Ä³¸¯ÅÍ ¹æÇâÀ¸·Î ¿òÁ÷ÀÓ
+        // ì‘ì„±ì : ì²œì›ì„
+        // ì -> ìºë¦­í„° ë°©í–¥ìœ¼ë¡œ ì›€ì§ì„
         switch (aliens[i].type)
         {
         case ALIEN_TYPE_METEOR:
@@ -555,17 +555,17 @@ void aliens_update()
         }
 
         //0330
-        /* ¸Ê ¹üÀ§ ¹ÛÀ¸·Î ³ª°¥ ½Ã, ¹İ´ëÆíÀ¸·Î ¿öÇÁ (¹«ÇÑ ¸Ê ·çÇÁ) */
+        /* ë§µ ë²”ìœ„ ë°–ìœ¼ë¡œ ë‚˜ê°ˆ ì‹œ, ë°˜ëŒ€í¸ìœ¼ë¡œ ì›Œí”„ (ë¬´í•œ ë§µ ë£¨í”„) */
         if (aliens[i].x > MAP_WIDTH)  aliens[i].x = 0;
         if (aliens[i].x < 0)          aliens[i].x = MAP_WIDTH;
         if (aliens[i].y > MAP_HEIGHT) aliens[i].y = 0;
         if (aliens[i].y < 0)          aliens[i].y = MAP_HEIGHT;
 
 
-        ///* ¿ìÁÖ¼±°ú ³Ê¹« ¸Ö¾îÁö¸é »èÁ¦ (¿¹: 2000 ÇÈ¼¿ ÀÌ»ó) */
+        ///* ìš°ì£¼ì„ ê³¼ ë„ˆë¬´ ë©€ì–´ì§€ë©´ ì‚­ì œ (ì˜ˆ: 2000 í”½ì…€ ì´ìƒ) */
         //float dx = aliens[i].x - ship.x;
         //float dy = aliens[i].y - ship.y;
-        //float distance_sq = dx * dx + dy * dy; // ·çÆ® °è»êº¸´Ù Á¦°ö ºñ±³°¡ ºü¸¨´Ï´Ù.
+        //float distance_sq = dx * dx + dy * dy; // ë£¨íŠ¸ ê³„ì‚°ë³´ë‹¤ ì œê³± ë¹„êµê°€ ë¹ ë¦…ë‹ˆë‹¤.
 
         //if (distance_sq > 2000 * 2000)
         //{
@@ -612,7 +612,7 @@ void aliens_update()
             }
 
             aliens[i].used = false;
-            //0327 ¹Ú³²Çö - ¾ÆÀÌÅÛ µå¶ø
+            //0327 ë°•ë‚¨í˜„ - ì•„ì´í…œ ë“œë
             item_add(aliens[i].cx, aliens[i].cy, aliens[i].type);
             continue;
         }
@@ -622,7 +622,7 @@ void aliens_update()
         {
             switch (aliens[i].type)
             {
-            case ALIEN_TYPE_METEOR:    //¸ŞÅ×¿À´Â ÃÑÀ» ½îÁö ¾Ê´Â´Ù.
+            case ALIEN_TYPE_METEOR:    //ë©”í…Œì˜¤ëŠ” ì´ì„ ì˜ì§€ ì•ŠëŠ”ë‹¤.
                 break;
             case ALIEN_TYPE_FAST:
                 shots_add(false, true, aliens[i].cx, aliens[i].cy, aliens[i].shot_count);
@@ -646,7 +646,7 @@ void aliens_update()
     aliens_collide();
 }
 
-//0329 ¹Ú³²Çö
+//0329 ë°•ë‚¨í˜„
 void spawn_enemy(float* new_x, float* new_y, int i)
 {
     int spawn_dup_check = 0;
@@ -656,23 +656,23 @@ void spawn_enemy(float* new_x, float* new_y, int i)
         switch (side)
         {
             //0330x
-		case 0: //»ó
+		case 0: //ìƒ
 			/**new_x = between(10, BUFFER_W - 10);
 			*new_y = between(-40, -30);*/
 			*new_x = between(ship.cx - 640, ship.cx + 640);
 			*new_y = between(ship.cy - 360 - 30, ship.cy - 360);
 			break;
-		case 1: //ÇÏ
+		case 1: //í•˜
 			//*new_x = between(10, BUFFER_W - 10);
 			//*new_y = between(BUFFER_H + 30, BUFFER_H + 60);
 			*new_x = between(ship.cx - 640, ship.cx + 640);
 			*new_y = between(ship.cy + 360, ship.cy + 360 + 30);
 			break;
-		case 2: //ÁÂ
+		case 2: //ì¢Œ
 			*new_x = between(ship.cx - 640 - 40, ship.cx - 640);
 			*new_y = between(ship.cy - 360, ship.cy + 360);
 			break;
-        case 3: //¿ì
+        case 3: //ìš°
             *new_x = between(ship.cx + 640, ship.cx + 640 + 40);
             *new_y = between(ship.cy - 360, ship.cy + 360);
             break;
@@ -693,7 +693,7 @@ void spawn_enemy(float* new_x, float* new_y, int i)
     }
 }
 
-//0329 ¹Ú³²Çö
+//0329 ë°•ë‚¨í˜„
 void spawn_boss()
 {
     for (int i = 0; i < ALIENS_N; ++i)
@@ -719,7 +719,7 @@ void spawn_boss()
         }
     }
 }
-//0329 ¹Ú³²Çö
+//0329 ë°•ë‚¨í˜„
 bool is_boss_alive()
 {
     for (int i = 0; i < ALIENS_N; ++i)
@@ -729,7 +729,7 @@ bool is_boss_alive()
     }
     return false;
 }
-//0329 ¹Ú³²Çö
+//0329 ë°•ë‚¨í˜„
  int decide_enemy_type()
 {
     int rand_num = between(0, 100);
@@ -773,7 +773,7 @@ bool is_boss_alive()
          break;
      }
  }
-// ÀÛ¼ºÀÚ : ¹Ú³²Çö
+// ì‘ì„±ì : ë°•ë‚¨í˜„
 void aliens_move(int i, float speed)
 {
     float dx = ship.cx - aliens[i].cx;
@@ -853,9 +853,9 @@ void aliens_collide()
                 float dy = aliens[i].cy - aliens[j].cy;
                 float dist = sqrtf(dx * dx + dy * dy);
 
-                // µÎ ÀûÀÌ ¿ÏÀüÈ÷ °ãÃÄ¼­ °Å¸®°¡ 0ÀÎ °æ¿ì ¿¹¿Ü Ã³¸® (³ª´©±â 0 ¹æÁö)
+                // ë‘ ì ì´ ì™„ì „íˆ ê²¹ì³ì„œ ê±°ë¦¬ê°€ 0ì¸ ê²½ìš° ì˜ˆì™¸ ì²˜ë¦¬ (ë‚˜ëˆ„ê¸° 0 ë°©ì§€)
                 if (dist == 0) {
-                    aliens[i].x += 1; // °­Á¦·Î »ìÂ¦ ¶³¾î¶ß¸²
+                    aliens[i].x += 1; // ê°•ì œë¡œ ì‚´ì§ ë–¨ì–´ëœ¨ë¦¼
                     continue;
                 }
                 float overlap = (r_i + r_j) - dist;
@@ -880,17 +880,17 @@ void aliens_collide()
     }
 }
 
-//0330 Ãµ¿ø¼®, º¸½º ±â¹Í Ãß°¡
+//0330 ì²œì›ì„, ë³´ìŠ¤ ê¸°ë¯¹ ì¶”ê°€
 void boss_dash()
 {
 	for (int i = 0; i < ALIENS_N; ++i)
 	{
-		// Å¸ÀÔÀÌ º¸½ºÀÏ ¶§¸¸
+		// íƒ€ì…ì´ ë³´ìŠ¤ì¼ ë•Œë§Œ
 		if (aliens[i].used && aliens[i].type == ALIEN_TYPE_BOSS)
 		{
-			// ÄğÅ¸ÀÓ 5ÃÊ
+			// ì¿¨íƒ€ì„ 5ì´ˆ
 			static int dash_cooldown = 300;
-			// µ¹Áø ½Ã°£
+			// ëŒì§„ ì‹œê°„
 			static int dash_duration = 0;
 			static float original_speed = 1.0f;
 
@@ -903,7 +903,7 @@ void boss_dash()
 					dash_cooldown = between(120, 300);
 				}
 			}
-			// ÄğÅ¸ÀÓ µ¹¶§
+			// ì¿¨íƒ€ì„ ëŒë•Œ
 			else if (dash_cooldown > 0)
 			{
 				dash_cooldown--;
