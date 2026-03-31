@@ -20,16 +20,16 @@
 
 ## 🛠️ 개발 환경 및 협업 툴
 * **Language:** C (Low-level memory & pointer implementation)
-* **Library:** Allegro 5
-* **IDE:** Microsoft Visual Studio (MSVS)
+* **Library:** Allegro 5.2.11.3
+* **IDE:** Microsoft Visual Studio (MSVC)
 * **Version Control:** Git / GitHub (LFS 적용)
 * **Communication & Docs:** Mattermost, Notion
 
 ## 👨‍💻 팀 구성 (4인 프로젝트)
-* **Project Manager (PM):** 프로젝트 총괄 및 메인 시스템 개발
-* **Team Member 1:** (역할을 적어주세요)
-* **Team Member 2:** (역할을 적어주세요)
-* **Team Member 3:** (역할을 적어주세요)
+* **Project Manager (PM): 박남현 (Player & Enemy & Item & 코드 병합)**
+* **Team Member 1: 김병헌** (UI, RANK, CORE 개발)
+* **Team Member 2: 신제현** (UI, CORE, Staga)
+* **Team Member 3: 천원석** (Asset, Boss, Spawn)
 
 ## 🚀 빌드 및 실행 방법
 1. 본 저장소를 클론합니다.
