@@ -82,7 +82,7 @@ void stage_update()
 		{
 			audio_stop_bgm();
 			score += 18000 - frames;
-			current_state = STATE_ENDING;
+			current_state = STATE_ENDING_SCENE;
 		}
 	}
 	stage_frames++;
