@@ -34,4 +34,4 @@
 ## 🚀 빌드 및 실행 방법
 1. 본 저장소를 클론합니다.
    ```bash
-   git clone [https://github.com/parknh912-stack/Telechips4_Game_Project.git](https://github.com/parknh912-stack/Telechips4_Game_Project.git)
+   git clone https://github.com/parknh912-stack/Telechips4_Game_Project.git
