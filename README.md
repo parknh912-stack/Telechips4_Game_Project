@@ -11,7 +11,7 @@
 ## 📚 API 문서
 프로젝트의 구조, 클래스 및 함수 명세는 아래의 API 문서에서 확인할 수 있습니다.
 
-👉 **[Space Survivor API Document 보러가기](https://htmlpreview.github.io/?https://github.com/parknh912-stack/Telechips4_Game_Project/blob/0331_REAL_FINAL/API%20Document.html)**
+**[Space Survivor API Document 보러가기](https://htmlpreview.github.io/?https://github.com/parknh912-stack/Telechips4_Game_Project/blob/0331_REAL_FINAL/API%20Document.html)**
 
 ## ✨ 주요 구현 기능
 * **정교한 충돌 처리:** 플레이어와 적, 발사체 간의 매끄러운 충돌 판정 (Collision System)
