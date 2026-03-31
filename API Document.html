@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPACE SURVIVOR — API Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Green & Cyan Theme Colors */
+  --bg-deep:       #050806;
+  --bg-sidebar:    #0a120e;
+  --bg-panel:      #0d1a15;
+  --bg-panel-hover:#12261e;
+  --border-color:  #163329;
+  --accent-cyan:   #18ffff;
+  --accent-green:  #00e676;
+  --text-main:     #d4f0e5;
+  --text-muted:    #5a8071;
+  --code-bg:       #030806;
+  
+  --glow-cyan:     rgba(24, 255, 255, 0.2);
+  --glow-green:    rgba(0, 230, 118, 0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  background-image: 
+    radial-gradient(circle at 80% 20%, var(--glow-green) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, var(--glow-cyan) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: 
+    linear-gradient(var(--border-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: -1;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #234d3d; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+
+/* =========================================
+   KEYWORD HIGHLIGHTING (본문 텍스트용)
+   ========================================= */
+.kw-ship   { color: #69f0ae; font-weight: 700; text-shadow: 0 0 5px rgba(105,240,174,0.3); }
+.kw-player { color: #18ffff; font-weight: 700; text-shadow: 0 0 5px rgba(24,255,255,0.3); }
+.kw-enemy  { color: #ff5252; font-weight: 700; text-shadow: 0 0 5px rgba(255,82,82,0.3); }
+
+/* =========================================
+   FUNCTION NAME COLOR HIGHLIGHTING (함수명 전용)
+   ========================================= */
+.color-ship  { color: #80d8ff !important; text-shadow: 0 0 8px rgba(128, 216, 255, 0.4); }
+.color-shot  { color: #ffffff !important; text-shadow: 0 0 8px rgba(255, 255, 255, 0.4); }
+.color-alien { color: #ff8a80 !important; text-shadow: 0 0 8px rgba(255, 138, 128, 0.4); }
+
+/* =========================================
+   LEFT SIDEBAR (Navigation)
+   ========================================= */
+aside {
+  width: 320px;
+  flex-shrink: 0;
+  background: rgba(10, 18, 14, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  box-shadow: 5px 0 30px rgba(0,0,0,0.5);
+  transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+body.sidebar-closed aside { width: 76px; }
+
+.sidebar-top {
+  display: flex; align-items: center; padding: 24px 18px; gap: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hamburger-btn {
+  background: transparent; border: none; color: var(--text-muted);
+  width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s;
+}
+.hamburger-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--accent-cyan); }
+.hamburger-btn svg { width: 24px; height: 24px; fill: currentColor; }
+
+.brand-info { cursor: pointer; opacity: 1; transition: opacity 0.2s, transform 0.2s; }
+.brand-info:hover { transform: scale(1.02); }
+body.sidebar-closed .brand-info { opacity: 0; pointer-events: none; }
+
+.brand-title {
+  font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
+  color: #fff; text-transform: uppercase; text-shadow: 0 0 10px var(--glow-cyan);
+}
+.brand-subtitle {
+  font-family: 'Fira Code', monospace; color: var(--accent-green);
+  font-size: 11px; letter-spacing: 0.1em; margin-top: 5px;
+}
+
+.search-wrap {
+  margin: 20px 18px 10px; position: relative; height: 40px;
+  display: flex; align-items: center; border-radius: 6px; transition: background 0.2s;
+}
+body.sidebar-closed .search-wrap { cursor: pointer; }
+body.sidebar-closed .search-wrap:hover { background: rgba(255, 255, 255, 0.05); }
+
+.search-icon {
+  position: absolute; left: 0; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 18px; z-index: 2; pointer-events: none; transition: color 0.2s;
+}
+body.sidebar-closed .search-icon { color: var(--text-main); }
+body.sidebar-closed .search-wrap:hover .search-icon { color: var(--accent-cyan); }
+
+.search-wrap input {
+  width: 100%; height: 100%; background: var(--bg-panel); border: 1px solid var(--border-color);
+  padding: 0 14px 0 40px; border-radius: 6px; color: #fff;
+  font-family: 'Fira Code', monospace; font-size: 13px; outline: none; transition: opacity 0.3s, border-color 0.2s, box-shadow 0.2s;
+}
+.search-wrap input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px var(--glow-cyan); }
+body.sidebar-closed .search-wrap input { opacity: 0; pointer-events: none; }
+
+.nav-list { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 10px 0 30px; }
+.nav-category { margin-bottom: 15px; }
+
+.nav-category-title { display: flex; align-items: center; padding: 10px 18px; gap: 16px; cursor: pointer; transition: background 0.2s; }
+.nav-category-title:hover { background: rgba(255, 255, 255, 0.02); }
+
+.cat-icon {
+  font-size: 22px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; transition: border-color 0.3s, box-shadow 0.3s;
+}
+body.sidebar-closed .nav-category-title:hover .cat-icon { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(24, 255, 255, 0.2); }
+
+.cat-text { font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; transition: opacity 0.2s; }
+body.sidebar-closed .cat-text { opacity: 0; }
+
+.nav-item {
+  display: flex; align-items: center; padding-left: 74px; height: 36px;
+  color: #8cbaaa; font-family: 'Fira Code', monospace; font-size: 13px; cursor: pointer; transition: all 0.2s; position: relative;
+}
+body.sidebar-closed .nav-item { opacity: 0; height: 0; padding: 0; pointer-events: none; }
+
+.nav-item::before {
+  content: ''; position: absolute; left: 56px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px;
+  background: var(--text-muted); border-radius: 50%; transition: all 0.2s;
+}
+.nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+.nav-item:hover::before { background: var(--accent-green); box-shadow: 0 0 5px var(--accent-green); }
+.nav-item.active { background: rgba(24, 255, 255, 0.1); color: var(--accent-cyan) !important; font-weight: 600; text-shadow: 0 0 8px var(--accent-cyan); }
+.nav-item.active::before { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
+
+
+/* =========================================
+   RIGHT MAIN CONTENT
+   ========================================= */
+main { flex: 1; overflow-y: auto; position: relative; }
+
+.btn-back {
+  position: absolute; top: -40px; left: 0; background: transparent; border: none;
+  color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 13px;
+  cursor: pointer; display: flex; align-items: center; gap: 5px; transition: color 0.2s;
+}
+.btn-back:hover { color: var(--accent-cyan); }
+
+/* ── 1. HOME VIEW ── */
+#homeView { padding: 60px 40px 100px; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; animation: fadeIn 0.4s ease forwards; }
+
+header.hero { text-align: center; margin-bottom: 60px; }
+.title-glitch { font-family: 'Orbitron', sans-serif; font-size: clamp(50px, 6vw, 90px); font-weight: 900; color: #fff; letter-spacing: 0.05em; text-shadow: 0 0 20px var(--glow-green), 0 0 40px var(--glow-cyan); margin-bottom: 15px; }
+.hero-subtitle { font-family: 'Fira Code', monospace; color: var(--accent-green); font-size: 16px; letter-spacing: 0.15em; }
+
+.module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+.module-card {
+  background: rgba(13, 26, 21, 0.8); backdrop-filter: blur(5px); border: 1px solid var(--border-color); border-radius: 12px;
+  padding: 30px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden;
+}
+.module-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); opacity: 0; transition: opacity 0.3s; }
+.module-card:hover { transform: translateY(-5px); border-color: rgba(0, 230, 118, 0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.6); background: var(--bg-panel-hover); }
+.module-card:hover::before { opacity: 1; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.card-icon { font-size: 36px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
+.card-count { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--accent-cyan); background: rgba(24, 255, 255, 0.1); padding: 4px 10px; border-radius: 20px; }
+.card-title { font-family: 'Orbitron', sans-serif; font-size: 20px; color: #fff; margin-bottom: 10px; }
+.card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+/* ── 2. MODULE VIEW ── */
+#moduleView { padding: 60px 50px 100px; max-width: 1000px; margin: 0 auto; display: none; animation: fadeIn 0.4s ease forwards; }
+.mod-header-wrap { margin-bottom: 40px; position: relative; }
+.mod-title { font-family: 'Orbitron', sans-serif; font-size: 36px; color: var(--accent-cyan); text-shadow: 0 0 20px rgba(24, 255, 255, 0.3); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+.mod-desc { font-size: 16px; color: #c9d1d9; line-height: 1.6; }
+
+.fn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
+.fn-card {
+  background: rgba(13, 26, 21, 0.6); border: 1px solid var(--border-color); border-radius: 10px;
+  padding: 24px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column;
+}
+.fn-card:hover { background: var(--bg-panel-hover); border-color: var(--accent-green); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0, 230, 118, 0.15); }
+.fn-card-name { font-family: 'Fira Code', monospace; font-size: 18px; color: #fff; margin-bottom: 10px; transition: color 0.2s; }
+.fn-card-name::before { content: 'ƒ'; color: var(--accent-green); margin-right: 8px; font-style: italic; }
+.fn-card-brief { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── 3. DETAIL VIEW ── */
+#detailView { padding: 60px 50px 100px; max-width: 1000px; margin: 0 auto; display: none; animation: fadeIn 0.4s ease forwards; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.doc-header { margin-bottom: 40px; position: relative; }
+.doc-category-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px;
+  background: rgba(0, 230, 118, 0.15); border: 1px solid rgba(0, 230, 118, 0.4); color: #69f0ae;
+  font-family: 'Orbitron', sans-serif; font-size: 12px; border-radius: 20px; margin-bottom: 15px;
+}
+.doc-title { font-family: 'Fira Code', monospace; font-size: 40px; color: var(--accent-cyan); text-shadow: 0 0 20px rgba(24, 255, 255, 0.3); margin-bottom: 15px; word-break: break-all; }
+.doc-brief { font-size: 18px; color: #fff; font-weight: 400; line-height: 1.6; }
+
+.doc-section {
+  margin-bottom: 35px; background: rgba(13, 26, 21, 0.6); border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+.section-label {
+  font-family: 'Orbitron', sans-serif; font-size: 15px; color: var(--text-muted); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.section-label::before { content: ''; display: block; width: 6px; height: 16px; background: var(--accent-green); border-radius: 3px; }
+
+.doc-desc { font-size: 16px; line-height: 1.8; color: #c9d1d9; }
+
+.code-block {
+  background: var(--code-bg); border: 1px solid #163329; padding: 20px; border-radius: 8px;
+  font-family: 'Fira Code', monospace; font-size: 15px; color: #a5d6ff; overflow-x: auto; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre;
+}
+.code-type { color: #ff7b72; }
+.code-func { color: #79c0ff; font-weight: 600; }
+.code-paren { color: #d2a8ff; }
+
+.param-table { width: 100%; border-collapse: collapse; }
+.param-table th { text-align: left; padding: 12px 15px; font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid #163329; }
+.param-table td { padding: 16px 15px; border-bottom: 1px solid rgba(22, 51, 41, 0.5); vertical-align: top; }
+.param-table tr:last-child td { border-bottom: none; }
+.p-name { color: var(--accent-cyan); font-family: 'Fira Code', monospace; font-size: 14px; }
+.p-type { color: #69f0ae; font-family: 'Fira Code', monospace; font-size: 13px; background: rgba(0, 230, 118, 0.1); padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+.p-desc { font-size: 15px; line-height: 1.6; color: var(--text-main); margin-top: 5px;}
+
+.return-value {
+  display: inline-block; font-family: 'Fira Code', monospace; font-size: 16px; color: #fff;
+  background: rgba(24, 255, 255, 0.1); border-left: 4px solid var(--accent-cyan); padding: 12px 20px; border-radius: 0 6px 6px 0;
+}
+
+/* ── PREV / NEXT NAVIGATION BUTTONS ── */
+.doc-nav { display: flex; justify-content: space-between; margin-top: 50px; padding-top: 30px; border-top: 1px dashed var(--border-color); }
+.nav-fn-btn {
+  background: rgba(13, 26, 21, 0.6); border: 1px solid var(--border-color); padding: 15px 25px; border-radius: 8px;
+  cursor: pointer; display: flex; align-items: center; gap: 15px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); width: 48%; text-decoration: none;
+}
+.nav-fn-btn:hover { background: var(--bg-panel-hover); border-color: var(--accent-cyan); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(24, 255, 255, 0.15); }
+.nav-fn-btn.hidden { visibility: hidden; }
+.nav-arrow { font-size: 24px; color: var(--accent-green); transition: transform 0.3s, color 0.3s; }
+.nav-fn-btn:hover .nav-arrow { color: var(--accent-cyan); }
+.nav-fn-btn.prev:hover .nav-arrow { transform: translateX(-5px); }
+.nav-fn-btn.next:hover .nav-arrow { transform: translateX(5px); }
+
+.nav-fn-texts { display: flex; flex-direction: column; flex: 1; }
+.nav-fn-label { font-family: 'Orbitron', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; color: var(--text-muted); }
+.nav-fn-name { font-family: 'Fira Code', monospace; font-size: 15px; color: var(--text-main); transition: color 0.2s; }
+.nav-fn-btn:hover .nav-fn-name { color: var(--accent-cyan) !important; text-shadow: none; }
+.nav-fn-btn.prev .nav-fn-texts { text-align: right; }
+.nav-fn-btn.next .nav-fn-texts { text-align: left; }
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="sidebar-top">
+    <button class="hamburger-btn" id="sidebarToggle" title="Toggle Sidebar">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+      </svg>
+    </button>
+    <div class="brand-info" onclick="showHome()">
+      <div class="brand-title">SURVIVOR</div>
+      <div class="brand-subtitle">API Reference</div>
+    </div>
+  </div>
+  
+  <div class="search-wrap" id="searchWrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="searchInput" placeholder="Search functions..." autocomplete="off">
+  </div>
+
+  <div class="nav-list" id="navList"></div>
+</aside>
+
+<main id="mainArea">
+  
+  <div id="homeView">
+    <header class="hero">
+      <div class="title-glitch">SPACE SURVIVOR</div>
+      <div class="hero-subtitle">Telechips4_Game_Project · C API Reference</div>
+    </header>
+    <div class="module-grid" id="moduleGrid"></div>
+  </div>
+
+  <div id="moduleView">
+    <div class="mod-header-wrap">
+      <button class="btn-back" onclick="showHome()">← Back to Home</button>
+      <div class="mod-title" id="modTitle">Module Name</div>
+      <div class="mod-desc" id="modDesc">모듈 설명</div>
+    </div>
+    <div class="fn-grid" id="modFnGrid"></div>
+  </div>
+
+  <div id="detailView">
+    <div class="doc-header">
+      <button class="btn-back" onclick="goBackToModule()">← Back to Module</button>
+      <div class="doc-category-badge" id="docCategory">Module Name</div>
+      <div class="doc-title" id="docTitle">function_name()</div>
+      <div class="doc-brief" id="docBrief" class="content-text">요약 설명</div>
+    </div>
+
+    <div class="doc-section">
+      <div class="section-label">Signature</div>
+      <div class="code-block" id="docSignature"></div>
+    </div>
+
+    <div class="doc-section">
+      <div class="section-label">Description</div>
+      <div class="doc-desc content-text" id="docDesc">상세 설명</div>
+    </div>
+
+    <div class="doc-section" id="paramSection">
+      <div class="section-label">Parameters</div>
+      <table class="param-table">
+        <thead><tr><th style="width: 30%">Argument</th><th>Description</th></tr></thead>
+        <tbody id="docParams" class="content-text"></tbody>
+      </table>
+    </div>
+
+    <div class="doc-section">
+      <div class="section-label">Returns</div>
+      <div class="return-value" id="docReturn">void</div>
+    </div>
+    
+    <div class="doc-section" id="exampleSection">
+      <div class="section-label">Example</div>
+      <div class="code-block content-text" id="docExample"></div>
+    </div>
+
+    <div class="doc-nav">
+      <div class="nav-fn-btn prev" id="btnPrevFn" onclick="goPrevFn()">
+        <span class="nav-arrow">←</span>
+        <div class="nav-fn-texts">
+          <span class="nav-fn-label">Previous Function</span>
+          <span class="nav-fn-name" id="prevFnName">prev_func()</span>
+        </div>
+      </div>
+      <div class="nav-fn-btn next" id="btnNextFn" onclick="goNextFn()">
+        <div class="nav-fn-texts">
+          <span class="nav-fn-label">Next Function</span>
+          <span class="nav-fn-name" id="nextFnName">next_func()</span>
+        </div>
+        <span class="nav-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ─────────────────────────────────────────────
+//  FUNCTION NAME COLOR HELPER
+// ─────────────────────────────────────────────
+function getFnColorClass(name) {
+  const lower = name.toLowerCase();
+  if (lower.includes('ship')) return 'color-ship';
+  if (lower.includes('shot')) return 'color-shot';
+  if (lower.includes('alien') || lower.includes('boss') || lower.includes('enemy')) return 'color-alien';
+  return '';
+}
+
+// ─────────────────────────────────────────────
+//  SPACE SURVIVOR API DATA
+// ─────────────────────────────────────────────
+const API_DATA = [
+  {
+    id: 'general',
+    icon: '⚙️',
+    title: 'General',
+    desc: '초기화 검증, 난수 생성, AABB 충돌 감지 등 게임 전반에서 사용되는 범용 유틸리티 함수 모음입니다.',
+    functions: [
+      {
+        name: 'must_init',
+        sig: 'void must_init(bool test, const char* description)',
+        brief: '초기화 실패 시 프로그램 종료',
+        desc: 'Allegro 라이브러리 또는 리소스의 초기화 결과를 검사합니다. test가 false이면 오류 메시지를 출력하고 프로그램이 즉시 종료됩니다.',
+        params: [
+          { name: 'test', type: 'bool', desc: '초기화 성공 여부. true이면 정상 반환.' },
+          { name: 'description', type: 'const char*', desc: '실패 시 출력할 문자열.' }
+        ],
+        ret: 'void',
+        example: `<span class="code-type">ALLEGRO_DISPLAY</span>* disp = <span class="code-fn">al_create_display</span>(<span class="code-num">1200</span>, <span class="code-num">900</span>);
+<span class="code-fn">must_init</span>(disp, <span class="code-str">"display"</span>);`
+      },
+      {
+        name: 'between',
+        sig: 'int between(int lo, int hi)',
+        brief: '정수 범위 난수 반환',
+        desc: '[lo, hi) 범위의 정수 난수를 반환합니다.',
+        params: [
+          { name: 'lo', type: 'int', desc: '하한 (포함).' },
+          { name: 'hi', type: 'int', desc: '상한 (미포함).' }
+        ],
+        ret: 'int',
+        example: `<span class="code-kw">int</span> rand_val = <span class="code-fn">between</span>(<span class="code-num">0</span>, <span class="code-num">100</span>);`
+      },
+      {
+        name: 'between_f',
+        sig: 'float between_f(float lo, float hi)',
+        brief: '실수 범위 난수 반환',
+        desc: '[lo, hi) 범위의 부동소수점 난수를 반환합니다.',
+        params: [
+          { name: 'lo', type: 'float', desc: '하한 (포함).' },
+          { name: 'hi', type: 'float', desc: '상한 (미포함).' }
+        ],
+        ret: 'float',
+        example: `<span class="code-kw">float</span> rand_val = <span class="code-fn">between_f</span>(<span class="code-num">0.0f</span>, <span class="code-num">1.0f</span>);`
+      },
+      {
+        name: 'collide',
+        sig: 'bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2)',
+        brief: 'AABB 사각형 충돌 감지',
+        desc: '두 축 정렬 사각형(AABB) 영역 간의 겹침을 검사하여 충돌 여부를 반환합니다.',
+        params: [
+          { name: 'ax1, ay1', type: 'int', desc: '사각형 A의 좌상단 좌표' },
+          { name: 'ax2, ay2', type: 'int', desc: '사각형 A의 우하단 좌표' },
+          { name: 'bx1, by1', type: 'int', desc: '사각형 B의 좌상단 좌표' },
+          { name: 'bx2, by2', type: 'int', desc: '사각형 B의 우하단 좌표' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (<span class="code-fn">collide</span>(x1, y1, x2, y2, x3, y3, x4, y4)) { ... }`
+      },
+      {
+        name: 'collide_circle',
+        sig: 'bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2)',
+        brief: '원형 충돌 감지',
+        desc: '두 원의 중심 좌표와 반지름을 이용해 충돌 여부를 반환합니다. 중심 간의 거리 제곱과 두 반지름의 합의 제곱을 비교합니다.',
+        params: [
+          { name: 'cx1, cy1', type: 'int', desc: '원 1의 중심 좌표' },
+          { name: 'r1', type: 'int', desc: '원 1의 반지름' },
+          { name: 'cx2, cy2', type: 'int', desc: '원 2의 중심 좌표' },
+          { name: 'r2', type: 'int', desc: '원 2의 반지름' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (<span class="code-fn">collide_circle</span>(c1.x, c1.y, c1.r, c2.x, c2.y, c2.r)) { ... }`
+      }
+    ]
+  },
+  {
+    id: 'gameflow',
+    icon: '🎮',
+    title: 'Game Flow',
+    desc: '게임 상태(STATE) 머신을 제어하고 프레임별 메인 루프 갱신을 담당합니다.',
+    functions: [
+      {
+        name: 'STATE (Enum)',
+        sig: 'typedef enum STATE',
+        brief: '게임의 현재 진행 상태를 정의하는 열거형',
+        desc: '게임의 전반적인 화면 및 논리 흐름을 제어하기 위해 사용되는 상태 값들입니다. 상태 전이(State Transition)에 따라 렌더링 및 업데이트 로직이 분기됩니다.',
+        params: [
+          { name: 'STATE_MENU', type: '0', desc: '메인 메뉴 화면' },
+          { name: 'STATE_PLAYING', type: '1', desc: '본 게임 진행 중' },
+          { name: 'STATE_PAUSE', type: '2', desc: '게임 일시정지 상태' },
+          { name: 'STATE_INPUT_NAME', type: '3', desc: '신기록 달성 시 이름 입력 창' },
+          { name: 'STATE_GAMEOVER', type: '4', desc: '플레이어 사망 시 게임 오버 화면' },
+          { name: 'STATE_RANK', type: '5', desc: '리더보드(랭킹) 확인 화면' },
+          { name: 'STATE_LEVEL_UP', type: '6', desc: '경험치 충족 시 스탯 강화 선택 창' },
+          { name: 'STATE_NEWGAME', type: '7', desc: '새로운 게임 초기화 트리거 상태' },
+          { name: 'STATE_ABOUT', type: '8', desc: '게임 설명 (How to play) 화면' },
+          { name: 'STATE_ENDING_SCENE', type: '9', desc: '게임 클리어 시 출력되는 엔딩 연출 씬' },
+          { name: 'STATE_ENDING', type: '10', desc: '연출 이후의 최종 엔딩/결과 화면' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">STATE</span> current_state = STATE_MENU;
+
+<span class="code-kw">switch</span> (current_state) {
+    <span class="code-kw">case</span> STATE_PLAYING:
+        <span class="code-cm">// 게임 플레이 로직</span>
+        <span class="code-kw">break</span>;
+    <span class="code-kw">case</span> STATE_PAUSE:
+        <span class="code-cm">// 일시정지 로직</span>
+        <span class="code-kw">break</span>;
+}`
+      },
+      {
+        name: 'game_state_init',
+        sig: 'void game_state_init(void)',
+        brief: '게임 시작 초기화',
+        desc: '점수, 레벨 등을 0으로 맞추고 각 엔티티(Ship, Alien, Item 등)를 초기 상태로 리셋합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">game_state_init</span>();`
+      },
+      {
+        name: 'game_state_update',
+        sig: 'void game_state_update(STATE* state, bool* done)',
+        brief: '프레임별 게임 상태 갱신',
+        desc: '현재 STATE에 따라 적절한 로직을 수행하고 화면을 전환합니다.',
+        params: [
+          { name: 'state', type: 'STATE*', desc: '현재 상태 포인터' },
+          { name: 'done', type: 'bool*', desc: '루프 종료 플래그' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">game_state_update</span>(&current_state, &done);`
+      },
+      {
+        name: 'pause_resume_game',
+        sig: 'void pause_resume_game(STATE* state)',
+        brief: '게임 일시정지 및 재개',
+        desc: '현재 게임 상태가 PLAYING이면 PAUSE로, PAUSE면 PLAYING으로 상태를 전환합니다.',
+        params: [
+          { name: 'state', type: 'STATE*', desc: '현재 게임 상태 변수의 포인터' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">pause_resume_game</span>(&current_state);`
+      }
+    ]
+  },
+  {
+    id: 'player_enemy',
+    icon: '🚀',
+    title: 'Player & Enemy',
+    desc: '우주선(Player), 외계인(Enemy), 투사체(Shot)의 핵심 로직과 데이터 구조를 관장합니다.',
+    functions: [
+      {
+        name: 'SHIP (Struct)',
+        sig: 'typedef struct SHIP',
+        brief: '플레이어(우주선) 데이터 구조체',
+        desc: '우주선의 좌표, 스탯, 상태(배리어, 무적 등)를 저장합니다.',
+        params: [
+          { name: 'x, y', type: 'float', desc: '좌상단 좌표' },
+          { name: 'cx, cy', type: 'float', desc: '중앙 좌표' },
+          { name: 'speed, fire_rate, damage, shot_count', type: 'float/int', desc: '이동 속도, 공격 속도, 공격력, 투사체 갯수' },
+          { name: 'max_lifes, curr_lifes', type: 'int', desc: '최대 체력 및 현재 체력' },
+          { name: 'invincible_timer, barrier', type: 'int/bool', desc: '무적 시간 및 배리어 활성화 여부' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">SHIP</span> ship;`
+      },
+      {
+        name: 'SHOT (Struct)',
+        sig: 'typedef struct SHOT',
+        brief: '투사체 데이터 구조체',
+        desc: '아군 및 적군의 투사체 위치, 속도, 수명 등을 관리합니다.',
+        params: [
+          { name: 'x, y, dx, dy', type: 'float', desc: '현재 좌표 및 이동 방향(벡터)' },
+          { name: 'speed', type: 'float', desc: '투사체의 이동 속도' },
+          { name: 'frame', type: 'int', desc: '생성 후 경과된 프레임 (수명 체크용)' },
+          { name: 'ship', type: 'bool', desc: 'true면 아군 투사체, false면 적 투사체' },
+          { name: 'used', type: 'bool', desc: '현재 활성화 여부' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">SHOT</span> shots[SHOTS_N];`
+      },
+      {
+        name: 'ALIEN (Struct)',
+        sig: 'typedef struct ALIEN',
+        brief: '적(외계인) 데이터 구조체',
+        desc: '적의 위치, 스탯, 타입, 상태를 저장합니다.',
+        params: [
+          { name: 'x, y, cx, cy', type: 'float', desc: '좌표 및 중앙 좌표' },
+          { name: 'speed, fire_rate, shot_count', type: 'float/int', desc: '이동 속도, 공격 속도, 투사체 수' },
+          { name: 'type', type: 'ALIEN_TYPE', desc: '적의 종류 (메테오, 패스트, 슈터, 보스)' },
+          { name: 'life, used, blink', type: 'int/bool', desc: '체력, 활성화 여부, 피격 시 깜빡임 타이머' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">ALIEN</span> aliens[ALIENS_N];`
+      },
+      {
+        name: 'ALIEN_TYPE / SCORE / LIFE / SHOT (Enums)',
+        sig: 'typedef enum ALIEN_...',
+        brief: '적 관련 열거형 상수 모음',
+        desc: '적의 타입, 처치 점수, 기본 체력, 발사하는 투사체 수를 정의합니다.',
+        params: [
+          { name: 'ALIEN_TYPE', type: 'Enum', desc: 'METEOR(0), FAST(1), SHOOTER(2), BOSS(3)' },
+          { name: 'ALIEN_SCORE', type: 'Enum', desc: 'METEOR(200), FAST(300), SHOOTER(800), BOSS(2000)' },
+          { name: 'ALIEN_LIFE', type: 'Enum', desc: 'METEOR(10), FAST(10), SHOOTER(20), BOSS(500)' },
+          { name: 'ALIEN_SHOT', type: 'Enum', desc: 'METEOR(0), FAST(1), SHOOTER(1), BOSS(5)' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">ALIEN_TYPE</span> type = ALIEN_TYPE_BOSS;`
+      },
+      {
+        name: 'ship_init',
+        sig: 'void ship_init(void)',
+        brief: '우주선 초기화',
+        desc: '게임 시작 시 우주선의 좌표, 속도, 스탯을 기본값으로 세팅합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">ship_init</span>();`
+      },
+      {
+        name: 'ship_update',
+        sig: 'void ship_update(void)',
+        brief: '우주선 로직 갱신',
+        desc: '키보드 입력에 따른 이동 처리, 무한 워프, 피격 및 배리어 소모, 자동 발사 타이머를 갱신합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">ship_update</span>();`
+      },
+      {
+        name: 'ship_draw',
+        sig: 'void ship_draw(void)',
+        brief: '우주선 렌더링',
+        desc: '무적 깜빡임, 배리어 및 우주선 스프라이트를 화면에 그립니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">ship_draw</span>();`
+      },
+      {
+        name: 'ship_collide',
+        sig: 'bool ship_collide(int cx, int cy)',
+        brief: '우주선과 적 직접 충돌 판정',
+        desc: '모든 활성화된 외계인과 우주선 간의 원형 충돌을 검사합니다.',
+        params: [
+          { name: 'cx, cy', type: 'int', desc: '우주선의 중앙 좌표' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (<span class="code-fn">ship_collide</span>(ship.cx, ship.cy)) { ... }`
+      },
+      {
+        name: 'shots_init',
+        sig: 'void shots_init(void)',
+        brief: '투사체 배열 초기화',
+        desc: '모든 투사체의 사용 상태(used)를 false로 초기화합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">shots_init</span>();`
+      },
+      {
+        name: 'shots_add',
+        sig: 'bool shots_add(bool is_ship, bool straight, float x, float y, int shot_count)',
+        brief: '투사체 발사 및 궤도 계산',
+        desc: '아군/적군 여부에 따라 타겟을 찾고, 부채꼴 형태로 여러 개의 투사체 객체를 활성화합니다.',
+        params: [
+          { name: 'is_ship', type: 'bool', desc: '아군 투사체 여부' },
+          { name: 'straight', type: 'bool', desc: '유도 없이 직선 발사 여부' },
+          { name: 'x, y', type: 'float', desc: '발사 원점 좌표' },
+          { name: 'shot_count', type: 'int', desc: '발사할 투사체 갯수' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-fn">shots_add</span>(<span class="code-kw">true</span>, <span class="code-kw">false</span>, ship.cx, ship.cy, ship.shot_count);`
+      },
+      {
+        name: 'shots_create_instance',
+        sig: 'bool shots_create_instance(bool is_ship, float x, float y, float dx, float dy)',
+        brief: '개별 투사체 인스턴스 생성',
+        desc: '비어있는 투사체 배열 공간을 찾아 실제로 좌표 및 벡터(dx, dy)를 할당합니다.',
+        params: [
+          { name: 'is_ship', type: 'bool', desc: '아군 투사체 여부' },
+          { name: 'x, y', type: 'float', desc: '시작 좌표' },
+          { name: 'dx, dy', type: 'float', desc: '이동 벡터' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-fn">shots_create_instance</span>(<span class="code-kw">true</span>, x, y, dx, dy);`
+      },
+      {
+        name: 'shots_update',
+        sig: 'void shots_update(void)',
+        brief: '투사체 이동 및 수명 갱신',
+        desc: '활성화된 투사체를 이동시키고, 무한 맵 워프 처리 및 수명 초과 시 비활성화합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">shots_update</span>();`
+      },
+      {
+        name: 'shots_collide',
+        sig: 'bool shots_collide(bool ship, float cx, float cy, float w, float h, int idx)',
+        brief: '투사체 피격 판정',
+        desc: '우주선 또는 외계인의 좌표를 받아, 반대 진영의 투사체와 충돌했는지 검사합니다.',
+        params: [
+          { name: 'ship', type: 'bool', desc: '피격 대상이 아군이면 true, 적이면 false' },
+          { name: 'cx, cy', type: 'float', desc: '피격 대상의 중앙 좌표' },
+          { name: 'w, h', type: 'float', desc: '크기 판정값' },
+          { name: 'idx', type: 'int', desc: '외계인 인덱스' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (<span class="code-fn">shots_collide</span>(<span class="code-kw">true</span>, cx, cy, w, h, 0)) { ... }`
+      },
+      {
+        name: 'shots_draw',
+        sig: 'void shots_draw(void)',
+        brief: '투사체 렌더링',
+        desc: '활성화된 투사체의 프레임 애니메이션을 화면에 그립니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">shots_draw</span>();`
+      },
+      {
+        name: 'get_closet_enemy',
+        sig: 'int get_closet_enemy(void)',
+        brief: '최단거리 적 식별 (유도탄용)',
+        desc: '우주선을 기준으로 가장 가까이 있는 적의 인덱스를 무한 맵 거리까지 고려하여 반환합니다.',
+        params: [],
+        ret: 'int',
+        example: `<span class="code-kw">int</span> target_idx = <span class="code-fn">get_closet_enemy</span>();`
+      },
+      {
+        name: 'aliens_init',
+        sig: 'void aliens_init(void)',
+        brief: '적 개체 배열 초기화',
+        desc: '모든 외계인 개체의 활성화 상태를 false로 초기화합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">aliens_init</span>();`
+      },
+      {
+        name: 'aliens_update',
+        sig: 'void aliens_update(void)',
+        brief: '적 웨이브 및 상태 갱신',
+        desc: '주기적인 적 스폰, 개별 이동 패턴 처리, 맵 워프, 투사체 피격 검사 및 아이템 드롭을 담당합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">aliens_update</span>();`
+      },
+      {
+        name: 'spawn_enemy',
+        sig: 'void spawn_enemy(float* new_x, float* new_y, int i)',
+        brief: '일반 적 스폰 위치 결정',
+        desc: '화면 밖 4방향 중 하나를 선택해 다른 개체와 겹치지 않는 좌표를 생성합니다.',
+        params: [
+          { name: 'new_x, new_y', type: 'float*', desc: '스폰 좌표 포인터' },
+          { name: 'i', type: 'int', desc: '할당될 배열 인덱스' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">spawn_enemy</span>(&nx, &ny, i);`
+      },
+      {
+        name: 'spawn_boss',
+        sig: 'void spawn_boss(void)',
+        brief: '보스 소환',
+        desc: '스테이지 보스(ALIEN_TYPE_BOSS)를 스폰합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">spawn_boss</span>();`
+      },
+      {
+        name: 'is_boss_alive',
+        sig: 'bool is_boss_alive(void)',
+        brief: '보스 생존 여부 확인',
+        desc: '배열 내에 살아있는 보스 타입이 존재하는지 검사합니다.',
+        params: [],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (!<span class="code-fn">is_boss_alive</span>()) { ... }`
+      },
+      {
+        name: 'decide_enemy_type',
+        sig: 'int decide_enemy_type(void)',
+        brief: '스폰될 적 타입 확률 계산',
+        desc: '현재 스테이지의 가중치(spawn_weight)에 따라 랜덤한 적 타입을 반환합니다.',
+        params: [],
+        ret: 'int',
+        example: `aliens[i].type = <span class="code-fn">decide_enemy_type</span>();`
+      },
+      {
+        name: 'set_aliens_info',
+        sig: 'void set_aliens_info(int i, float life_mul)',
+        brief: '적 초기 스탯 부여',
+        desc: '적의 타입에 맞게 기본 체력, 속도, 투사체 수를 설정합니다.',
+        params: [
+          { name: 'i', type: 'int', desc: '적 배열 인덱스' },
+          { name: 'life_mul', type: 'float', desc: '스테이지 배수' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">set_aliens_info</span>(i, 1.5f);`
+      },
+      {
+        name: 'aliens_move',
+        sig: 'void aliens_move(int i, float speed)',
+        brief: '적 추적 이동',
+        desc: '우주선 방향으로 이동하는 벡터를 계산하여 좌표를 갱신합니다.',
+        params: [
+          { name: 'i', type: 'int', desc: '적 배열 인덱스' },
+          { name: 'speed', type: 'float', desc: '이동 속도' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">aliens_move</span>(i, aliens[i].speed);`
+      },
+      {
+        name: 'aliens_draw',
+        sig: 'void aliens_draw(void)',
+        brief: '적 렌더링 메인 루프',
+        desc: '살아있는 적들의 방향을 계산하고 맵 경계를 넘나드는 잔상을 함께 그려냅니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">aliens_draw</span>();`
+      },
+      {
+        name: 'aliens_single_draw',
+        sig: 'void aliens_single_draw(float between_angle, int i, float cx, float cy)',
+        brief: '개별 적 이미지 렌더링',
+        desc: '우주선을 바라보는 각도로 회전시켜 스프라이트를 화면에 그립니다.',
+        params: [
+          { name: 'between_angle', type: 'float', desc: '회전시킬 라디안 각도' },
+          { name: 'i', type: 'int', desc: '적 인덱스' },
+          { name: 'cx, cy', type: 'float', desc: '렌더링 좌표' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">aliens_single_draw</span>(angle, i, cx, cy);`
+      },
+      {
+        name: 'aliens_collide',
+        sig: 'void aliens_collide(void)',
+        brief: '적 개체 간 밀어내기 연산',
+        desc: '외계인들끼리 겹치지 않도록 반발력을 계산하여 서로 분리시키는 물리 연산을 수행합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">aliens_collide</span>();`
+      },
+      {
+        name: 'boss_dash',
+        sig: 'void boss_dash(void)',
+        brief: '보스 돌진 기믹',
+        desc: '일정 쿨타임마다 보스의 이동 속도를 비약적으로 상승시켜 우주선으로 돌진합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">boss_dash</span>();`
+      }
+    ]
+  },
+{
+    id: 'item',
+    icon: '💎',
+    title: 'Item System',
+    desc: '확률적으로 드롭되는 아이템 생성, 관리 및 획득 효과(체력 회복, 폭탄, 배리어 등) 처리를 담당합니다.',
+    functions: [
+      {
+        name: 'ITEM (Struct)',
+        sig: 'typedef struct ITEM',
+        brief: '개별 아이템 데이터 구조체',
+        desc: '화면에 스폰된 개별 아이템의 위치, 종류, 수명 타이머 및 활성화 상태를 저장합니다.',
+        params: [
+          { name: 'x, y, cx, cy', type: 'float', desc: '좌표 및 중앙 좌표' },
+          { name: 'vx, vy', type: 'float', desc: '이동 벡터 (현재 미사용)' },
+          { name: 'type', type: 'ITEM_TYPE', desc: '아이템의 종류 (회복, 폭탄, 경험치 등)' },
+          { name: 'timer', type: 'int', desc: '아이템 소멸까지 남은 프레임 (기본 900프레임 = 15초)' },
+          { name: 'blink', type: 'int', desc: '소멸 직전 깜빡임 주기 타이머' },
+          { name: 'used', type: 'bool', desc: '현재 슬롯 활성화 여부' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">ITEM</span> items[ITEMS_N];`
+      },
+      {
+        name: 'ITEM_TYPE (Enum)',
+        sig: 'typedef enum ITEM_TYPE',
+        brief: '아이템 종류 열거형',
+        desc: '스폰 가능한 아이템의 종류를 정의합니다. 각 타입별로 획득 시 적용되는 효과가 다릅니다.',
+        params: [
+          { name: 'ITEM_TYPE_NONE', type: '0', desc: '아이템 없음 (드롭 실패)' },
+          { name: 'ITEM_TYPE_HEAL_POTION', type: '1', desc: '체력 회복 (최대 체력의 10% 회복)' },
+          { name: 'ITEM_TYPE_BOMB', type: '2', desc: '폭탄 (화면 내 일반 적 처치 및 적군 투사체 제거)' },
+          { name: 'ITEM_TYPE_EXP', type: '3', desc: '경험치/점수 (3000점 즉시 획득)' },
+          { name: 'ITEM_TYPE_BARRIER', type: '4', desc: '배리어 (피격 무효화 1회 활성화)' },
+          { name: 'ITEM_TYPE_RANDOM_STAT_CHANGE', type: '5', desc: '랜덤 스탯 (데미지, 투사체 수, 공속, 이속, 현재 체력 무작위 재조정)' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">ITEM_TYPE</span> type = ITEM_TYPE_HEAL_POTION;`
+      },
+      {
+        name: 'item_init',
+        sig: 'void item_init(void)',
+        brief: '아이템 배열 초기화',
+        desc: '게임 시작 시 모든 아이템 배열 슬롯의 활성화 상태(used)를 false로 초기화합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">item_init</span>();`
+      },
+      {
+        name: 'item_add',
+        sig: 'void item_add(float cx, float cy, int type)',
+        brief: '적 처치 시 아이템 확률 드롭',
+        desc: '처치된 적의 타입(ALIEN_TYPE)에 따른 드롭 확률 테이블(drop_table)을 참조하여 확률 계산 후 아이템 스폰을 시도합니다.',
+        params: [
+          { name: 'cx, cy', type: 'float', desc: '아이템이 스폰될 중심 좌표 (처치된 적의 위치)' },
+          { name: 'type', type: 'int', desc: '처치된 적의 종류' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">item_add</span>(aliens[i].cx, aliens[i].cy, aliens[i].type);`
+      },
+      {
+        name: 'item_create_instance',
+        sig: 'bool item_create_instance(int type, float cx, float cy)',
+        brief: '아이템 개체 생성 (인스턴스화)',
+        desc: '아이템 배열(items)에서 비어있는 슬롯을 찾아 지정된 타입의 아이템을 생성하고 수명을 15초(900프레임)로 세팅합니다.',
+        params: [
+          { name: 'type', type: 'int', desc: '생성할 아이템의 ITEM_TYPE' },
+          { name: 'cx, cy', type: 'float', desc: '생성될 맵 상의 좌표' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (<span class="code-fn">item_create_instance</span>(ITEM_TYPE_BOMB, cx, cy)) { ... }`
+      },
+      {
+        name: 'item_collide',
+        sig: 'bool item_collide(float cx, float cy)',
+        brief: '우주선과 아이템 충돌 판정',
+        desc: '우주선의 좌표와 활성화된 아이템 간의 원형 충돌 판정을 수행합니다. 충돌 시 아이템 효과를 적용하고 제거합니다.',
+        params: [
+          { name: 'cx, cy', type: 'float', desc: '플레이어(우주선)의 중심 좌표' }
+        ],
+        ret: 'bool',
+        example: `<span class="code-kw">if</span> (<span class="code-fn">item_collide</span>(ship.cx, ship.cy)) { ... }`
+      },
+      {
+        name: 'item_update',
+        sig: 'void item_update(void)',
+        brief: '아이템 수명 갱신',
+        desc: '매 프레임 활성화된 모든 아이템의 남은 수명(timer)을 감소시키고, 소멸 직전 깜빡임(blink) 주기를 계산합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">item_update</span>();`
+      },
+      {
+        name: 'item_draw',
+        sig: 'void item_draw(void)',
+        brief: '아이템 렌더링 루프',
+        desc: '활성화된 아이템 중 깜빡임 조건에 맞는 아이템을 그립니다. 무한 타일링 맵 경계 처리를 고려하여 잔상도 함께 렌더링합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">item_draw</span>();`
+      },
+      {
+        name: 'item_single_draw',
+        sig: 'void item_single_draw(int i, float cx, float cy)',
+        brief: '개별 아이템 스프라이트 렌더링',
+        desc: '배열 내 특정 아이템의 타입에 맞는 스프라이트 이미지를 맵 좌표에 스케일링하여 그립니다.',
+        params: [
+          { name: 'i', type: 'int', desc: '렌더링할 아이템의 배열 인덱스' },
+          { name: 'cx, cy', type: 'float', desc: '렌더링할 화면 좌표' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">item_single_draw</span>(i, items[i].x, items[i].y);`
+      },
+      {
+        name: 'item_use',
+        sig: 'void item_use(ITEM_TYPE type)',
+        brief: '아이템 획득 효과 적용',
+        desc: '충돌하여 획득한 아이템의 타입에 따라 체력 회복, 화면 내 외계인 처치(보스 제외), 점수 추가 등의 효과를 플레이어에게 적용합니다.',
+        params: [
+          { name: 'type', type: 'ITEM_TYPE', desc: '획득한 아이템의 종류' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">item_use</span>(items[i].type);`
+      }
+    ]
+  },
+{
+    id: 'ui_bg',
+    icon: '🖥️',
+    title: 'UI & Background',
+    desc: '메뉴 렌더링, HUD(Heads-Up Display), 별(Stars) 파티클 이펙트, 무한 스크롤링 우주 배경 등을 담당합니다.',
+    functions: [
+      {
+        name: 'STAR (Struct)',
+        sig: 'typedef struct STAR',
+        brief: '배경 별 파티클 데이터 구조체',
+        desc: '화면 아래로 떨어지는 별들의 y좌표와 떨어지는 속도를 관리합니다.',
+        params: [
+          { name: 'y', type: 'float', desc: '별의 현재 y좌표' },
+          { name: 'speed', type: 'float', desc: '별이 떨어지는 속도' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">STAR</span> stars[STARS_N];`
+      },
+      {
+        name: 'MENU (Struct)',
+        sig: 'typedef struct MENU',
+        brief: 'UI 메뉴 레이아웃 구조체',
+        desc: '각 메뉴 화면의 중심 좌표, 크기, 항목(버튼) 텍스트 배열, 항목 개수 및 현재 선택된 인덱스를 저장합니다.',
+        params: [
+          { name: 'x, y', type: 'float', desc: '메뉴 패널의 중심 좌표' },
+          { name: 'width, height', type: 'float', desc: '메뉴 패널의 너비와 높이' },
+          { name: 'items', type: 'const char*[10]', desc: '메뉴 항목(버튼)에 표시될 텍스트 배열' },
+          { name: 'item_count', type: 'int', desc: '총 메뉴 항목 개수' },
+          { name: 'selected', type: 'int', desc: '현재 커서가 위치한 메뉴 인덱스' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">MENU</span> m = { BUFFER_W / 2, BUFFER_H / 2, 350, 300, {"Start", "Exit"}, 2, 0 };`
+      },
+      {
+        name: 'stars_init',
+        sig: 'void stars_init(void)',
+        brief: '별 파티클 초기화',
+        desc: 'STARS_N 개수만큼 별 파티클의 초기 y좌표(0~BUFFER_H)와 무작위 낙하 속도(STAR_SPEED_MIN ~ STAR_SPEED_MAX)를 설정합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">stars_init</span>();`
+      },
+      {
+        name: 'stars_update',
+        sig: 'void stars_update(void)',
+        brief: '별 파티클 갱신',
+        desc: '각 별 파티클의 y좌표를 속도만큼 더하여 화면 아래로 이동시킵니다. 별이 화면 밖(BUFFER_H 이상)으로 나가면 다시 최상단(y=0)으로 배치하고 새로운 속도를 부여합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">stars_update</span>();`
+      },
+      {
+        name: 'stars_draw',
+        sig: 'void stars_draw(void)',
+        brief: '별 파티클 렌더링',
+        desc: '무작위 RGB 색상을 생성하여 각 별의 현재 좌표에 단일 픽셀 형태로 그립니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">stars_draw</span>();`
+      },
+      {
+        name: 'hud_init',
+        sig: 'void hud_init(void)',
+        brief: 'HUD 폰트 및 시스템 초기화',
+        desc: '기본 폰트, 볼드체 폰트 등을 메모리에 로드하고 화면에 표기할 점수(score_display)를 0으로 초기화합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">hud_init</span>();`
+      },
+      {
+        name: 'hud_update',
+        sig: 'void hud_update(void)',
+        brief: 'HUD 스코어 부드러운 갱신',
+        desc: '점수가 한 번에 오르지 않고 시각적으로 부드럽게 올라가도록 비트 연산 시프트를 활용해 score_display 값을 점진적으로 증가시킵니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">hud_update</span>();`
+      },
+      {
+        name: 'hud_draw',
+        sig: 'void hud_draw(void)',
+        brief: 'HUD 오버레이 렌더링',
+        desc: '화면 상단에 현재 점수, 레벨, 진행 스테이지, 플레이어의 HP 바(체력 게이지) 및 생존 시간을 그립니다.  특정 이벤트 발동 시 보스 출현 경고(!!! A L E R T !!!) 및 스테이지 진입 알림 텍스트를 일정 시간 동안 화면 중앙에 함께 렌더링합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">hud_draw</span>();`
+      },
+      {
+        name: 'ui_init / ui_deinit',
+        sig: 'void ui_init(void)',
+        brief: 'UI 리소스 로드 및 해제',
+        desc: '메뉴 배경 패널과 버튼을 그릴 UI 전용 스프라이트 시트(ui_sheet.png)를 메모리에 적재하거나 할당 해제합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">ui_init</span>();\n<span class="code-fn">ui_deinit</span>();`
+      },
+      {
+        name: 'draw_menu_ui',
+        sig: 'void draw_menu_ui(MENU* m, const char* title, int button_y, float wanted_width, float wanted_height, ALLEGRO_FONT* fonto)',
+        brief: '공통 메뉴 패널 및 버튼 렌더링',
+        desc: '입력받은 MENU 구조체 데이터를 바탕으로 메뉴의 배경 패널, 타이틀 텍스트, 항목 버튼들을 화면 중앙에 배치하여 그립니다. 현재 선택된 항목(selected 인덱스) 옆에는 커서를 별도로 렌더링하여 하이라이팅 효과를 줍니다.',
+        params: [
+          { name: 'm', type: 'MENU*', desc: '렌더링할 메뉴 구성 정보가 담긴 구조체 포인터' },
+          { name: 'title', type: 'const char*', desc: '메뉴 최상단에 표기될 제목 문자열' },
+          { name: 'button_y', type: 'int', desc: '버튼들의 수직 시작 오프셋 (Y 좌표 기준점)' },
+          { name: 'wanted_width, wanted_height', type: 'float', desc: '메뉴 패널의 가로, 세로 크기' },
+          { name: 'fonto', type: 'ALLEGRO_FONT*', desc: '제목에 적용할 폰트 포인터' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">draw_menu_ui</span>(&m, "PAUSED", 50, 400, 270, bold_font);`
+      },
+      {
+        name: 'menu_input_update',
+        sig: 'void menu_input_update(int item_count)',
+        brief: '메뉴 방향키 조작 제어',
+        desc: '위/아래 방향키 입력을 감지하여 현재 선택된 메뉴 항목(current_menu_selection)의 인덱스를 갱신합니다. 범위를 초과할 시 반대쪽 항목으로 루프(순환)되도록 처리합니다.',
+        params: [
+          { name: 'item_count', type: 'int', desc: '현재 활성화된 메뉴 항목의 총 개수' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">menu_input_update</span>(4);`
+      },
+      {
+        name: 'ui_draw_... (Menu Renderers)',
+        sig: 'void ui_draw_..._menu(void)',
+        brief: '각 상태별 메뉴 화면 렌더링 함수 모음',
+        desc: '메인 메뉴, 일시정지, 게임 오버, 랭킹 리더보드, 신기록 이름 입력 폼, 조작법 설명(H2P), 레벨업 스탯 선택지, 클리어/엔딩 크레딧 등 게임 내 모든 상태(STATE)별 고유 메뉴 UI 화면을 그리는 함수들의 모음입니다. ',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">ui_draw_main_menu</span>();\n<span class="code-fn">ui_draw_pause_menu</span>();`
+      },
+      {
+        name: 'backgound_init / deinit',
+        sig: 'void backgound_init(void)',
+        brief: '우주 배경 및 행성 에셋 초기화',
+        desc: '스테이지별(0~3) 다른 색상의 타일링 우주 배경(BG_sheet)과 데코레이션용 행성 에셋(BG_PLANET_sheet) 이미지를 로드하거나 제거합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">backgound_init</span>();`
+      },
+      {
+        name: 'background_draw',
+        sig: 'void background_draw(void)',
+        brief: '무한 타일링 배경 렌더링',
+        desc: '플레이어(우주선)의 좌표를 기준으로 모듈러 연산(fmod)을 수행하여 배경 이미지를 바둑판식으로 스크롤함으로써 무한한 우주 공간 이동을 연출합니다.  각 스테이지의 특정 좌표에는 4종의 데코레이션 행성 이미지를 배치하여 렌더링합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">background_draw</span>();`
+      }
+    ]
+  },
+ {
+    id: 'stage_levelup',
+    icon: '🌌',
+    title: 'Stage & Level Up',
+    desc: '스테이지 진행과 난이도 제어, 그리고 경험치 기반 플레이어 스탯 강화를 담당합니다.',
+    functions: [
+      {
+        name: 'STAGE (Struct)',
+        sig: 'typedef struct STAGE',
+        brief: '스테이지별 환경 및 스폰 데이터를 정의하는 구조체',
+        desc: '각 스테이지의 최대 적 개체 수, 스폰 가중치(확률), 목표 시간(보스 스폰 타이밍), 점수 배수 및 체력 배수를 관리합니다.',
+        params: [
+          { name: 'max_enemies', type: 'int', desc: '해당 스테이지에서 스폰 가능한 최대 적 개체 수' },
+          { name: 'spawn_weight', type: 'int[4]', desc: '적 타입별(METEOR, FAST, SHOOTER, BOSS) 스폰 가중치' },
+          { name: 'target_time', type: 'long', desc: '보스가 스폰되기까지 필요한 스테이지 누적 프레임' },
+          { name: 'spawn_interval', type: 'float', desc: '일반 적 스폰 간격' },
+          { name: 'score_multiplier, life_multiplier', type: 'float', desc: '해당 스테이지의 처치 획득 점수 배수 및 적 체력 배수' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">STAGE</span> stage_info[3];`
+      },
+      {
+        name: 'Level Up Limits (Macros)',
+        sig: '#define LV_UP ...',
+        brief: '레벨업 요구치 및 스탯 강화 상한선 상수',
+        desc: '레벨업에 필요한 기본 점수와 우주선(플레이어)의 각 스탯이 도달할 수 있는 최대 상한선을 정의합니다.',
+        params: [
+          { name: 'LV_UP, LV_UP_REQ', type: 'Macro', desc: '기본 레벨업 요구 점수(10000) 및 요구치 증가 상수(2)' },
+          { name: 'SHOT_COUNT_MAX', type: 'Macro', desc: '투사체 발사 최대 수 (5)' },
+          { name: 'SPEED_MAX, FIRE_RATE_MAX', type: 'Macro', desc: '이동 속도(10) 및 공격 속도(20) 상한선' },
+          { name: 'MAX_LIFES_MAX', type: 'Macro', desc: '체력 최대치 상한선 (250)' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-kw">if</span> (ship.speed < SPEED_MAX) { ... }`
+      },
+      {
+        name: 'stage_init',
+        sig: 'void stage_init(void)',
+        brief: '스테이지 및 관련 변수 초기화',
+        desc: '현재 스테이지 번호(stage_num), 보스 스폰 여부, 스테이지 진행 프레임을 0으로 초기화하고 스테이지 배경음악(BGM)을 재생합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">stage_init</span>();`
+      },
+      {
+        name: 'stage_update',
+        sig: 'void stage_update(void)',
+        brief: '스테이지 프레임 진행 및 상태 갱신',
+        desc: '스테이지 목표 시간(target_time)에 도달하면 맵의 모든 적을 제거(BOMB 아이템 효과 사용)한 뒤 보스를 소환합니다. 보스를 처치하면 다음 스테이지로 진입하거나, 마지막 스테이지일 경우 엔딩 씬으로 전환합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">stage_update</span>();`
+      },
+      {
+        name: 'check_level_up',
+        sig: 'STATE check_level_up(long score)',
+        brief: '경험치 기반 레벨업 상태 검사',
+        desc: '현재 점수와 이전 레벨업 점수의 차이를 계산하여, 요구치에 도달했는지 판별합니다. 조건 충족 시 레벨을 올리고 레벨업 사운드를 재생하며 STATE_LEVEL_UP 상태를 반환합니다.',
+        params: [
+          { name: 'score', type: 'long', desc: '플레이어의 현재 누적 점수' }
+        ],
+        ret: 'STATE',
+        example: `*state = <span class="code-fn">check_level_up</span>(score);`
+      },
+      {
+        name: 'damage_up',
+        sig: 'void damage_up(void)',
+        brief: '공격력 스탯 강화',
+        desc: '레벨업 보상으로 우주선의 공격력(damage)을 2만큼 영구적으로 증가시킵니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">damage_up</span>();`
+      },
+      {
+        name: 'shot_count_up',
+        sig: 'void shot_count_up(void)',
+        brief: '다중 투사체 스탯 강화',
+        desc: '투사체 발사 수(shot_count)를 1 증가시킵니다. 상한선(SHOT_COUNT_MAX, 5)을 넘지 않습니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">shot_count_up</span>();`
+      },
+      {
+        name: 'fire_rate_up',
+        sig: 'void fire_rate_up(void)',
+        brief: '공격 속도 스탯 강화',
+        desc: '초당 공격 횟수(fire_rate)를 0.2 증가시킵니다. 상한선(FIRE_RATE_MAX, 20)을 초과할 수 없습니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">fire_rate_up</span>();`
+      },
+      {
+        name: 'speed_up',
+        sig: 'void speed_up(void)',
+        brief: '이동 속도 스탯 강화',
+        desc: '우주선의 이동 속도(speed)를 0.1 증가시킵니다. 상한선(SPEED_MAX, 10) 제한이 적용됩니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">speed_up</span>();`
+      },
+      {
+        name: 'max_lifes_up',
+        sig: 'void max_lifes_up(void)',
+        brief: '최대 체력 스탯 강화',
+        desc: '우주선의 최대 체력(max_lifes)을 현재 수치의 5%만큼 곱 연산으로 증가시킵니다. 최대치(MAX_LIFES_MAX, 250)를 넘지 않습니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">max_lifes_up</span>();`
+      },
+      {
+        name: 'instant_lifes',
+        sig: 'void instant_lifes(void)',
+        brief: '현재 체력 즉시 회복',
+        desc: '현재 체력(curr_lifes)을 50% 회복합니다 (기존 체력의 1.5배 연산). 최대 체력을 초과하여 회복되지 않습니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">instant_lifes</span>();`
+      }
+    ]
+  },
+{
+    id: 'rank',
+    icon: '🏆',
+    title: 'Ranking System',
+    desc: '로컬 파일을 이용한 리더보드(랭킹) 시스템의 데이터 구조 및 파일 입출력(저장/불러오기) 로직을 담당합니다.',
+    functions: [
+      {
+        name: 'RANK (Struct)',
+        sig: 'typedef struct _RANK',
+        brief: '개별 랭킹 기록 데이터 구조체',
+        desc: '플레이어가 입력한 이름(username)과 달성한 최종 점수(score)를 쌍으로 묶어 저장하는 구조체입니다.',
+        params: [
+          { name: 'username', type: 'char[15]', desc: '플레이어의 이름 문자열 배열 (MAX_NAME_LEN 기준)' },
+          { name: 'score', type: 'long', desc: '플레이어가 달성한 최종 점수' }
+        ],
+        ret: 'N/A',
+        example: `<span class="code-type">RANK</span> ranking[RANK_QUEUE_SIZE];`
+      },
+      {
+        name: 'Ranking Config (Macros)',
+        sig: '#define MAX_RANKING ...',
+        brief: '랭킹 시스템 관련 설정 상수 모음',
+        desc: '화면에 표시될 최대 순위 개수, 내부적으로 유지할 데이터 큐의 최대 크기, 그리고 이름 입력의 최대 길이를 정의합니다.',
+        params: [
+          { name: 'MAX_RANKING', type: 'Macro', desc: '화면 리더보드에 표시되는 상위 랭킹 개수 (5)' },
+          { name: 'RANK_QUEUE_SIZE', type: 'Macro', desc: '파일 및 메모리에 저장되는 랭킹 데이터의 최대 개수 (20)' },
+          { name: 'MAX_NAME_LEN', type: 'Macro', desc: '플레이어 이름의 최대 문자열 길이 제한 (15)' }
+        ],
+        ret: 'N/A',
+        example: `char player_name[MAX_NAME_LEN];`
+      },
+      {
+        name: 'rank_init',
+        sig: 'void rank_init(void)',
+        brief: '랭킹 배열 및 카운트 초기화',
+        desc: '랭킹 큐에 저장된 데이터 개수(rank_count)를 0으로 초기화하고, 큐 내부의 모든 슬롯 이름을 "----------"로, 점수를 0점으로 덮어씁니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">rank_init</span>();`
+      },
+      {
+        name: 'rank_add',
+        sig: 'void rank_add(const char* name, long new_score)',
+        brief: '새로운 기록 삽입 (삽입 정렬)',
+        desc: '작은 고정 크기 랭킹(RANK_QUEUE_SIZE)에 적합한 삽입 정렬(Insertion Sort) 방식을 사용하여 새 기록을 적절한 순위에 등록합니다. 새 점수가 기존 최하위 점수보다 낮고 큐가 가득 찼다면 등록을 무시하며, 등록 시 순위가 밀린 기존 기록들은 한 칸씩 뒤로 밀어냅니다.',
+        params: [
+          { name: 'name', type: 'const char*', desc: '등록할 플레이어의 이름 문자열 포인터' },
+          { name: 'new_score', type: 'long', desc: '등록할 최종 점수' }
+        ],
+        ret: 'void',
+        example: `<span class="code-fn">rank_add</span>(player_name, score);`
+      },
+      {
+        name: 'rank_save',
+        sig: 'void rank_save(void)',
+        brief: '랭킹 데이터를 로컬 파일에 바이너리 저장',
+        desc: '"ranking.dat" 파일을 이진 쓰기(wb) 모드로 열어 현재 저장된 기록의 개수(rank_count)와 전체 랭킹 배열 구조체 데이터를 파일에 기록(fwrite)합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">rank_save</span>();`
+      },
+      {
+        name: 'rank_load',
+        sig: 'void rank_load(void)',
+        brief: '로컬 파일에서 랭킹 데이터 읽어오기',
+        desc: '"ranking.dat" 파일이 존재할 경우 이진 읽기(rb) 모드로 열어 데이터 개수와 랭킹 배열을 메모리(fread)에 불러옵니다. 파일이 존재하지 않으면 rank_init() 함수를 호출하여 초기화된 상태로 시작합니다.',
+        params: [],
+        ret: 'void',
+        example: `<span class="code-fn">rank_load</span>();`
+      }
+    ]
+  }
+];
+
+// 전체 함수 평탄화 배열 (이전/다음 네비게이션용)
+const flatFunctions = [];
+API_DATA.forEach(cat => {
+  cat.functions.forEach(fn => {
+    flatFunctions.push({
+      ...fn,
+      catTitle: cat.title,
+      catIcon: cat.icon,
+      parentCategory: cat // 부모 객체 참조
+    });
+  });
+});
+
+let currentFnIndex = -1; // 현재 보고 있는 함수 인덱스
+let currentModule = null; // 현재 선택된 모듈
+
+// ─────────────────────────────────────────────
+//  DOM ELEMENTS
+// ─────────────────────────────────────────────
+const navList = document.getElementById('navList');
+const searchWrap = document.getElementById('searchWrap');
+const searchInput = document.getElementById('searchInput');
+const moduleGrid = document.getElementById('moduleGrid');
+
+const homeView = document.getElementById('homeView');
+const moduleView = document.getElementById('moduleView');
+const detailView = document.getElementById('detailView');
+
+const modTitle = document.getElementById('modTitle');
+const modDesc = document.getElementById('modDesc');
+const modFnGrid = document.getElementById('modFnGrid');
+
+const docCategory = document.getElementById('docCategory');
+const docTitle = document.getElementById('docTitle');
+const docBrief = document.getElementById('docBrief');
+const docSignature = document.getElementById('docSignature');
+const docDesc = document.getElementById('docDesc');
+const paramSection = document.getElementById('paramSection');
+const docParams = document.getElementById('docParams');
+const docReturn = document.getElementById('docReturn');
+const docExample = document.getElementById('docExample');
+const exampleSection = document.getElementById('exampleSection');
+
+const btnPrevFn = document.getElementById('btnPrevFn');
+const btnNextFn = document.getElementById('btnNextFn');
+const prevFnName = document.getElementById('prevFnName');
+const nextFnName = document.getElementById('nextFnName');
+
+const sidebarToggleBtn = document.getElementById('sidebarToggle');
+
+// ─────────────────────────────────────────────
+//  KEYWORD HIGHLIGHTING (DOM WALKER)
+// ─────────────────────────────────────────────
+function applyKeywordColors(element) {
+  const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+  let node;
+  const textNodes = [];
+  while ((node = walk.nextNode())) textNodes.push(node);
+  
+  textNodes.forEach(n => {
+    let text = n.nodeValue;
+    if (/\b(ship|player|enemy|alien|aliens)\b/i.test(text)) {
+      let fragment = document.createDocumentFragment();
+      let tempDiv = document.createElement('div');
+      
+      tempDiv.innerHTML = text
+        .replace(/\b(ship)\b/gi, '<span class="kw-ship">$&</span>')
+        .replace(/\b(player)\b/gi, '<span class="kw-player">$&</span>')
+        .replace(/\b(enemy|alien|aliens)\b/gi, '<span class="kw-enemy">$&</span>');
+        
+      while (tempDiv.firstChild) {
+        fragment.appendChild(tempDiv.firstChild);
+      }
+      n.parentNode.replaceChild(fragment, n);
+    }
+  });
+}
+
+// ─────────────────────────────────────────────
+//  SIDEBAR TOGGLE LOGIC
+// ─────────────────────────────────────────────
+sidebarToggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('sidebar-closed');
+});
+
+searchWrap.addEventListener('click', () => {
+  if (document.body.classList.contains('sidebar-closed')) {
+    document.body.classList.remove('sidebar-closed');
+    setTimeout(() => { searchInput.focus(); }, 400); 
+  }
+});
+
+// ─────────────────────────────────────────────
+//  INIT HOME CARDS
+// ─────────────────────────────────────────────
+function renderHomeCards() {
+  moduleGrid.innerHTML = '';
+  API_DATA.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-icon">${cat.icon}</span>
+        <span class="card-count">${cat.functions.length} funcs</span>
+      </div>
+      <div class="card-title">${cat.title}</div>
+      <div class="card-desc">${cat.desc}</div>
+    `;
+    card.addEventListener('click', () => {
+      showModuleView(cat);
+    });
+    moduleGrid.appendChild(card);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  INIT SIDEBAR NAV
+// ─────────────────────────────────────────────
+function renderSidebar(filterText = '') {
+  navList.innerHTML = '';
+  
+  API_DATA.forEach(cat => {
+    const filteredFns = cat.functions.filter(fn => 
+      fn.name.toLowerCase().includes(filterText) || 
+      fn.brief.toLowerCase().includes(filterText)
+    );
+
+    if (filteredFns.length === 0) return;
+
+    const catDiv = document.createElement('div');
+    catDiv.className = 'nav-category';
+    
+    const catTitle = document.createElement('div');
+    catTitle.className = 'nav-category-title';
+    catTitle.innerHTML = `<div class="cat-icon">${cat.icon}</div> <div class="cat-text">${cat.title}</div>`;
+    
+    catTitle.addEventListener('click', () => {
+      if (document.body.classList.contains('sidebar-closed')) {
+        document.body.classList.remove('sidebar-closed');
+      } else {
+        showModuleView(cat); 
+      }
+    });
+    
+    catDiv.appendChild(catTitle);
+
+    filteredFns.forEach(fn => {
+      const item = document.createElement('div');
+      item.className = `nav-item ${getFnColorClass(fn.name)}`; // 동적 색상 클래스 적용
+      item.textContent = fn.name;
+      
+      item.addEventListener('click', () => {
+        showDetailView(fn, cat.title, cat.icon, cat);
+      });
+      
+      catDiv.appendChild(item);
+    });
+
+    navList.appendChild(catDiv);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  VIEW SWITCHING LOGIC
+// ─────────────────────────────────────────────
+function showHome() {
+  moduleView.style.display = 'none';
+  detailView.style.display = 'none';
+  currentModule = null;
+  
+  homeView.style.display = 'none';
+  setTimeout(() => { homeView.style.display = 'flex'; }, 10);
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+}
+
+// 모듈 목록 화면 표시
+function showModuleView(cat) {
+  currentModule = cat; 
+  
+  homeView.style.display = 'none';
+  detailView.style.display = 'none';
+  
+  moduleView.style.display = 'none';
+  setTimeout(() => { moduleView.style.display = 'block'; }, 10);
+
+  modTitle.innerHTML = `${cat.icon} ${cat.title}`;
+  modDesc.textContent = cat.desc;
+
+  modFnGrid.innerHTML = '';
+  cat.functions.forEach(fn => {
+    const card = document.createElement('div');
+    card.className = 'fn-card';
+    // fn-card-name에 동적 색상 클래스 부여
+    card.innerHTML = `
+      <div class="fn-card-name ${getFnColorClass(fn.name)}">${fn.name}</div>
+      <div class="fn-card-brief">${fn.brief}</div>
+    `;
+    card.addEventListener('click', () => {
+      showDetailView(fn, cat.title, cat.icon, cat);
+    });
+    modFnGrid.appendChild(card);
+  });
+
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+}
+
+function goBackToModule() {
+  if (currentModule) {
+    showModuleView(currentModule);
+  } else {
+    showHome();
+  }
+}
+
+// 상세 설명 화면 표시
+function showDetailView(fn, catTitle, catIcon, parentCategory) {
+  homeView.style.display = 'none';
+  moduleView.style.display = 'none';
+  
+  if (parentCategory) {
+    currentModule = parentCategory;
+  } else {
+    const found = flatFunctions.find(f => f.name === fn.name);
+    if(found) currentModule = found.parentCategory;
+  }
+  
+  detailView.style.display = 'none';
+  setTimeout(() => { detailView.style.display = 'block'; }, 10);
+
+  currentFnIndex = flatFunctions.findIndex(f => f.name === fn.name);
+  updateNavigationButtons();
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    if (el.textContent === fn.name) el.classList.add('active');
+    else el.classList.remove('active');
+  });
+
+  docCategory.innerHTML = `${catIcon} ${catTitle}`;
+  docTitle.textContent = `${fn.name}()`;
+  // 상단 타이틀 텍스트 색상 적용
+  docTitle.className = `doc-title ${getFnColorClass(fn.name)}`;
+  
+  docBrief.textContent = fn.brief;
+  docDesc.textContent = fn.desc;
+  
+  const parts = fn.sig.split(' ');
+  const retType = parts[0];
+  const rest = parts.slice(1).join(' ');
+  const funcName = rest.split('(')[0];
+  const paramsStr = rest.split('(')[1];
+  
+  docSignature.innerHTML = `
+    <span class="code-type">${retType}</span> 
+    <span class="code-func ${getFnColorClass(funcName)}">${funcName}</span><span class="code-paren">(</span>${paramsStr}
+  `;
+
+  if (fn.params && fn.params.length > 0) {
+    paramSection.style.display = 'block';
+    docParams.innerHTML = fn.params.map(p => `
+      <tr>
+        <td>
+          <div class="p-name">${p.name}</div>
+          <div class="p-type">${p.type}</div>
+        </td>
+        <td>
+          <div class="p-desc">${p.desc}</div>
+        </td>
+      </tr>
+    `).join('');
+  } else {
+    paramSection.style.display = 'none';
+  }
+
+  docReturn.textContent = fn.ret;
+  
+  if (fn.example) {
+      exampleSection.style.display = 'block';
+      docExample.innerHTML = fn.example;
+  } else {
+      exampleSection.style.display = 'none';
+  }
+  
+  // 렌더링된 텍스트에 키워드(색상) 하이라이팅 적용
+  document.querySelectorAll('.content-text').forEach(el => applyKeywordColors(el));
+}
+
+// ─────────────────────────────────────────────
+//  PREV / NEXT NAVIGATION LOGIC
+// ─────────────────────────────────────────────
+function updateNavigationButtons() {
+  if (currentFnIndex > 0) {
+    btnPrevFn.classList.remove('hidden');
+    const prevName = flatFunctions[currentFnIndex - 1].name;
+    prevFnName.textContent = prevName + '()';
+    prevFnName.className = `nav-fn-name ${getFnColorClass(prevName)}`; // 동적 색상 클래스 적용
+  } else {
+    btnPrevFn.classList.add('hidden');
+  }
+
+  if (currentFnIndex < flatFunctions.length - 1) {
+    btnNextFn.classList.remove('hidden');
+    const nextName = flatFunctions[currentFnIndex + 1].name;
+    nextFnName.textContent = nextName + '()';
+    nextFnName.className = `nav-fn-name ${getFnColorClass(nextName)}`; // 동적 색상 클래스 적용
+  } else {
+    btnNextFn.classList.add('hidden');
+  }
+}
+
+function goPrevFn() {
+  if (currentFnIndex > 0) {
+    const prevFn = flatFunctions[currentFnIndex - 1];
+    showDetailView(prevFn, prevFn.catTitle, prevFn.catIcon, prevFn.parentCategory);
+  }
+}
+
+function goNextFn() {
+  if (currentFnIndex < flatFunctions.length - 1) {
+    const nextFn = flatFunctions[currentFnIndex + 1];
+    showDetailView(nextFn, nextFn.catTitle, nextFn.catIcon, nextFn.parentCategory);
+  }
+}
+
+// ─────────────────────────────────────────────
+//  SEARCH LOGIC
+// ─────────────────────────────────────────────
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.trim().toLowerCase();
+  renderSidebar(query);
+});
+
+// 시작 시 초기화
+renderHomeCards();
+renderSidebar();
+</script>
+
+</body>
+</html>
