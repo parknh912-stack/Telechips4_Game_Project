@@ -1,8 +1,8 @@
 /*
-ÅÚ·¹Ä¨½º ÀÓº£µğµå ½ºÄğ 4±â
-°ÔÀÓÇÁ·ÎÁ§Æ®
-ÆÀ¿ø : ¹Ú³²Çö, Ãµ¿ø¼®, ½ÅÁ¦Çö, ±èº´Çå
-ÇÁ·ÎÁ§Æ® ¸í : Space Survivor
+í…”ë ˆì¹©ìŠ¤ ì„ë² ë””ë“œ ìŠ¤ì¿¨ 4ê¸°
+ê²Œì„í”„ë¡œì íŠ¸
+íŒ€ì› : ë°•ë‚¨í˜„, ì²œì›ì„, ì‹ ì œí˜„, ê¹€ë³‘í—Œ
+í”„ë¡œì íŠ¸ ëª… : Space Survivor
 */
 
 /* --- header & addon --- */
@@ -18,15 +18,15 @@
 #include "UI/UI.h"
 #include "Rank.h"
 #include "Item/Item.h"
-#include "Level_UP/Level_up.h"			// ·¹º§ ¾÷(½ºÅÈ °­È­) / 0327 ½ÅÁ¦Çö
-#include "Stage/Stage.h"                // ½ºÅ×ÀÌÁö /0329 ¹Ú³²Çö
-#include "Backgrounds/Background.h"     // ¹è°æ
+#include "Level_UP/Level_up.h"			// ë ˆë²¨ ì—…(ìŠ¤íƒ¯ ê°•í™”) / 0327 ì‹ ì œí˜„
+#include "Stage/Stage.h"                // ìŠ¤í…Œì´ì§€ /0329 ë°•ë‚¨í˜„
+#include "Backgrounds/Background.h"     // ë°°ê²½
 
 /* --- General --- */
 long frames = 0;
 long score = 0;
 int level = 1;
-int stage_num = 0;                      //0329 ¹Ú³²Çö
+int stage_num = 0;                      //0329 ë°•ë‚¨í˜„
 STATE current_state = STATE_MENU;
 
 void must_init(bool test, const char* description)
@@ -57,8 +57,8 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 
 
 
-// ÀÛ¼ºÀÚ : ¹Ú³²Çö
-/* --- ¿øÇü Ãæµ¹ --- */
+// ì‘ì„±ì : ë°•ë‚¨í˜„
+/* --- ì›í˜• ì¶©ëŒ --- */
 bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
     long dx = cx2 - cx1;
     long dy = cy2 - cy1;
@@ -67,17 +67,17 @@ bool collide_circle(int cx1, int cy1, int r1, int cx2, int cy2, int r2) {
     long radium_Square = (radium_Sum * radium_Sum);
     long distance = (dx * dx) + (dy * dy);
 
-    return (distance <= radium_Square);     //¹İÁö¸§ÀÇ Á¦°öÀÌ ´õ Å©¸é Ãæµ¹
+    return (distance <= radium_Square);     //ë°˜ì§€ë¦„ì˜ ì œê³±ì´ ë” í¬ë©´ ì¶©ëŒ
 }
 
-/* --- Rank --- */ //0327 ±èº´Çå
-RANK ranking[RANK_QUEUE_SIZE]; // Rank.hÀÇ extern º¯¼ö ½ÇÁ¦ ¼±¾ğ
+/* --- Rank --- */ //0327 ê¹€ë³‘í—Œ
+RANK ranking[RANK_QUEUE_SIZE]; // Rank.hì˜ extern ë³€ìˆ˜ ì‹¤ì œ ì„ ì–¸
 int rank_count = 0;
 char player_name[MAX_NAME_LEN] = "";
 extern int name_len = 0;
 
 /* --- Gameplay --- */
-// ÀÛ¼ºÀÚ: ½ÅÁ¦Çö
+// ì‘ì„±ì: ì‹ ì œí˜„
 void pause_resume_game(STATE* state)
 {
     switch (*state)
@@ -92,17 +92,17 @@ void pause_resume_game(STATE* state)
     }
 }
 
-// 0327 ½ÅÁ¦Çö
-// °ÔÀÓ ÃÊ±âÈ­ µ¿ÀÛÀ» ÇÔ¼ö·Î ¸ğµâÈ­
+// 0327 ì‹ ì œí˜„
+// ê²Œì„ ì´ˆê¸°í™” ë™ì‘ì„ í•¨ìˆ˜ë¡œ ëª¨ë“ˆí™”
 void game_state_init(void)
 {
     frames = 0;
     score = 0;
     level = 1;
     score_display = 0;
-    stage_alert_timer = al_get_time();  // 0330 ½ÅÁ¦Çö - ½ºÅ×ÀÌÁö 1 ÁøÀÔ ¾Ë¸²
+    stage_alert_timer = al_get_time();  // 0330 ì‹ ì œí˜„ - ìŠ¤í…Œì´ì§€ 1 ì§„ì… ì•Œë¦¼
 
-    stage_init();   //0329 ¹Ú³²Çö
+    stage_init();   //0329 ë°•ë‚¨í˜„
     ship_init();
     backgound_init();
     hud_init();
@@ -116,7 +116,7 @@ void game_state_init(void)
     current_state = STATE_PLAYING;
 }
 
-// ÀÛ¼ºÀÚ: ½ÅÁ¦Çö
+// ì‘ì„±ì: ì‹ ì œí˜„
 void game_state_update(STATE* state, bool* done)
 {
     bool is_select_pressed = (key[ALLEGRO_KEY_ENTER] & KEY_SEEN) || (key[ALLEGRO_KEY_SPACE] & KEY_SEEN);
@@ -135,7 +135,7 @@ void game_state_update(STATE* state, bool* done)
 
             else if (current_menu_selection == 1)
             {
-                *state = STATE_ABOUT;//0328 ±èº´Çå °×¼³¸í
+                *state = STATE_ABOUT;//0328 ê¹€ë³‘í—Œ ê²œì„¤ëª…
             }
             else if (current_menu_selection == 2)
             {
@@ -146,7 +146,7 @@ void game_state_update(STATE* state, bool* done)
             {
                 *done = true;
             }
-            //else if (current_menu_selection == 4)//0330 ±èº´Çå Àß ³ª¿À´ÂÁö Å×½ºÆ®
+            //else if (current_menu_selection == 4)//0330 ê¹€ë³‘í—Œ ì˜ ë‚˜ì˜¤ëŠ”ì§€ í…ŒìŠ¤íŠ¸
             //{
             //    *state = STATE_ENDING_SCENE;
             //}
@@ -154,10 +154,10 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_PLAYING:
-        stage_update(); //0329 ¹Ú³²Çö
+        stage_update(); //0329 ë°•ë‚¨í˜„
 
-        // 0330 ½ÅÁ¦Çö - ¹ö±× ¼öÁ¤
-        // ½ºÅ×ÀÌÁö Å¬¸®¾î·Î »óÅÂ°¡ ¹Ù²î¾úÀ¸¸é ³ª¸ÓÁö¸¦ ½ºÅµÇÒ °Í
+        // 0330 ì‹ ì œí˜„ - ë²„ê·¸ ìˆ˜ì •
+        // ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ë¡œ ìƒíƒœê°€ ë°”ë€Œì—ˆìœ¼ë©´ ë‚˜ë¨¸ì§€ë¥¼ ìŠ¤í‚µí•  ê²ƒ
         if (*state != STATE_PLAYING)
             break;
 
@@ -166,29 +166,29 @@ void game_state_update(STATE* state, bool* done)
         stars_update();
         ship_update();
         aliens_update();
-        item_update();  //0327 ¹Ú³²Çö
+        item_update();  //0327 ë°•ë‚¨í˜„
         hud_update();
-        // ÀÛ¼ºÀÚ: ½ÅÁ¦Çö
-        // ·¹º§ Áõ°¡ÇÏ´Â Á¡¼ö¿¡ µû¶ó ÇØ´ç Á¶°Ç °Ë»ç
+        // ì‘ì„±ì: ì‹ ì œí˜„
+        // ë ˆë²¨ ì¦ê°€í•˜ëŠ” ì ìˆ˜ì— ë”°ë¼ í•´ë‹¹ ì¡°ê±´ ê²€ì‚¬
         *state = check_level_up(score);
         current_menu_selection = 0;
 
-        //0327 ±èº´Çå
+        //0327 ê¹€ë³‘í—Œ
         if (ship.curr_lifes < 0)
         {
-            // ·©Å· ÁøÀÔ °¡´É ¿©ºÎ Ã¼Å©
+            // ë­í‚¹ ì§„ì… ê°€ëŠ¥ ì—¬ë¶€ ì²´í¬
             if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
             {
-                *state = STATE_INPUT_NAME; // ·©Å·±ÇÀÌ¸é ÀÌ¸§ ÀÔ·ÂÀ¸·Î
+                *state = STATE_INPUT_NAME; // ë­í‚¹ê¶Œì´ë©´ ì´ë¦„ ì…ë ¥ìœ¼ë¡œ
                 name_len = 0;
                 player_name[0] = '\0';
             }
             else
             {
-                *state = STATE_GAMEOVER;   // ¾Æ´Ï¸é ±×³É °ÔÀÓ¿À¹ö·Î
+                *state = STATE_GAMEOVER;   // ì•„ë‹ˆë©´ ê·¸ëƒ¥ ê²Œì„ì˜¤ë²„ë¡œ
             }
             current_menu_selection = 0;
-            return; // »óÅÂ°¡ ¹Ù²î¾úÀ¸¹Ç·Î Áï½Ã ºüÁ®³ª°¨
+            return; // ìƒíƒœê°€ ë°”ë€Œì—ˆìœ¼ë¯€ë¡œ ì¦‰ì‹œ ë¹ ì ¸ë‚˜ê°
         }
 
         break;
@@ -210,6 +210,7 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_GAMEOVER:
+        menu_input_update(3);
         if (is_select_pressed)
         {
             if (current_menu_selection == 0)
@@ -229,7 +230,7 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_NEWGAME:
-        game_state_init();		// ¼öÁ¤, 0327 ½ÅÁ¦Çö
+        game_state_init();		// ìˆ˜ì •, 0327 ì‹ ì œí˜„
         return;
 
     case STATE_RANK:
@@ -246,58 +247,58 @@ void game_state_update(STATE* state, bool* done)
         if (is_select_pressed)
         {
             if (name_len > 0)
-            { // ÀÌ¸§ÀÌ ÇÑ ±ÛÀÚ¶óµµ ÀÖÀ» ¶§¸¸
-                rank_add(player_name, score); // »ğÀÔÁ¤·Ä
-                rank_save();                  // ÆÄÀÏ¿¡ ±â·Ï
-                *state = STATE_RANK;          // ·©Å·ÆÇÀ¸·Î ÀÌµ¿ÇØ¼­ Á¡¼ö È®ÀÎ
+            { // ì´ë¦„ì´ í•œ ê¸€ìë¼ë„ ìˆì„ ë•Œë§Œ
+                rank_add(player_name, score); // ì‚½ì…ì •ë ¬
+                rank_save();                  // íŒŒì¼ì— ê¸°ë¡
+                *state = STATE_RANK;          // ë­í‚¹íŒìœ¼ë¡œ ì´ë™í•´ì„œ ì ìˆ˜ í™•ì¸
                 current_menu_selection = 0;
             }
         }
         break;
 
-    case STATE_LEVEL_UP:        // 0326 ½ÅÁ¦Çö
+    case STATE_LEVEL_UP:        // 0326 ì‹ ì œí˜„
         menu_input_update(6);
         if (is_select_pressed)
         {
             *state = STATE_LEVEL_UP;
 
-            // ÀçÀÛ¼ºÀÚ: ½ÅÁ¦Çö
-            // Ä³¸¯ÅÍ °­È­ ´Ü¼øÈ­ÇÏ¿© ±¸Çö(0326 ½ÅÁ¦Çö)
-            // °­È­ ÇÔ¼ö¸¦ µû·Î ±¸ÇöÇÏ¿© Àû¿ë(0327 ½ÅÁ¦Çö)
+            // ì¬ì‘ì„±ì: ì‹ ì œí˜„
+            // ìºë¦­í„° ê°•í™” ë‹¨ìˆœí™”í•˜ì—¬ êµ¬í˜„(0326 ì‹ ì œí˜„)
+            // ê°•í™” í•¨ìˆ˜ë¥¼ ë”°ë¡œ êµ¬í˜„í•˜ì—¬ ì ìš©(0327 ì‹ ì œí˜„)
             switch (current_menu_selection)
             {
             case 0:
-                // °ø°İ·Â Áõ°¡ Àû¿ë
+                // ê³µê²©ë ¥ ì¦ê°€ ì ìš©
                 printf("Before: %d\n", ship.damage);
                 damage_up();
                 printf("After: %d\n", ship.damage);
                 break;
             case 1:
-                // Åõ»çÃ¼ ¹ß»ç ¼ö Áõ°¡
+                // íˆ¬ì‚¬ì²´ ë°œì‚¬ ìˆ˜ ì¦ê°€
                 printf("Before: %d\n", ship.shot_count);
                 shot_count_up();
                 printf("After: %d\n", ship.shot_count);
                 break;
             case 2:
-                // °ø°İ ¼Óµµ Áõ°¡
+                // ê³µê²© ì†ë„ ì¦ê°€
                 printf("Before: %f\n", ship.fire_rate);
                 fire_rate_up();
                 printf("After: %f\n", ship.fire_rate);
                 break;
             case 3:
-                // ÀÌµ¿ ¼Óµµ Áõ°¡
+                // ì´ë™ ì†ë„ ì¦ê°€
                 printf("Before: %f\n", ship.speed);
                 speed_up();
                 printf("After: %f\n", ship.speed);
                 break;
             case 4:
-                // Ã¼·Â ÃÖ´ëÄ¡ Áõ°¡
+                // ì²´ë ¥ ìµœëŒ€ì¹˜ ì¦ê°€
                 printf("Before: %d\n", ship.max_lifes);
                 max_lifes_up();
                 printf("After: %d\n", ship.max_lifes);
                 break;
             case 5:
-                // Ã¼·Â Áï½Ã È¸º¹
+                // ì²´ë ¥ ì¦‰ì‹œ íšŒë³µ
                 printf("Before: %d\n", ship.curr_lifes);
                 instant_lifes();
                 printf("After: %d\n", ship.curr_lifes);
@@ -308,17 +309,17 @@ void game_state_update(STATE* state, bool* done)
         }
         break;
 
-    case STATE_ABOUT: //0328 ±èº´Çå °×¼³¸í
-        menu_input_update(1);//0328 ±èº´Çå °×¼³¸í
+    case STATE_ABOUT: //0328 ê¹€ë³‘í—Œ ê²œì„¤ëª…
+        menu_input_update(1);//0328 ê¹€ë³‘í—Œ ê²œì„¤ëª…
         if (is_select_pressed)
         {
 
-            *state = STATE_MENU;//0328 ±èº´Çå °×¼³¸í
-            current_menu_selection = 0;//0328 ±èº´Çå °×¼³¸í
+            *state = STATE_MENU;//0328 ê¹€ë³‘í—Œ ê²œì„¤ëª…
+            current_menu_selection = 0;//0328 ê¹€ë³‘í—Œ ê²œì„¤ëª…
         }
         break;
 
-    case STATE_ENDING_SCENE: // 0330 ±èº´Çå ¿£µù ¾À
+    case STATE_ENDING_SCENE: // 0330 ê¹€ë³‘í—Œ ì—”ë”© ì”¬
     {
         static int ending_frame_counter = 0;
         if (ending_frame_counter < 800)ending_frame_counter++;
@@ -336,14 +337,14 @@ void game_state_update(STATE* state, bool* done)
     }
     break;
 
-    case STATE_ENDING:          // 0330 ½ÅÁ¦Çö - ¿£µù È­¸é
+    case STATE_ENDING:          // 0330 ì‹ ì œí˜„ - ì—”ë”© í™”ë©´
         menu_input_update(2);
 
         if (is_select_pressed)
         {
             if (current_menu_selection == 0)
             {
-                // ·©Å· ÁøÀÔ Ã¼Å© ÈÄ ÀÌ¸§ ÀÔ·ÂÀ¸·Î
+                // ë­í‚¹ ì§„ì… ì²´í¬ í›„ ì´ë¦„ ì…ë ¥ìœ¼ë¡œ
                 if (rank_count < MAX_RANKING || score > ranking[MAX_RANKING - 1].score)
                 {
                     *state = STATE_INPUT_NAME;
@@ -352,7 +353,7 @@ void game_state_update(STATE* state, bool* done)
                 }
                 else
                 {
-                    *state = STATE_RANK;  // ·©Å·±Ç ¾Æ´Ï¸é º¸±â¸¸
+                    *state = STATE_RANK;  // ë­í‚¹ê¶Œ ì•„ë‹ˆë©´ ë³´ê¸°ë§Œ
                 }
             }
             else if (current_menu_selection == 1)
@@ -393,7 +394,7 @@ int main()
 
     must_init(al_init_image_addon(), "image");
     sprites_init();
-    ui_init(); // UI ½ÃÆ® ·Îµå
+    ui_init(); // UI ì‹œíŠ¸ ë¡œë“œ
     backgound_init();
     hud_init();
 
@@ -434,7 +435,7 @@ int main()
         case ALLEGRO_EVENT_TIMER:
             game_state_update(&current_state, &done);
 
-            // ÀÛ¼ºÀÚ: ½ÅÁ¦Çö
+            // ì‘ì„±ì: ì‹ ì œí˜„
             if (key[ALLEGRO_KEY_ESCAPE] & KEY_SEEN)
             {
                 if (current_state == STATE_PLAYING || current_state == STATE_PAUSE) 
@@ -445,14 +446,14 @@ int main()
 
             redraw = true;
 
-            // 0330 ½ÅÁ¦Çö - STATE_PLAYING »óÅÂ¿¡ ÀÖÀ» ¶§¿¡¸¸ ÇÁ·¹ÀÓ ¼ö¸¦ Áõ°¡
-            // ±× ¿ÜÀÇ °æ¿ì´Â Áõ°¡½ÃÅ°Áö ¾ÊÀ½
+            // 0330 ì‹ ì œí˜„ - STATE_PLAYING ìƒíƒœì— ìˆì„ ë•Œì—ë§Œ í”„ë ˆì„ ìˆ˜ë¥¼ ì¦ê°€
+            // ê·¸ ì™¸ì˜ ê²½ìš°ëŠ” ì¦ê°€ì‹œí‚¤ì§€ ì•ŠìŒ
             if (current_state == STATE_PLAYING)
                 ++frames;
 
             break;
 
-        case ALLEGRO_EVENT_KEY_CHAR: // ½Ç½Ã°£ ¹®ÀÚ ÀÔ·Â Ã³¸® : ±èº´Çå
+        case ALLEGRO_EVENT_KEY_CHAR: // ì‹¤ì‹œê°„ ë¬¸ì ì…ë ¥ ì²˜ë¦¬ : ê¹€ë³‘í—Œ
             if (current_state == STATE_INPUT_NAME) 
             {
                 if (event.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && name_len > 0) 
@@ -481,7 +482,7 @@ int main()
 
         int time = al_get_time();
 
-        // ÀÛ¼ºÀÚ: ±èº´Çå
+        // ì‘ì„±ì: ê¹€ë³‘í—Œ
         if (redraw && al_is_event_queue_empty(queue))
         {
             disp_pre_draw();
