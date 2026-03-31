@@ -344,7 +344,7 @@ void ui_draw_h2p_menu()//0328 김병헌
             0, 0,                      // 2, 3. 소스 시작 (sx, sy)
             al_get_bitmap_width(sprites.item[i]),  // 4. 소스 가로 (sw)
             al_get_bitmap_height(sprites.item[i]), // 5. 소스 세로 (sh)
-            m.x / 2 + 120, m.y - 6 + (i)*25,          // 6, 7. 대상 위치 (dx, dy)
+            m.x / 2 + 120, m.y - 6 + (i-1)*25,          // 6, 7. 대상 위치 (dx, dy)
             20,  // 8. 대상 가로 (dw) - 누락되었던 부분
             20, // 9. 대상 세로 (dh) - 누락되었던 부분
             0                          // 10. 플래그
@@ -358,6 +358,7 @@ void ui_draw_h2p_menu()//0328 김병헌
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 2*25, 0, 1, "attack speed bonus");//0330 김병헌
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 3*25, 0, 1, "random box");//0330 김병헌
     draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 4 * 25, 0, 1, "shield");//0330 김병헌
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 5 * 25, 0, 1, "shield");//0330 김병헌
     
     
 }
