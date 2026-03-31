@@ -5,6 +5,7 @@
 #include "../Sprites.h"
 #include "../Player_Enemy/Player_Enemy.h"
 #include "../Rank.h"
+#include "../Level_UP/Level_UP.h"//ÃÖÁ¾ Ã¼·Â¹Ù ±¸Çö
 
 // --- stars ---
 STAR stars[STARS_N];
@@ -86,9 +87,6 @@ void hud_draw()
 {
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), HUD_SCORE_X, HUD_SCORE_Y, 0, "%06ld", score_display);//0328 ±èº´Çå
 
-    float hp_ratio = (float)ship.curr_lifes / PLAYER_MAX_HP_BASE;//0328 ±èº´Çå
-    if (hp_ratio < 0) hp_ratio = 0;
-
     al_draw_textf(font,al_map_rgb_f(1, 1, 1), HUD_LEVEL_X, HUD_LEVEL_Y, 0,"Level: %02d",level);//0328 ±èº´Çå
 
     //ÇöÀç ½ºÅ×ÀÌÁö Ãâ·Â
@@ -97,11 +95,9 @@ void hud_draw()
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 00, "y : %d", (int)ship.cy);
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 210, 00, "sec : %d", (frames / 60));
 
-    int spacing = LIFE_W + 1;
-    al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, spacing, HUD_LIFE_BAR_Y, (LIFE_W+2) * ship.max_lifes, LIFE_BAR_SRC_H, 0);//0328±èº´Çå
-    //for (int i = 0; i < ship.curr_lifes; i++)
-    //    al_draw_bitmap(sprites.life, HUD_LIFE_ICON_OFFSET_X + (i * spacing), HUD_LIFE_BAR_Y, 0);//0328 ±èº´Çå
-    al_draw_filled_rectangle(10, HUD_LIFE_BAR_Y, 10 + (1280 * hp_ratio), HUD_LIFE_BAR_Y + 15, al_map_rgb(255, 0, 0));
+    al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, HUD_LIFE_BAR_X, HUD_LIFE_BAR_Y, 4*(HUD_LIFE_BAR_X + ship.max_lifes - 6), HUD_LIFE_BAR_Y, 0);
+    al_draw_filled_rectangle(HUD_LIFE_BAR_X, HUD_LIFE_BAR_Y + 2, 4*(ship.curr_lifes), HUD_LIFE_BAR_Y + HUD_LIFE_WIDTH + 1, al_map_rgb(255, 0, 0));
+    al_draw_textf(font, COLOR_YELLOW, 4 * (HUD_LIFE_BAR_X + ship.max_lifes - 2), HUD_LIFE_BAR_Y*1.5, 0, "%.1f", (float)100* ship.curr_lifes / ship.max_lifes);
     
     // 0330 ½ÅÁ¦Çö - º¸½º ³ªÅ¸³­´Ù°í È­¸é¿¡ ¸Þ½ÃÁö 2ÃÊ°£ Ç¥½Ã
     if (is_boss_alive() && boss_alert_timer >= 0.0 && (al_get_time() - boss_alert_timer < 2.0))
@@ -132,7 +128,7 @@ void hud_draw()
 
 	al_draw_textf(
 		bold_font,
-		al_map_rgb_f(1.0, 1.0, 1.0),
+		COLOR_WHITE,
 		BUFFER_W / 2, 15,
 		ALLEGRO_ALIGN_CENTER,
 		"TIME   %02d:%02d:%03d", min, sec, milli_sec);

@@ -43,11 +43,13 @@
 #define HUD_SCORE_Y                15
 #define HUD_LEVEL_X                5
 #define HUD_LEVEL_Y                90
-#define HUD_LIFE_BAR_Y             35
+#define HUD_LIFE_BAR_X             5
+#define HUD_LIFE_BAR_Y             40
+#define HUD_LIFE_WIDTH             38
 #define HUD_LIFE_ICON_OFFSET_X     9
 #define LIFE_BAR_SRC_W             222
 #define LIFE_BAR_SRC_H             38
-#define PLAYER_MAX_HP_BASE         5.0f
+#define PLAYER_HP_RATIO         3.0f
 
 /* -- MENU UI -- */
 #define MENU_TITLE_OFFSET_Y        20
