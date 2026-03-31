@@ -124,7 +124,7 @@ void game_state_update(STATE* state, bool* done)
     switch (*state)
     {
     case STATE_MENU:
-        menu_input_update(5);
+        menu_input_update(4);
         if (is_select_pressed)
         {
             if (current_menu_selection == 0)
@@ -145,10 +145,10 @@ void game_state_update(STATE* state, bool* done)
             {
                 *done = true;
             }
-            else if (current_menu_selection == 4)//0330 김병헌 잘 나오는지 테스트
-            {
-                *state = STATE_ENDING_SCENE;
-            }
+            //else if (current_menu_selection == 4)//0330 김병헌 잘 나오는지 테스트
+            //{
+            //    *state = STATE_ENDING_SCENE;
+            //}
         }
         break;
 
