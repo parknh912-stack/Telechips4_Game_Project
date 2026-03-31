@@ -11,3 +11,6 @@
 # 0328 ~ 0329 (예정)
 - 변수 최적화(상수 대신 #define 변수 사용)
 - 메인 메뉴에 게임 설명 페이지 추가
+
+
+[API 문서 보기](https://htmlpreview.github.io/?https://github.com/parknh912-stack/Telechips4_Game_Project/blob/0331_REAL_FINAL/API%20Document.html
