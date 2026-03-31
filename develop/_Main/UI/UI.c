@@ -333,10 +333,10 @@ void ui_draw_level_up_menu()
 
 void ui_draw_h2p_menu()//0328 ±èº´Çå
 {
-    int extra_y = 50;
+    int extra_y = 100;
     MENU m = { BUFFER_W / 2, BUFFER_H / 2, 220, 300, {"Back"}, 1, current_menu_selection };
     draw_menu_ui(&m, "ABOUT", UI_BTN_POS_Y_LOW - extra_y, UI_PANEL_SIZE_W_VL, UI_PANEL_SIZE_H_L+100, bold_font);
-    for (int i = 1; i <= 5; i++)
+    for (int i = 1; i <= 4; i++)
     {
         al_draw_scaled_bitmap
         (
@@ -344,19 +344,20 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
             0, 0,                      // 2, 3. ¼Ò½º ½ÃÀÛ (sx, sy)
             al_get_bitmap_width(sprites.item[i]),  // 4. ¼Ò½º °¡·Î (sw)
             al_get_bitmap_height(sprites.item[i]), // 5. ¼Ò½º ¼¼·Î (sh)
-            m.x / 2 + 120, m.y - 6 + (i-1)*25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
+            m.x / 2 + 120, m.y - 6 + (i)*25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
             20,  // 8. ´ë»ó °¡·Î (dw) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             20, // 9. ´ë»ó ¼¼·Î (dh) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             0                          // 10. ÇÃ·¡±×
         );
     }
     
-    
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonus");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "random box");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 4 * 25, ALLEGRO_ALIGN_CENTER, 1, "ufo");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 - 4*25, ALLEGRO_ALIGN_CENTER, 1, "This is Vampire Survivors-style shooting game.");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 - 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "Defeat enemies, gather items and XP, enhance your player!");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "<Item Description>");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6+25, 0, 1, "health potion");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 2*25, 0, 1, "attack speed bonus");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 3*25, 0, 1, "random box");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x / 2 + 150, m.y - 6 + 4 * 25, 0, 1, "shield");//0330 ±èº´Çå
     
     
 }
