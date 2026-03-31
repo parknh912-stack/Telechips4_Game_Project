@@ -2,7 +2,7 @@
 #define _RANK_H_
 
 #define MAX_RANKING 5
-#define RANK_QUEUE_SIZE 20
+#define RANK_QUEUE_SIZE 200
 #define MAX_NAME_LEN 15
 
 typedef struct _RANK {
@@ -11,11 +11,11 @@ typedef struct _RANK {
 }RANK;
 
 
-extern RANK ranking[RANK_QUEUE_SIZE];//ÇÏ·çÁ¾ÀÏ ÄÑ³õ´Â ¿À¶ô½Ç ¿À¶ô±âµµ ¾Æ´Ï°í °ÔÀÓ ÇÑ¹ø¿¡ 20ÆÇ µ¹¸± ÀÏÀÌ ¾øÀ½.
-extern int rank_count; // ÇöÀç Å¥¿¡ ÀúÀåµÈ µ¥ÀÌÅÍ °³¼ö
-extern char player_name[MAX_NAME_LEN]; // ÇöÀç ÀÔ·Â ÁßÀÎ ÀÌ¸§
+extern RANK ranking[RANK_QUEUE_SIZE];//í•˜ë£¨ì¢…ì¼ ì¼œë†“ëŠ” ì˜¤ë½ì‹¤ ì˜¤ë½ê¸°ë„ ì•„ë‹ˆê³  ê²Œì„ í•œë²ˆì— 20íŒ ëŒë¦´ ì¼ì´ ì—†ìŒ.
+extern int rank_count; // í˜„ì¬ íì— ì €ì¥ëœ ë°ì´í„° ê°œìˆ˜
+extern char player_name[MAX_NAME_LEN]; // í˜„ì¬ ì…ë ¥ ì¤‘ì¸ ì´ë¦„
 
-//·©Å· °ü·Ã ÇÔ¼öÀÔ´Ï´Ù.
+//ë­í‚¹ ê´€ë ¨ í•¨ìˆ˜ì…ë‹ˆë‹¤.
 void rank_init();
 void rank_add(const char* name, long new_score);
 void rank_save();
