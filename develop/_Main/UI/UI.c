@@ -91,9 +91,9 @@ void hud_draw()
 
     //ÇöÀç ½ºÅ×ÀÌÁö Ãâ·Â
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 120, 0, "stage: %02d", stage_num + 1);
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 150, 0, "x : %d", (int)ship.cx);
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 00, "y : %d", (int)ship.cy);
-    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 210, 00, "sec : %d", (frames / 60));
+    //al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 150, 0, "x : %d", (int)ship.cx);
+    //al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 00, "y : %d", (int)ship.cy);
+    //al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 210, 00, "sec : %d", (frames / 60));
 
     al_draw_scaled_bitmap(sprites.life_bar, 0, 0, LIFE_BAR_SRC_W, LIFE_BAR_SRC_H, HUD_LIFE_BAR_X, HUD_LIFE_BAR_Y, 4*(HUD_LIFE_BAR_X + ship.max_lifes - 6), HUD_LIFE_BAR_Y, 0);
     al_draw_filled_rectangle(HUD_LIFE_BAR_X, HUD_LIFE_BAR_Y + 2, 4*(ship.curr_lifes), HUD_LIFE_BAR_Y + HUD_LIFE_WIDTH + 1, al_map_rgb(255, 0, 0));
@@ -344,19 +344,19 @@ void ui_draw_h2p_menu()//0328 ±èº´Çå
             0, 0,                      // 2, 3. ¼Ò½º ½ÃÀÛ (sx, sy)
             al_get_bitmap_width(sprites.item[i]),  // 4. ¼Ò½º °¡·Î (sw)
             al_get_bitmap_height(sprites.item[i]), // 5. ¼Ò½º ¼¼·Î (sh)
-            m.x / 2 + 120, m.y - 6 + (i-1)*25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
+            m.x / 2 + 150, m.y - 6 + (i-1)*25,          // 6, 7. ´ë»ó À§Ä¡ (dx, dy)
             20,  // 8. ´ë»ó °¡·Î (dw) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             20, // 9. ´ë»ó ¼¼·Î (dh) - ´©¶ôµÇ¾ú´ø ºÎºÐ
             0                          // 10. ÇÃ·¡±×
         );
     }
     
-    
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "This is health potion");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "attack speed bonus");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "random box");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "shield");//0330 ±èº´Çå
-    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 4 * 25, ALLEGRO_ALIGN_CENTER, 1, "ufo");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 - 25, ALLEGRO_ALIGN_CENTER, 1, "< WUSE D-PAD >");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6, ALLEGRO_ALIGN_CENTER, 1, "HEAL POTION");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 25, ALLEGRO_ALIGN_CENTER, 1, "BOMB");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 2*25, ALLEGRO_ALIGN_CENTER, 1, "EXP");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 3 * 25, ALLEGRO_ALIGN_CENTER, 1, "BARRIER");//0330 ±èº´Çå
+    draw_bold_text(font, COLOR_WHITE, COLOR_BLACK, m.x, m.y - 6 + 4 * 25, ALLEGRO_ALIGN_CENTER, 1, "Random Stat");//0330 ±èº´Çå
     
     
 }

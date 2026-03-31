@@ -14,7 +14,7 @@ ITEM items[ITEMS_N];
 
 float drop_table[ALIEN_TYPE_N][ITEM_TYPE_N] = {
 	// NONE, HEAL, BOMB, EXP, BARRIER, RANDOM_STAT
-	[ALIEN_TYPE_METEOR] = { 80.0f, 5.0f, 5.0f, 5.0f, 5.0f, 0.0f },
+	[ALIEN_TYPE_METEOR] = { 88.0f, 4.0f, 4.0f, 4.0f, 4.0f, 0.0f },
 	[ALIEN_TYPE_FAST] = { 75.0f, 5.0f, 5.0f, 10.0f, 5.0f, 0.0f },
 	[ALIEN_TYPE_SHOOTER] = { 40.0f, 20.0f, 10.0f, 20.0f, 10.0f, 0.0f },
 	[ALIEN_TYPE_BOSS] = { 0.0f,  20.0f, 20.0f, 20.0f, 20.0f, 20.0f },
