@@ -17,7 +17,7 @@ STAGE stage_info[3] = {
 		.spawn_weight = {80, 20, 0 ,0},
 		.target_time = 3600,
 		.spawn_interval = 3.0f, 
-		.score_multiplier = 1.0f, 
+		.score_multiplier = 2.0f, 
 		.life_multiplier = 1.0f
 	},
 		{
@@ -33,7 +33,7 @@ STAGE stage_info[3] = {
 		.spawn_weight = {20, 40, 40 ,0},
 		.target_time = 3600,
 		.spawn_interval = 1.0f,
-		.score_multiplier = 2.0f,
+		.score_multiplier = 1.0f,
 		.life_multiplier = 4.0f
 	}
 };

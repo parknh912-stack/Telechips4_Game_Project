@@ -142,7 +142,7 @@ void item_use(ITEM_TYPE type)
 	switch (type)
 	{
 	case ITEM_TYPE_HEAL_POTION:
-		ship.curr_lifes = fminf(ship.max_lifes, ship.curr_lifes * 1.1f);
+		ship.curr_lifes = fminf(ship.max_lifes, ship.curr_lifes + 20);
 		break;
 	case ITEM_TYPE_BOMB:
 		for (int i = 0; i < 50; ++i)
