@@ -1,8 +1,6 @@
-## 03.27 PM 5:46 코드 병합
-텔레칩스 4기, 게임프로젝트
-###박남현 천원석 신제현 김병헌
-목록
-1. UI 개발 및 개선, asset 수정 및 추가
-2. Level UP 구조 분리 및 구현
-3. Item 구현 및 연결, 강화, 아이템, 스탯 수정가능하게 변경
-4. alien asset 수정, 충돌판정 수정,
+# 0329_Stage by 박남현
+
+1. Stage.c / Stage.h 추가
+2. Spawn 관련 함수 개별분리
+3. Core.c에 Stage 관련 함수 연결
+4. 테스트를 위한 enemy_info, level_up info 수정

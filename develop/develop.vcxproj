@@ -154,6 +154,7 @@
     <ClCompile Include="_Main\Player_Enemy\Player_Enemy.c" />
     <ClCompile Include="_Main\Rank.c" />
     <ClCompile Include="_Main\Sprites.c" />
+    <ClCompile Include="_Main\Stage\Stage.c" />
     <ClCompile Include="_Main\UI\UI.c" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClInclude Include="_Main\Player_Enemy\Player_Enemy.h" />
     <ClInclude Include="_Main\Rank.h" />
     <ClInclude Include="_Main\Sprites.h" />
+    <ClInclude Include="_Main\Stage\Stage.h" />
     <ClInclude Include="_Main\UI\UI.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,10 @@
 #include "../Core.h"
-#include "../UI/UI.h"
 #include "../Display.h"
+#include "../UI/UI.h"
 #include "../Keyboard.h"
 #include "../Sprites.h"
 #include "../Player_Enemy/Player_Enemy.h"
 #include "../Rank.h"
-
 
 // --- stars ---
 STAR stars[STARS_N];
@@ -86,6 +85,7 @@ void hud_draw()
     if (hp_ratio < 0) hp_ratio = 0;
 
     al_draw_textf(font,al_map_rgb_f(1, 1, 1),5, 90, 0,"Level: %02d",level);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 5, 180, 0, "stage_num: %02d", stage_num);
 
     int spacing = LIFE_W + 1;
     al_draw_bitmap(sprites.life_bar, spacing, 35, 0);

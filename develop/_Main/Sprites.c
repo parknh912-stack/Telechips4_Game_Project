@@ -1,6 +1,6 @@
 #include "Core.h"
 #include "Sprites.h"
-
+#include "Item/Item.h"
 /* --- Sprites --- */
 
 // 0: 접근만 하는 적 ( 운석 ), 1: 0번과 같지만 더 빠르고 체력이 높다,  2: 0번보다 느리지만 투사체 발사 3: 보스   
@@ -74,6 +74,7 @@ void sprites_deinit()
     al_destroy_bitmap(sprites.alien[0]);
     al_destroy_bitmap(sprites.alien[1]);
     al_destroy_bitmap(sprites.alien[2]);
+    al_destroy_bitmap(sprites.alien[3]);
 
     al_destroy_bitmap(sprites.alien_shot);
 
@@ -92,6 +93,7 @@ void sprites_deinit()
     al_destroy_bitmap(sprites.item[ITEM_TYPE_EXP]);
     al_destroy_bitmap(sprites.item[ITEM_TYPE_BARRIER]);
     al_destroy_bitmap(sprites.item[ITEM_TYPE_RANDOM_STAT_CHANGE]);
+    al_destroy_bitmap(sprites.barrier);
 
     al_destroy_bitmap(sprites._sheet);
 }

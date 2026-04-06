@@ -19,12 +19,13 @@
 #include "Rank.h"
 #include "Item/Item.h"
 #include "Level_UP/Level_up.h"			// 레벨 업(스탯 강화) / 0327 신제현
-
+#include "Stage/Stage.h"                // 스테이지 /0329 박남현
 
 /* --- General --- */
 long frames = 0;
 long score = 0;
 int level = 1;
+int stage_num = 0;                      //0329 박남현
 STATE current_state = STATE_MENU;
 
 void must_init(bool test, const char* description)
@@ -99,6 +100,7 @@ void game_state_init(void)
     level = 1;
     score_display = 0;
 
+    stage_init();   //0329 박남현
     ship_init();
     hud_init();
     keyboard_init();
@@ -135,6 +137,7 @@ void game_state_update(STATE* state, bool* done)
         break;
 
     case STATE_PLAYING:
+        stage_update(); //0329 박남현
         fx_update();
         shots_update();
         stars_update();
@@ -312,6 +315,7 @@ int main()
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
     keyboard_init();
+    stage_init();               //0329
     fx_init();
     shots_init();
     ship_init();
